@@ -17,9 +17,7 @@ class NestedScrollPosition extends ScrollPositionWithSingleContext {
   double _preScroll(double available) {
     final targetContext = context.notificationContext;
     if (targetContext != null) {
-      return NestedScrollConnection.of(targetContext)
-              ?.preScroll(available, this) ??
-          0;
+      return NestedScrollConnection.of(targetContext)?.preScroll(available, this) ?? 0;
     }
 
     // No context exists to refer.
@@ -54,12 +52,12 @@ class NestedScrollPosition extends ScrollPositionWithSingleContext {
 
     assert(hasPixels);
     final Simulation? simulation = physics.createBallisticSimulation(
-        isNestedScrolling
-            ? copyWith(
-                minScrollExtent: -double.infinity,
-                maxScrollExtent: double.infinity)
-            : this,
-        velocity);
+      // If it's true, must begin with begin non-clamping scrolling.
+      isNestedScrolling
+        ? copyWith(minScrollExtent: -double.infinity, maxScrollExtent: double.infinity)
+        : this,
+      velocity
+    );
     if (simulation != null) {
       beginActivity(BallisticScrollActivity(
         this,

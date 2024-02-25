@@ -54,8 +54,7 @@ class _AppBarState extends State<AppBar> {
     super.initState();
 
     final connection = AppBarConnection.of(context);
-    assert(connection != null,
-        "AppBarConnection widget does not exist at the ancestor.");
+    assert(connection != null, "AppBarConnection widget does not exist at the ancestor.");
 
     // Attach the initial position to the appbar controller.
     connection?.attach(_position);
