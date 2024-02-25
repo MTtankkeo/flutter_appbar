@@ -48,10 +48,7 @@ class AppBarConnectionState extends State<AppBarConnection> {
   Widget build(BuildContext context) {
     return NestedScrollConnection(
       preScroll: _handleNestedScroll,
-      postScroll: (available, position) {
-        print(available);
-        return _handleNestedScroll(available, position);
-      },
+      postScroll: _handleNestedScroll,
       child: Column(
         children: [
           ScrollableGestureDelegator(

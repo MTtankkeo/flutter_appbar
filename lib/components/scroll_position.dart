@@ -75,7 +75,7 @@ class NestedScrollPosition extends ScrollPositionWithSingleContext {
     }
 
     // If not all are consumed, the non-clamping scrolling cannot be performed.
-    /*
+    /* TODO
     if (isNestedScrolling && activity is BallisticScrollActivity) {
       isNestedScrolling = false;
 
