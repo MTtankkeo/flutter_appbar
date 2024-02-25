@@ -42,7 +42,7 @@ class NestedScrollPosition extends ScrollPositionWithSingleContext {
       isNestedScrolling = false;
       Future.microtask(() => goBallistic(activity?.velocity ?? 0));
     }
-
+    
     return super.setPixels(newPixels + consumed);
   }
 

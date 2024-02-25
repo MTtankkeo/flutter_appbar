@@ -101,13 +101,21 @@ class RenderAppBar extends RenderBox with RenderObjectWithChildMixin<RenderBox> 
 
   @override
   RenderBox get child => super.child!;
+  
+  /// When the child size previously measured in the layout phase should be recycled.
+  bool useCachedSize = false;
 
   AppBarPosition get position => _position!;
   AppBarPosition? _position;
   set position(AppBarPosition value) {
     if (_position != value) {
       _position = value;
-      _position!.addListener(markNeedsLayout);
+      _position!.addListener(() {
+        // Because the size of the child widget itself has not updated,
+        // there is no need to remeasure size of child widget in the layout phase.
+        useCachedSize = true;
+        markNeedsLayout();
+      });
       markNeedsLayout();
     }
   }
@@ -123,7 +131,11 @@ class RenderAppBar extends RenderBox with RenderObjectWithChildMixin<RenderBox> 
 
   @override
   void performLayout() {
-    child.layout(constraints, parentUsesSize: true);
+    if (!useCachedSize) {
+      child.layout(constraints, parentUsesSize: true);
+    } else {
+      useCachedSize = false;
+    }
 
     position.maxExtent = child.size.height;
     size = Size(
@@ -132,6 +144,7 @@ class RenderAppBar extends RenderBox with RenderObjectWithChildMixin<RenderBox> 
     );
   }
 
+  /// No need to implement hit-test in this [RenderBox].
   @override
   bool hitTestChildren(BoxHitTestResult result, { required Offset position }) {
     return child.hitTest(result, position: position);
