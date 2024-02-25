@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_appbar/widgets/nested_scroll_connection.dart';
 
@@ -19,7 +17,9 @@ class NestedScrollPosition extends ScrollPositionWithSingleContext {
   double _preScroll(double available) {
     final targetContext = context.notificationContext;
     if (targetContext != null) {
-      return NestedScrollConnection.of(targetContext)?.preScroll(available, this) ?? 0;
+      return NestedScrollConnection.of(targetContext)
+              ?.preScroll(available, this) ??
+          0;
     }
 
     // No context exists to refer.
@@ -36,13 +36,13 @@ class NestedScrollPosition extends ScrollPositionWithSingleContext {
       isNestedScrolling = true;
       return 0;
     }
-    
+
     // If not all are consumed, the non-clamping scrolling cannot be performed.
     if (isNestedScrolling && activity is BallisticScrollActivity) {
       isNestedScrolling = false;
       Future.microtask(() => goBallistic(activity?.velocity ?? 0));
     }
-    
+
     return super.setPixels(newPixels + consumed);
   }
 
@@ -54,11 +54,12 @@ class NestedScrollPosition extends ScrollPositionWithSingleContext {
 
     assert(hasPixels);
     final Simulation? simulation = physics.createBallisticSimulation(
-      isNestedScrolling
-        ? copyWith(minScrollExtent: -double.infinity, maxScrollExtent: double.infinity)
-        : this,
-      velocity
-    );
+        isNestedScrolling
+            ? copyWith(
+                minScrollExtent: -double.infinity,
+                maxScrollExtent: double.infinity)
+            : this,
+        velocity);
     if (simulation != null) {
       beginActivity(BallisticScrollActivity(
         this,

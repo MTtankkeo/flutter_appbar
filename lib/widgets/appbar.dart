@@ -4,7 +4,8 @@ import 'package:flutter_appbar/components/behavior.dart';
 import 'package:flutter_appbar/components/position.dart';
 import 'package:flutter_appbar/flutter_appbar.dart';
 
-typedef AppBarBuilder = Widget Function(BuildContext context, AppBarPosition position);
+typedef AppBarBuilder = Widget Function(
+    BuildContext context, AppBarPosition position);
 
 enum AppBarAlignment {
   absolute,
@@ -12,20 +13,29 @@ enum AppBarAlignment {
   scroll,
 }
 
+/// The widget configures dynamic appbar behavior that interacts
+/// with [Scrollable] widget.
+///
+/// Used with [AppBarConnection].
 class AppBar extends StatefulWidget {
   AppBar({
     super.key,
     required Widget body,
     required this.behavior,
     this.alignment = AppBarAlignment.scroll,
-  }) : builder = ((context, position) => body);
-  
-  const AppBar.builder({
-    super.key, 
-    required this.builder,
+  }) : builder = ((_, position) => body);
+
+  AppBar.builder({
+    super.key,
+    required AppBarBuilder builder,
     required this.behavior,
     this.alignment = AppBarAlignment.scroll,
-  });
+  }) : builder = ((_, position) {
+          // When position is updated, the widget state is also updated.
+          return AnimatedBuilder(
+              animation: position,
+              builder: (context, _) => builder(context, position));
+        });
 
   final AppBarBuilder builder;
   final AppBarBehavior behavior;
@@ -36,15 +46,18 @@ class AppBar extends StatefulWidget {
 }
 
 class _AppBarState extends State<AppBar> {
-  late final AppBarPosition _position = AppBarPosition(behavior: widget.behavior);
+  late final AppBarPosition _position =
+      AppBarPosition(behavior: widget.behavior);
 
   @override
   void initState() {
     super.initState();
-    
-    final connection = AppBarConnection.of(context);
-    assert(connection != null, "AppBarConnection widget does not exist at the ancestor.");
 
+    final connection = AppBarConnection.of(context);
+    assert(connection != null,
+        "AppBarConnection widget does not exist at the ancestor.");
+
+    // Attach the initial position to the appbar controller.
     connection?.attach(_position);
   }
 
@@ -81,7 +94,7 @@ class _AppBar extends SingleChildRenderObjectWidget {
   RenderObject createRenderObject(BuildContext context) {
     return RenderAppBar(position: position, alignment: alignment);
   }
-  
+
   @override
   void updateRenderObject(BuildContext context, RenderAppBar renderObject) {
     renderObject
@@ -90,7 +103,8 @@ class _AppBar extends SingleChildRenderObjectWidget {
   }
 }
 
-class RenderAppBar extends RenderBox with RenderObjectWithChildMixin<RenderBox> {
+class RenderAppBar extends RenderBox
+    with RenderObjectWithChildMixin<RenderBox> {
   RenderAppBar({
     required AppBarPosition position,
     required AppBarAlignment alignment,
@@ -101,7 +115,7 @@ class RenderAppBar extends RenderBox with RenderObjectWithChildMixin<RenderBox> 
 
   @override
   RenderBox get child => super.child!;
-  
+
   /// When the child size previously measured in the layout phase should be recycled.
   bool useCachedSize = false;
 
@@ -119,13 +133,24 @@ class RenderAppBar extends RenderBox with RenderObjectWithChildMixin<RenderBox> 
       markNeedsLayout();
     }
   }
-  
+
   AppBarAlignment get alignment => _alignment!;
   AppBarAlignment? _alignment;
   set alignment(AppBarAlignment value) {
     if (_alignment != value) {
       _alignment = value;
       markNeedsLayout();
+    }
+  }
+
+  Offset align(Offset offset) {
+    switch (alignment) {
+      case AppBarAlignment.absolute:
+        return offset;
+      case AppBarAlignment.center:
+        return Offset(offset.dx, offset.dy - position.pixels / 2);
+      case AppBarAlignment.scroll:
+        return Offset(offset.dx, offset.dy - position.pixels);
     }
   }
 
@@ -138,20 +163,17 @@ class RenderAppBar extends RenderBox with RenderObjectWithChildMixin<RenderBox> 
     }
 
     position.maxExtent = child.size.height;
-    size = Size(
-      child.size.width,
-      child.size.height - position.pixels
-    );
+    size = Size(child.size.width, child.size.height - position.pixels);
   }
 
   /// No need to implement hit-test in this [RenderBox].
   @override
-  bool hitTestChildren(BoxHitTestResult result, { required Offset position }) {
+  bool hitTestChildren(BoxHitTestResult result, {required Offset position}) {
     return child.hitTest(result, position: position);
   }
 
   @override
   void paint(PaintingContext context, Offset offset) {
-    context.paintChild(child, offset);
+    context.paintChild(child, align(offset));
   }
 }

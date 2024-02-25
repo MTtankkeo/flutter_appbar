@@ -12,12 +12,16 @@ class ScrollableGestureDelegator extends StatefulWidget {
   final Widget child;
 
   @override
-  State<ScrollableGestureDelegator> createState() => _ScrollableGestureDelegatorState();
+  State<ScrollableGestureDelegator> createState() =>
+      _ScrollableGestureDelegatorState();
 }
 
-class _ScrollableGestureDelegatorState extends State<ScrollableGestureDelegator> {
+class _ScrollableGestureDelegatorState
+    extends State<ScrollableGestureDelegator> {
   ScrollPosition? get position {
-    return widget.controller.positions.isNotEmpty ? widget.controller.position : null;
+    return widget.controller.positions.isNotEmpty
+        ? widget.controller.position
+        : null;
   }
 
   @override

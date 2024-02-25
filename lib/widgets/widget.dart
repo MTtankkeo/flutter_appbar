@@ -14,12 +14,12 @@ class AppBarConnection extends StatefulWidget {
     this.controller,
     this.scrollController,
   });
-  
+
   final List<AppBar> appBars;
   final Widget child;
 
   final AppBarController? controller;
-  
+
   /// This controller is define scroll controller of [PrimaryScrollController].
   final NestedScrollController? scrollController;
 
@@ -34,9 +34,11 @@ class AppBarConnection extends StatefulWidget {
 }
 
 class AppBarConnectionState extends State<AppBarConnection> {
-  late final AppBarController _controller = widget.controller ?? AppBarController();
-  late final NestedScrollController _scrollController = widget.scrollController ?? NestedScrollController();
-  
+  late final AppBarController _controller =
+      widget.controller ?? AppBarController();
+  late final NestedScrollController _scrollController =
+      widget.scrollController ?? NestedScrollController();
+
   void attach(AppBarPosition position) => _controller.attach(position);
   void detach(AppBarPosition position) => _controller.detach(position);
 
@@ -49,13 +51,13 @@ class AppBarConnectionState extends State<AppBarConnection> {
       child: Column(
         children: [
           ScrollableGestureDelegator(
-            controller: _scrollController,
-            child: Column(children: widget.appBars)
-          ),
-          
+              controller: _scrollController,
+              child: Column(children: widget.appBars)),
+
           // with scrollable.
           Expanded(
-            child: PrimaryScrollController(controller: _scrollController, child: widget.child),
+            child: PrimaryScrollController(
+                controller: _scrollController, child: widget.child),
           ),
         ],
       ),

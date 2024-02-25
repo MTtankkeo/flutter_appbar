@@ -2,15 +2,17 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_appbar/components/position.dart';
 
 class AppBarController {
-  final  _positions = <AppBarPosition>[];
+  final _positions = <AppBarPosition>[];
 
   attach(AppBarPosition position) {
-    assert(!_positions.contains(position), "Already attached in this controller.");
+    assert(
+        !_positions.contains(position), "Already attached in this controller.");
     _positions.add(position);
   }
 
   detach(AppBarPosition position) {
-    assert(_positions.contains(position), "Already not attached in this controller.");
+    assert(_positions.contains(position),
+        "Already not attached in this controller.");
     _positions.remove(position);
   }
 
