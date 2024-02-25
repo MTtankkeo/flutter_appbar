@@ -31,11 +31,10 @@ class AppBar extends StatefulWidget {
     required this.behavior,
     this.alignment = AppBarAlignment.scroll,
   }) : builder = ((_, position) {
-          // When position is updated, the widget state is also updated.
-          return AnimatedBuilder(
-              animation: position,
-              builder: (context, _) => builder(context, position));
-        });
+
+    // When position is updated, the widget state is also updated.
+    return AnimatedBuilder(animation: position, builder: (context, _) => builder(context, position));
+  });
 
   final AppBarBuilder builder;
   final AppBarBehavior behavior;
@@ -124,6 +123,7 @@ class RenderAppBar extends RenderBox
     if (_position != value) {
       _position = value;
       _position!.addListener(() {
+
         // Because the size of the child widget itself has not updated,
         // there is no need to remeasure size of child widget in the layout phase.
         useCachedSize = true;
