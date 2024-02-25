@@ -40,11 +40,17 @@ class AppBarConnectionState extends State<AppBarConnection> {
   void attach(AppBarPosition position) => _controller.attach(position);
   void detach(AppBarPosition position) => _controller.detach(position);
 
+  double _handleNestedScroll(double available, ScrollPosition position) {
+    return _controller.consumeAll(available, position);
+  }
+
   @override
   Widget build(BuildContext context) {
     return NestedScrollConnection(
-      preScroll: (available, position) {
-        return _controller.consumeAll(available, position);
+      preScroll: _handleNestedScroll,
+      postScroll: (available, position) {
+        print(available);
+        return _handleNestedScroll(available, position);
       },
       child: Column(
         children: [

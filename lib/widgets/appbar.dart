@@ -44,8 +44,7 @@ class AppBar extends StatefulWidget {
 }
 
 class _AppBarState extends State<AppBar> {
-  late final AppBarPosition _position =
-      AppBarPosition(behavior: widget.behavior);
+  late final AppBarPosition _position = AppBarPosition(behavior: widget.behavior);
 
   @override
   void initState() {
@@ -57,6 +56,15 @@ class _AppBarState extends State<AppBar> {
     // Attach the initial position to the appbar controller.
     connection?.attach(_position);
   }
+  
+  @override
+  void didUpdateWidget(covariant AppBar oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    if (oldWidget.behavior != widget.behavior) {
+      _position.behavior = widget.behavior;
+    }
+  }
 
   @override
   void dispose() {
@@ -64,7 +72,7 @@ class _AppBarState extends State<AppBar> {
 
     super.dispose();
   }
-
+  
   @override
   Widget build(BuildContext context) {
     return ClipRRect(
@@ -100,8 +108,7 @@ class _AppBar extends SingleChildRenderObjectWidget {
   }
 }
 
-class RenderAppBar extends RenderBox
-    with RenderObjectWithChildMixin<RenderBox> {
+class RenderAppBar extends RenderBox with RenderObjectWithChildMixin<RenderBox> {
   RenderAppBar({
     required AppBarPosition position,
     required AppBarAlignment alignment,

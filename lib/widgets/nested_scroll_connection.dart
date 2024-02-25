@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
 typedef NestedScrollConsume = double Function(double available,ScrollPosition position);
@@ -25,10 +26,20 @@ class NestedScrollConnection extends StatefulWidget {
 class NestedScrollConnectionState extends State<NestedScrollConnection> {
   double preScroll(double available, ScrollPosition position) {
     final consumed = widget.preScroll?.call(available, position) ?? 0;
-    if ((consumed - available).abs() > 0.000001) {
+    if ((consumed - available).abs() > precisionErrorTolerance) {
       return NestedScrollConnection.of(context)?.preScroll(available - consumed, position) ?? 0;
     }
 
+    // The given scroll offset are all consumed.
+    return consumed;
+  }
+  
+  double postScroll(double available, ScrollPosition position) {
+    final consumed = widget.postScroll?.call(available, position) ?? 0;
+    if ((consumed - available).abs() > precisionErrorTolerance) {
+      return NestedScrollConnection.of(context)?.postScroll(available - consumed, position) ?? 0;
+    }
+    
     // The given scroll offset are all consumed.
     return consumed;
   }
