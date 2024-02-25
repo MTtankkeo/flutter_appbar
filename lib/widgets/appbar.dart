@@ -4,8 +4,7 @@ import 'package:flutter_appbar/components/behavior.dart';
 import 'package:flutter_appbar/components/position.dart';
 import 'package:flutter_appbar/flutter_appbar.dart';
 
-typedef AppBarBuilder = Widget Function(
-    BuildContext context, AppBarPosition position);
+typedef AppBarBuilder = Widget Function(BuildContext context, AppBarPosition position);
 
 enum AppBarAlignment {
   absolute,
