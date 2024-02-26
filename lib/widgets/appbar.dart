@@ -43,20 +43,25 @@ class AppBar extends StatefulWidget {
   State<AppBar> createState() => _AppBarState();
 }
 
-class _AppBarState extends State<AppBar> {
-  late final AppBarPosition _position = AppBarPosition(behavior: widget.behavior);
+class _AppBarState extends State<AppBar> with SingleTickerProviderStateMixin {
+  late final AppBarPosition _position = AppBarPosition(
+    vsync: this,
+    behavior: widget.behavior
+  );
+
+  late final AppBarConnectionState? _connection;
 
   @override
   void initState() {
     super.initState();
 
-    final connection = AppBarConnection.of(context);
-    assert(connection != null, "AppBarConnection widget does not exist at the ancestor.");
+    _connection = AppBarConnection.of(context);
+    assert(_connection != null, "AppBarConnection widget does not exist at the ancestor.");
 
     // Attach the initial position to the appbar controller.
-    connection?.attach(_position);
+    _connection?.attach(_position);
   }
-  
+
   @override
   void didUpdateWidget(covariant AppBar oldWidget) {
     super.didUpdateWidget(oldWidget);
@@ -68,11 +73,11 @@ class _AppBarState extends State<AppBar> {
 
   @override
   void dispose() {
-    AppBarConnection.of(context)?.detach(_position);
+    _connection?.detach(_position);
 
     super.dispose();
   }
-  
+
   @override
   Widget build(BuildContext context) {
     return ClipRRect(

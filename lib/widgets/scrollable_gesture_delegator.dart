@@ -27,6 +27,7 @@ class _ScrollableGestureDelegatorState
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
+      behavior: HitTestBehavior.opaque,
       onVerticalDragDown: _handleDragDown,
       onVerticalDragStart: _handleDragStart,
       onVerticalDragUpdate: _handleDragUpdate,

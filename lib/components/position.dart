@@ -3,12 +3,14 @@ import 'package:flutter_appbar/components/behavior.dart';
 
 class AppBarPosition extends Listenable {
   AppBarPosition({
+    required this.vsync,
     required this.behavior,
     double initialPixels = 0,
   }) {
     _pixelsNotifier = ValueNotifier<double>(0);
   }
-
+  
+  late TickerProvider vsync;
   late AppBarBehavior behavior;
 
   double get pixels => _pixelsNotifier.value;

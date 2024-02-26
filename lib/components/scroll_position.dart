@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_appbar/widgets/nested_scroll_connection.dart';
@@ -22,21 +20,21 @@ class NestedScrollPosition extends ScrollPositionWithSingleContext {
   double _preScroll(double available) {
     final targetContext = context.notificationContext;
     if (targetContext != null) {
-      return NestedScrollConnection.of(targetContext)?.preScroll(available, this) ?? 0;
+      return NestedScrollConnection.of(targetContext)?.preScroll(available, this) ?? 0.0;
     }
 
     // No context exists to refer.
-    return 0;
+    return 0.0;
   }
 
   double _postScroll(double available) {
     final targetContext = context.notificationContext;
     if (targetContext != null) {
-      return NestedScrollConnection.of(targetContext)?.postScroll(available, this) ?? 0;
+      return NestedScrollConnection.of(targetContext)?.postScroll(available, this) ?? 0.0;
     }
 
     // No context exists to refer.
-    return 0;
+    return 0.0;
   }
 
   double setPostPixels(double newPixels) {
@@ -49,9 +47,9 @@ class NestedScrollPosition extends ScrollPositionWithSingleContext {
         didUpdateScrollPositionBy(pixels - oldPixels);
       }
 
-      final double consumed = overscroll != 0
+      final double consumed = overscroll != 0.0
         ? _postScroll(-overscroll)
-        : 0;
+        : 0.0;
   
       overscroll += consumed;
 
@@ -60,7 +58,7 @@ class NestedScrollPosition extends ScrollPositionWithSingleContext {
         return overscroll;
       }
     }
-    return 0;
+    return 0.0;
   }
 
   @override
@@ -68,10 +66,10 @@ class NestedScrollPosition extends ScrollPositionWithSingleContext {
     final double available = pixels - newPixels;
     final double consumed = _preScroll(available);
 
-    // When all new scroll offsets are consumed.
+    // When all new scroll offset are consumed.
     if ((consumed - available).abs() < precisionErrorTolerance) {
       isNestedScrolling = true;
-      return 0;
+      return 0.0;
     }
 
     // If not all are consumed, the non-clamping scrolling cannot be performed.
@@ -80,7 +78,7 @@ class NestedScrollPosition extends ScrollPositionWithSingleContext {
       isNestedScrolling = false;
 
       // Begin clamping ballistic scrolling.
-      Future.microtask(() => goBallistic(activity?.velocity ?? 0));
+      Future.microtask(() => goBallistic(activity?.velocity ?? 0.0));
     }
     */
 
@@ -89,7 +87,7 @@ class NestedScrollPosition extends ScrollPositionWithSingleContext {
 
   @override
   void goBallistic(double velocity) {
-    if (velocity == 0) return goIdle();
+    if (velocity == 0.0) return goIdle();
 
     assert(hasPixels);
     final Simulation? simulation = physics.createBallisticSimulation(
