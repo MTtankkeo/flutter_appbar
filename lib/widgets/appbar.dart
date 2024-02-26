@@ -155,12 +155,9 @@ class RenderAppBar extends RenderBox with RenderObjectWithChildMixin<RenderBox> 
 
   Offset align(Offset offset) {
     switch (alignment) {
-      case AppBarAlignment.absolute:
-        return offset;
-      case AppBarAlignment.center:
-        return Offset(offset.dx, offset.dy - position.pixels / 2);
-      case AppBarAlignment.scroll:
-        return Offset(offset.dx, offset.dy - position.pixels);
+      case AppBarAlignment.absolute: return offset;
+      case AppBarAlignment.center: return Offset(offset.dx, offset.dy - position.pixels / 2);
+      case AppBarAlignment.scroll: return Offset(offset.dx, offset.dy - position.pixels);
     }
   }
 

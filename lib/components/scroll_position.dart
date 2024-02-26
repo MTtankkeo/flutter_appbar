@@ -37,6 +37,16 @@ class NestedScrollPosition extends ScrollPositionWithSingleContext {
     return 0.0;
   }
 
+  double _fling(double velocity) {
+    final targetContext = context.notificationContext;
+    if (targetContext != null) {
+      return NestedScrollConnection.of(targetContext)?.fling(velocity, this) ?? velocity;
+    }
+    
+    // no context exists to refer.
+    return velocity;
+  }
+
   double setPostPixels(double newPixels) {
     if (newPixels != pixels) {
       double overscroll = applyBoundaryConditions(newPixels);
@@ -73,14 +83,12 @@ class NestedScrollPosition extends ScrollPositionWithSingleContext {
     }
 
     // If not all are consumed, the non-clamping scrolling cannot be performed.
-    /* TODO
     if (isNestedScrolling && activity is BallisticScrollActivity) {
       isNestedScrolling = false;
 
       // Begin clamping ballistic scrolling.
       Future.microtask(() => goBallistic(activity?.velocity ?? 0.0));
     }
-    */
 
     return setPostPixels(newPixels + consumed);
   }
@@ -88,6 +96,14 @@ class NestedScrollPosition extends ScrollPositionWithSingleContext {
   @override
   void goBallistic(double velocity) {
     if (velocity == 0.0) return goIdle();
+
+    // += consumed by nested scroll.
+    velocity = _fling(velocity);
+    
+    // Do not begin activity when fling velocity has all been consumed.
+    if (velocity.abs() < precisionErrorTolerance) {
+      return goIdle();
+    }
 
     assert(hasPixels);
     final Simulation? simulation = physics.createBallisticSimulation(
