@@ -13,9 +13,7 @@ import 'package:flutter_appbar/widgets/scrollable_gesture_delegator.dart';
 /// How to use this widget?
 /// ```dart
 /// AppBarConnection(
-///   appBars: [
-///     // ... AppBar
-///   ],
+///   appBars: [ ...AppBar ],
 ///   child: ...
 /// );
 /// ```
@@ -106,6 +104,6 @@ class RenderAppBarLayout extends RenderBox
          RenderBoxContainerDefaultsMixin<RenderBox, ContainerBoxParentData<RenderBox>> {
   @override
   void performLayout() {
-    final AppBar connection;
+
   }
 }
