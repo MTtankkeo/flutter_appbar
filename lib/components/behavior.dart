@@ -3,7 +3,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_appbar/components/position.dart';
 import 'package:flutter_appbar/components/scroll_position.dart';
 
-/// Representing different alignment options for the app bar.
+/// Representing different alignment options for the appbar.
 enum AppBarAlign {
   /// No specific alignment.
   none,
@@ -13,12 +13,12 @@ enum AppBarAlign {
   shrink,
 }
 
-/// Abstract class defining the behavior of the app bar.
+/// Abstract class defining the behavior of the appbar.
 abstract class AppBarBehavior {
   const AppBarBehavior();
 
-  /// Updates the given app bar based on available scroll offset,
-  /// the current app bar position, and the scroll position.
+  /// Updates the given appbar based on available scroll offset,
+  /// the current appbar position, and the scroll position.
   /// 
   /// And, retursn the value remaining after consumption.
   double setPixels(
@@ -27,7 +27,7 @@ abstract class AppBarBehavior {
     ScrollPosition scroll,
   );
 
-  /// Determines the alignment of the app bar based on app bar position and scroll.
+  /// Determines the alignment of the appbar based on appbar position and scroll.
   AppBarAlign align(AppBarPosition appBar, ScrollPosition scroll);
 }
 
