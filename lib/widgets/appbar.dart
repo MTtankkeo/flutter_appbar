@@ -4,6 +4,9 @@ import 'package:flutter_appbar/components/behavior.dart';
 import 'package:flutter_appbar/components/position.dart';
 import 'package:flutter_appbar/flutter_appbar.dart';
 
+/// Signature for a function that creates a widget for a appbar.
+/// 
+/// Used by [AppBar.builder].
 typedef AppBarBuilder = Widget Function(BuildContext context, AppBarPosition position);
 
 enum AppBarAlignment {

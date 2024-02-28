@@ -20,7 +20,7 @@ class AppBarController {
     _positions.remove(position);
   }
 
-  /// Returns attached appbar position in this controller by given index.
+  /// Returns attached a appbar position in this controller by given index.
   AppBarPosition at(int index) {
     if (_positions.length < index && index < 0) {
       throw FlutterError("The given index overflowed attached appbar positions length.");
@@ -37,7 +37,7 @@ class AppBarController {
       final previousConsumed = consumed;
       consumed += it.behavior.setPixels(available - consumed, it, scroll);
 
-      // If when a current available not consumed by the appbar.
+      // If when a current available not consumed by a appbar.
       if ((consumed - previousConsumed).abs() > precisionErrorTolerance) {
         if (propagation == AppbarPropagation.stop) break;
         if (propagation == AppbarPropagation.next) continue; // for legibility.
