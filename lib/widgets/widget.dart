@@ -9,6 +9,8 @@ import 'package:flutter_appbar/widgets/scrollable_gesture_delegator.dart';
 /// Synchronize appbars with [Scrollable] to configure dynamic appbar behavior
 /// by nested scroll.
 /// 
+/// And, implementable with single [Scrollable].
+/// 
 /// How to use this widget?
 /// ```dart
 /// AppBarConnection(
@@ -21,12 +23,15 @@ class AppBarConnection extends StatefulWidget {
     super.key,
     required this.appBars,
     required this.child,
+    this.propagation = AppbarPropagation.next,
     this.controller,
     this.scrollController,
   });
 
   final List<AppBar> appBars;
   final Widget child;
+
+  final AppbarPropagation propagation;
 
   final AppBarController? controller;
 
@@ -53,7 +58,11 @@ class AppBarConnectionState extends State<AppBarConnection> {
   void detach(AppBarPosition position) => _controller.detach(position);
 
   double _handleNestedScroll(double available, ScrollPosition position) {
-    return _controller.consumeAll(available, position);
+    return _controller.consumeAll(
+      available,
+      position,
+      widget.propagation,
+    ); // the total consumed.
   }
 
   @override
