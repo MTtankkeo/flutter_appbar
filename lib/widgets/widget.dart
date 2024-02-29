@@ -2,6 +2,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_appbar/components/controller.dart';
 import 'package:flutter_appbar/components/position.dart';
 import 'package:flutter_appbar/components/scroll_controller.dart';
+import 'package:flutter_appbar/components/scroll_position.dart';
 import 'package:flutter_appbar/widgets/appbar.dart';
 import 'package:flutter_appbar/widgets/nested_scroll_connection.dart';
 import 'package:flutter_appbar/widgets/scrollable_gesture_delegator.dart';
@@ -67,26 +68,38 @@ class AppBarConnectionState extends State<AppBarConnection> {
 
   @override
   Widget build(BuildContext context) {
-    return NestedScrollConnection(
-      preScroll: _handleNestedScroll,
-      postScroll: _handleNestedScroll,
-      child: Column(
-        children: [
-          // Wrap the widget that acts as a scroll gesture delegator to enable scrolling
-          // by dragging the appbar.
-          ScrollableGestureDelegator(
-            controller: _scrollController,
-            child: Column(children: widget.appBars)
-          ),
+    return NotificationListener<ScrollNotification>(
+      onNotification: (notification) {
+        if (notification.depth != 0) return false;
+        if (notification is NestedScrollEndNotification) {
+          _controller.alignAll(notification.target);
+        } else if (notification is ScrollStartNotification) {
+          _controller.clearAlignAll();
+        }
 
-          // with scrollable.
-          Expanded(
-            child: PrimaryScrollController(
+        return false;
+      },
+      child: NestedScrollConnection(
+        preScroll: _handleNestedScroll,
+        postScroll: _handleNestedScroll,
+        child: Column(
+          children: [
+            // Wrap the widget that acts as a scroll gesture delegator to enable scrolling
+            // by dragging a appbar.
+            ScrollableGestureDelegator(
               controller: _scrollController,
-              child: widget.child
+              child: Column(children: widget.appBars)
             ),
-          ),
-        ],
+
+            // with scrollable.
+            Expanded(
+              child: PrimaryScrollController(
+                controller: _scrollController,
+                child: widget.child
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

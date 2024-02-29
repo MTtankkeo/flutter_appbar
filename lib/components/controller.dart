@@ -46,4 +46,12 @@ class AppBarController {
 
     return consumed;
   }
+
+  void clearAlignAll() {
+    for (final it in _positions) { it.clearAlign(); }
+  }
+
+  void alignAll(ScrollPosition position) {
+    for (final it in _positions) { it.align(position); }
+  }
 }

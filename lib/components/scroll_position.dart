@@ -2,6 +2,16 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_appbar/widgets/nested_scroll_connection.dart';
 
+class NestedScrollEndNotification extends ScrollNotification {
+  NestedScrollEndNotification({
+    required super.metrics,
+    required super.context,
+    required this.target,
+  });
+
+  final ScrollPosition target;
+}
+
 class NestedScrollPosition extends ScrollPositionWithSingleContext {
   NestedScrollPosition({
     required super.physics,
@@ -93,6 +103,10 @@ class NestedScrollPosition extends ScrollPositionWithSingleContext {
     return setPostPixels(newPixels + consumed);
   }
 
+  double setRawPixels(double newPixels) {
+    return super.setPixels(newPixels);
+  }
+
   @override
   void goBallistic(double velocity) {
     if (velocity == 0.0) return goIdle();
@@ -123,5 +137,18 @@ class NestedScrollPosition extends ScrollPositionWithSingleContext {
     } else {
       goIdle();
     }
+  }
+
+  @override
+  void didEndScroll() {
+    super.didEndScroll();
+
+    context.notificationContext?.dispatchNotification(
+      NestedScrollEndNotification(
+        metrics: copyWith(),
+        context: context.notificationContext,
+        target: this
+      ),
+    );
   }
 }
