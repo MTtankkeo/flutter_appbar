@@ -5,12 +5,22 @@ import 'package:flutter_appbar/components/scroll_position.dart';
 
 /// Representing different alignment options for the appbar.
 enum AppBarAlign {
-  /// No specific alignment.
-  none,
   /// Align to expanded state.
   expand,
   /// Align to shrunk state.
   shrink,
+}
+
+class AppBarAlignBehavior {
+  const AppBarAlignBehavior({
+    required this.target,
+    required this.duration,
+    required this.curve,
+  });
+
+  final AppBarAlign target;
+  final Duration duration;
+  final Curve curve;
 }
 
 /// Abstract class defining the behavior of the appbar.
@@ -28,7 +38,7 @@ abstract class AppBarBehavior {
   );
 
   /// Determines the alignment of the appbar based on appbar position and scroll.
-  AppBarAlign align(AppBarPosition appBar, ScrollPosition scroll);
+  AppBarAlignBehavior? align(AppBarPosition appBar, ScrollPosition scroll);
 }
 
 class MaterialAppBarBehavior extends AppBarBehavior {
@@ -36,6 +46,8 @@ class MaterialAppBarBehavior extends AppBarBehavior {
     this.floating = false,
     this.dragOnlyExpanding = false,
     this.alwaysScrolling = true,
+    this.alignDuration = const Duration(milliseconds: 300),
+    this.alignCurve = Curves.ease,
   });
 
   /// Whether the appbar can be expanded and contracted without
@@ -50,6 +62,14 @@ class MaterialAppBarBehavior extends AppBarBehavior {
 
   /// Whether the appbar can be scroll even when the [Scrollable] is no scroll possible.
   final bool alwaysScrolling;
+
+  final Duration alignDuration;
+
+  final Curve alignCurve;
+  
+  AppBarAlignBehavior createAlignBehavior(AppBarAlign target) {
+    return AppBarAlignBehavior(target: target, duration: alignDuration, curve: alignCurve);
+  }
 
   @override
   double setPixels(double available, AppBarPosition appBar, ScrollPosition scroll) {
@@ -79,9 +99,9 @@ class MaterialAppBarBehavior extends AppBarBehavior {
   }
 
   @override
-  AppBarAlign align(AppBarPosition appBar, ScrollPosition scroll) {
-    return appBar.expandedPercent > 0.5
-      ? AppBarAlign.expand
-      : AppBarAlign.shrink;
+  AppBarAlignBehavior? align(AppBarPosition appBar, ScrollPosition scroll) {
+    return appBar.expandedPercent < 0.5
+      ? createAlignBehavior(AppBarAlign.expand)
+      : createAlignBehavior(AppBarAlign.shrink);
   }
 }

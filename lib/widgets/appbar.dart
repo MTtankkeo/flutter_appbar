@@ -46,7 +46,7 @@ class AppBar extends StatefulWidget {
   State<AppBar> createState() => _AppBarState();
 }
 
-class _AppBarState extends State<AppBar> with SingleTickerProviderStateMixin {
+class _AppBarState extends State<AppBar> with TickerProviderStateMixin {
   late final AppBarPosition _position = AppBarPosition(
     vsync: this,
     behavior: widget.behavior

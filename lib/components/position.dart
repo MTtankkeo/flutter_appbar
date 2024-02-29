@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_appbar/components/behavior.dart';
 
@@ -12,6 +13,8 @@ class AppBarPosition extends Listenable {
   
   late TickerProvider vsync;
   late AppBarBehavior behavior;
+
+  AnimationController? _animation;
 
   double get pixels => _pixelsNotifier.value;
   late final ValueNotifier<double> _pixelsNotifier;
@@ -39,6 +42,35 @@ class AppBarPosition extends Listenable {
   }
 
   double setPixelsWithDelta(double delta) => setPixels(pixels - delta);
+
+  void align(ScrollPosition scroll) {
+    final alignBehavior = behavior.align(this, scroll);
+    if (alignBehavior != null) {
+      final start = pixels;
+      final end   = alignBehavior.target == AppBarAlign.expand ? maxExtent : minExtent;
+
+      /// If the target pixels and the current pixels are the same,
+      /// a appbar is no need to align.
+      if ((pixels - end).abs() < precisionErrorTolerance) {
+        return;
+      }
+
+      _animation?.dispose();
+      _animation = AnimationController(vsync: vsync, duration: alignBehavior.duration);
+      _animation!.addListener(() {
+        final vector = end - start;
+        final newPixels = start + (vector * alignBehavior.curve.transform(_animation!.value));
+        
+        setPixels(newPixels);
+      });
+      _animation!.forward();
+    }
+  }
+
+  void clearAlign() {
+    _animation?.dispose();
+    _animation = null;
+  }
 
   @override
   void addListener(VoidCallback listener) {
