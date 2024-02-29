@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_appbar/components/position.dart';
 import 'package:flutter_appbar/components/scroll_position.dart';
