@@ -37,6 +37,11 @@ class AppBarController {
       final previousConsumed = consumed;
       consumed += it.behavior.setPixels(available - consumed, it, scroll);
 
+      // If when all consumed, stops the travel.
+      if ((consumed - available).abs() < precisionErrorTolerance) {
+        break;
+      }
+
       // If when a current available not consumed by a appbar.
       if ((consumed - previousConsumed).abs() > precisionErrorTolerance) {
         if (propagation == AppbarPropagation.stop) break;
