@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_appbar/components/scroll_controller.dart';
 import 'package:flutter_appbar/widgets/nested_scroll_connection.dart';
 
 class NestedScrollEndNotification extends ScrollNotification {
@@ -12,6 +13,10 @@ class NestedScrollEndNotification extends ScrollNotification {
   final ScrollPosition target;
 }
 
+/// Facilitate the implementation of appbar behavior through interaction
+/// with [NestedScrollConnection].
+/// 
+/// Used by [NestedScrollController].
 class NestedScrollPosition extends ScrollPositionWithSingleContext {
   NestedScrollPosition({
     required super.physics,
@@ -21,8 +26,6 @@ class NestedScrollPosition extends ScrollPositionWithSingleContext {
     super.keepScrollOffset,
     super.oldPosition,
   });
-
-  bool get isBallisticScrolling => activity is BallisticScrollActivity;
 
   /// If this value is true, will perform a non-clamping scrolling.
   bool isNestedScrolling = false;
@@ -55,6 +58,19 @@ class NestedScrollPosition extends ScrollPositionWithSingleContext {
     
     // no context exists to refer.
     return velocity;
+  }
+  
+  @override
+  void didOverscrollBy(double value) {
+    super.didOverscrollBy(value);
+
+    // If not all are consumed, the non-clamping scrolling cannot be performed.
+    if (isNestedScrolling && activity is BallisticScrollActivity) {
+      isNestedScrolling = false;
+
+      // Begin clamping ballistic scrolling.
+      Future.microtask(() => goBallistic(activity?.velocity ?? 0.0));
+    }
   }
 
   double setPostPixels(double newPixels) {
@@ -92,17 +108,11 @@ class NestedScrollPosition extends ScrollPositionWithSingleContext {
       return 0.0;
     }
 
-    // If not all are consumed, the non-clamping scrolling cannot be performed.
-    if (isNestedScrolling && activity is BallisticScrollActivity) {
-      isNestedScrolling = false;
-
-      // Begin clamping ballistic scrolling.
-      Future.microtask(() => goBallistic(activity?.velocity ?? 0.0));
-    }
-
     return setPostPixels(newPixels + consumed);
   }
 
+  /// Reflects the given new pixels in the this position without
+  /// considering the nested scroll.
   double setRawPixels(double newPixels) {
     return super.setPixels(newPixels);
   }
