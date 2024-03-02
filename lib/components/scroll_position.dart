@@ -27,7 +27,7 @@ class NestedScrollPosition extends ScrollPositionWithSingleContext {
     super.oldPosition,
   });
 
-  /// If this value is true, will perform a non-clamping scrolling.
+  /// If this value is true, will perform a non-clamping or non-bouncing scrolling.
   bool isNestedScrolling = false;
 
   double _preScroll(double available) {
@@ -73,9 +73,18 @@ class NestedScrollPosition extends ScrollPositionWithSingleContext {
     }
   }
 
+  double setPostPixelsWithBouncing(double overflow) {
+    return 0.0;
+  }
+
+  double setPostPixelsWithClamping(double overflow) {
+    return 0.0;
+  }
+
   double setPostPixels(double newPixels) {
     if (newPixels != pixels) {
       double overscroll = applyBoundaryConditions(newPixels);
+
       double oldPixels = pixels;
       correctPixels(newPixels - overscroll);
       if (pixels != oldPixels) {
@@ -119,15 +128,8 @@ class NestedScrollPosition extends ScrollPositionWithSingleContext {
 
   @override
   void goBallistic(double velocity) {
-    if (velocity == 0.0) return goIdle();
-
     // += consumed by nested scroll.
     velocity = _fling(velocity);
-    
-    // Do not begin activity when fling velocity has all been consumed.
-    if (velocity.abs() < precisionErrorTolerance) {
-      return goIdle();
-    }
 
     assert(hasPixels);
     final Simulation? simulation = physics.createBallisticSimulation(
