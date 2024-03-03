@@ -41,6 +41,18 @@ abstract class AppBarBehavior {
   AppBarAlignBehavior? align(AppBarPosition appBar, ScrollPosition scroll);
 }
 
+class AbsoluteAppBarBehavior extends AppBarBehavior {
+  @override
+  AppBarAlignBehavior? align(AppBarPosition appBar, ScrollPosition scroll) => null;
+
+  @override
+  double setPixels(
+    double available,
+    AppBarPosition appBar,
+    ScrollPosition scroll
+  ) => 0;
+}
+
 class MaterialAppBarBehavior extends AppBarBehavior {
   const MaterialAppBarBehavior({
     this.floating = false,
