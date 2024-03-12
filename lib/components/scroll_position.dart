@@ -20,7 +20,7 @@ class NestedScrollEndNotification extends ScrollNotification {
 /// must be maintain the `non-clamping` or `non-bouncing` scrolling behavior.
 /// 
 /// - This implies that ballistic scroll-activity should be performed
-///   without considering the min-extent and max-extent of the scroll.)
+///   without considering the min-extent and max-extent of the scroll.
 /// 
 /// Used by [NestedScrollController].
 class NestedScrollPosition extends ScrollPositionWithSingleContext {
