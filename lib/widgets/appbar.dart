@@ -69,6 +69,7 @@ class _AppBarState extends State<AppBar> with TickerProviderStateMixin {
   void didUpdateWidget(covariant AppBar oldWidget) {
     super.didUpdateWidget(oldWidget);
 
+    // Updates a behavior of the position when an appbar-behavior changes.
     if (oldWidget.behavior != widget.behavior) {
       _position.behavior = widget.behavior;
     }

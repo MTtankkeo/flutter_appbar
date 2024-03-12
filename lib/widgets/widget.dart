@@ -92,7 +92,7 @@ class AppBarConnectionState extends State<AppBarConnection> {
               child: Column(children: widget.appBars)
             ),
 
-            // with scrollable.
+            // With scrollable.
             Expanded(
               child: PrimaryScrollController(
                 controller: _scrollController,

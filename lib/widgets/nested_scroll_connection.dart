@@ -19,7 +19,7 @@ class NestedScrollConnection extends StatefulWidget {
   final NestedScrollConsume? onPreScroll;
   final NestedScrollConsume? onPostScroll;
   final NestedScrollFlingConsume? onFling;
-  final NestedScrollConsume? onBouncing;
+  final NestedScrollConsume? onBouncing; 
   final Widget child;
   
   /// Finds the ancestor [NestedScrollConnectionState] from the closest instance of this class

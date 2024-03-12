@@ -30,7 +30,7 @@ abstract class AppBarBehavior {
   /// Updates the given appbar based on available scroll offset,
   /// the current appbar position, and the scroll position.
   /// 
-  /// And, retursn the value remaining after consumption.
+  /// And, returns the value remaining after consumption.
   double setPixels(
     double available,
     AppBarPosition appBar,
@@ -42,6 +42,8 @@ abstract class AppBarBehavior {
 }
 
 class AbsoluteAppBarBehavior extends AppBarBehavior {
+  const AbsoluteAppBarBehavior();
+
   @override
   AppBarAlignBehavior? align(AppBarPosition appBar, ScrollPosition scroll) => null;
 

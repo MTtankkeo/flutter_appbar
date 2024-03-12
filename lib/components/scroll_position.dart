@@ -16,6 +16,12 @@ class NestedScrollEndNotification extends ScrollNotification {
 /// Facilitate the implementation of appbar behavior through interaction
 /// with [NestedScrollConnection].
 /// 
+/// By default, if scroll offset consumed all by appbar,
+/// must be maintain the `non-clamping` or `non-bouncing` scrolling behavior.
+/// 
+/// - This implies that ballistic scroll-activity should be performed
+///   without considering the min-extent and max-extent of the scroll.)
+/// 
 /// Used by [NestedScrollController].
 class NestedScrollPosition extends ScrollPositionWithSingleContext {
   NestedScrollPosition({
@@ -26,6 +32,8 @@ class NestedScrollPosition extends ScrollPositionWithSingleContext {
     super.keepScrollOffset,
     super.oldPosition,
   });
+
+  bool get isBallisticScrolling => activity is BallisticScrollActivity;
 
   /// If this value is true, will perform a non-clamping or non-bouncing scrolling.
   bool isNestedScrolling = false;
@@ -128,7 +136,7 @@ class NestedScrollPosition extends ScrollPositionWithSingleContext {
 
   @override
   void goBallistic(double velocity) {
-    // += consumed by nested scroll.
+    // A velocity is consumed by nested scroll.
     velocity = _fling(velocity);
 
     assert(hasPixels);
