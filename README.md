@@ -11,7 +11,7 @@
     </table>
 </div>
 
-This package implements the flexible appbar behavior, And we pursue higher performance and responsiveness than the app bar generally provided by Flutter.
+This package implements the flexible appbar behavior, And we pursue higher performance and responsiveness than the appbar generally provided by Flutter.
 
 > [!WARNING]
 > See Also, This package is still under development...
