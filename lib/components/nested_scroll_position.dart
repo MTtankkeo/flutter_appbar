@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_appbar/components/scroll_controller.dart';
+import 'package:flutter_appbar/components/nested_scroll_controller.dart';
 import 'package:flutter_appbar/widgets/nested_scroll_connection.dart';
 
 class NestedScrollEndNotification extends ScrollNotification {

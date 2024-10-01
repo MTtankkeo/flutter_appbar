@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_appbar/components/behavior.dart';
+import 'package:flutter_appbar/components/appbar_behavior.dart';
 
 class AppBarPosition extends Listenable {
   AppBarPosition({

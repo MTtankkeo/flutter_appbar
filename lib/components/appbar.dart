@@ -1,7 +1,5 @@
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_appbar/components/behavior.dart';
-import 'package:flutter_appbar/components/position.dart';
 import 'package:flutter_appbar/flutter_appbar.dart';
 
 /// Signature for a function that creates a widget for a appbar.

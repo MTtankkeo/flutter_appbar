@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_appbar/components/position.dart';
+import 'package:flutter_appbar/components/appbar_position.dart';
 
 enum AppbarPropagation {
   stop,

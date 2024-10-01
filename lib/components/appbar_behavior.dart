@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_appbar/components/position.dart';
-import 'package:flutter_appbar/components/scroll_position.dart';
+import 'package:flutter_appbar/components/appbar_position.dart';
+import 'package:flutter_appbar/components/nested_scroll_position.dart';
 
 /// Representing different alignment options for the appbar.
 enum AppBarAlign {

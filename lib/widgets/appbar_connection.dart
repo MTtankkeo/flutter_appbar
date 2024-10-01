@@ -1,9 +1,9 @@
 import 'package:flutter/widgets.dart';
-import 'package:flutter_appbar/components/controller.dart';
-import 'package:flutter_appbar/components/position.dart';
-import 'package:flutter_appbar/components/scroll_controller.dart';
-import 'package:flutter_appbar/components/scroll_position.dart';
-import 'package:flutter_appbar/widgets/appbar.dart';
+import 'package:flutter_appbar/components/appbar_controller.dart';
+import 'package:flutter_appbar/components/appbar_position.dart';
+import 'package:flutter_appbar/components/nested_scroll_controller.dart';
+import 'package:flutter_appbar/components/nested_scroll_position.dart';
+import 'package:flutter_appbar/components/appbar.dart';
 import 'package:flutter_appbar/widgets/nested_scroll_connection.dart';
 import 'package:flutter_appbar/widgets/scrollable_gesture_delegator.dart';
 

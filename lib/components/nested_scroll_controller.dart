@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_appbar/components/scroll_position.dart';
+import 'package:flutter_appbar/components/nested_scroll_position.dart';
 
 class NestedScrollController extends ScrollController {
   NestedScrollController({

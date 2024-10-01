@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_appbar/components/scroll_position.dart';
+import 'package:flutter_appbar/components/nested_scroll_position.dart';
 
 typedef NestedScrollConsume = double Function(double available, ScrollPosition position);
 typedef NestedScrollFlingConsume = double Function(double velocity, ScrollPosition position);
