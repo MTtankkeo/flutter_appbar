@@ -78,7 +78,7 @@ class NestedScrollPosition extends ScrollPositionWithSingleContext {
     super.didOverscrollBy(value);
 
     // If not all are consumed, the non-clamping scrolling cannot be performed.
-    if (isNestedScrolling && activity is BallisticScrollActivity) {
+    if (isNestedScrolling && isBallisticScrolling) {
       isNestedScrolling = false;
 
       // Begin clamping ballistic scrolling.
@@ -90,7 +90,27 @@ class NestedScrollPosition extends ScrollPositionWithSingleContext {
     if (newPixels != pixels) {
       double overscroll = applyBoundaryConditions(newPixels);
       double oldPixels = pixels;
-      correctPixels(newPixels - overscroll);
+      double rawPixels = newPixels - overscroll;
+
+      // When is bouncing overscrolled.
+      if (rawPixels > maxScrollExtent || rawPixels < minScrollExtent) {
+        overscrollPixels += rawPixels > maxScrollExtent
+            ? rawPixels - maxScrollExtent
+            : rawPixels < minScrollExtent
+            ? rawPixels - minScrollExtent
+            : 0.0;
+
+        rawPixels = rawPixels.clamp(minScrollExtent, maxScrollExtent);
+
+        if (isNestedScrolling && isBallisticScrolling) {
+          isNestedScrolling = false;
+
+          // Begin clamping ballistic scrolling.
+          Future.microtask(() => goBallistic(activity?.velocity ?? 0.0));
+        }
+      }
+
+      correctPixels(rawPixels);
       if (pixels != oldPixels) {
         notifyListeners();
         didUpdateScrollPositionBy(pixels - oldPixels);

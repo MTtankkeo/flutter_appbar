@@ -1,3 +1,5 @@
+import 'dart:nativewrappers/_internal/vm/lib/ffi_allocation_patch.dart';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_appbar/components/appbar_position.dart';
@@ -7,8 +9,26 @@ enum AppbarPropagation {
   next,
 }
 
-class AppBarController {
+class AppBarController extends Listenable {
+  /// The values defines the instance of [AppBarPosition].
   final _positions = <AppBarPosition>[];
+
+  /// The listeners called when a state of this controller changed.
+  final _listeners = ObserverList<VoidCallback>();
+
+  /// The value defines the instance of [EdgeInsets] for the appbar padding.
+  EdgeInsets _padding = const EdgeInsets.all(0.0);
+
+  /// Returns the instance of [EdgeInsets] for the appbar padding.
+  EdgeInsets get padding {
+    return _padding;
+  }
+
+  /// Defines the appbar padding as a given [insets].
+  set padding(EdgeInsets insets) {
+    _padding = insets;
+    notifyListeners();
+  }
 
   attach(AppBarPosition position) {
     assert(!_positions.contains(position), "Already attached in this controller.");
@@ -45,7 +65,7 @@ class AppBarController {
       // If when a current available not consumed by a appbar.
       if ((consumed - previousConsumed).abs() > precisionErrorTolerance) {
         if (propagation == AppbarPropagation.stop) break;
-        if (propagation == AppbarPropagation.next) continue; // for legibility.
+        if (propagation == AppbarPropagation.next) continue;
       }
     }
 
@@ -58,5 +78,23 @@ class AppBarController {
 
   void alignAll(ScrollPosition position) {
     for (final it in _positions) { it.align(position); }
+  }
+  
+  @override
+  void addListener(VoidCallback listener) {
+    assert(!_listeners.contains(listener), "Already exists a given listener.");
+    _listeners.add(listener);
+  }
+  
+  @override
+  void removeListener(VoidCallback listener) {
+    assert(_listeners.contains(listener), "Already not exists a given listener");
+    _listeners.remove(listener);
+  }
+
+  notifyListeners() {
+    for (final listener in _listeners) {
+      listener.call();
+    }
   }
 }
