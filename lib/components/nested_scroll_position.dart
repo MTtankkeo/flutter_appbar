@@ -1,7 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_appbar/components/nested_scroll_controller.dart';
-import 'package:flutter_appbar/widgets/nested_scroll_connection.dart';
+import 'package:flutter_appbar/flutter_appbar.dart';
 
 class NestedScrollEndNotification extends ScrollNotification {
   NestedScrollEndNotification({
@@ -34,6 +33,9 @@ class NestedScrollPosition extends ScrollPositionWithSingleContext {
   });
 
   bool get isBallisticScrolling => activity is BallisticScrollActivity;
+
+  /// Returns whether it is not currently bouncing overscrolling.
+  bool get isBouncing => overscrollPixels.abs() > precisionErrorTolerance;
 
   /// Whether this scroll position are currently overscrolling. FYI,
   /// If this value is true, will perform a non-clamping or
@@ -93,14 +95,14 @@ class NestedScrollPosition extends ScrollPositionWithSingleContext {
       double rawPixels = newPixels - overscroll;
 
       // When is bouncing overscrolled.
-      if (rawPixels > maxScrollExtent || rawPixels < minScrollExtent) {
+      if (rawPixels >= maxScrollExtent || rawPixels <= minScrollExtent) {
         overscrollPixels += rawPixels > maxScrollExtent
-            ? rawPixels - maxScrollExtent
-            : rawPixels < minScrollExtent
-            ? rawPixels - minScrollExtent
-            : 0.0;
+          ? rawPixels - maxScrollExtent
+          : rawPixels < minScrollExtent
+          ? rawPixels - minScrollExtent
+          : 0.0;
 
-        rawPixels = rawPixels.clamp(minScrollExtent, maxScrollExtent);
+        // rawPixels -= overscrollPixels;
 
         if (isNestedScrolling && isBallisticScrolling) {
           isNestedScrolling = false;
@@ -166,7 +168,7 @@ class NestedScrollPosition extends ScrollPositionWithSingleContext {
     );
 
     if (simulation != null) {
-      beginActivity(BallisticScrollActivity(
+      beginActivity(BallisticNestedScrollActivity(
         this,
         simulation,
         context.vsync,

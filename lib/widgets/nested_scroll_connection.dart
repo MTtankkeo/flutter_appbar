@@ -1,8 +1,8 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
-typedef NestedScrollConsume = double Function(double available, ScrollPosition position);
-typedef NestedScrollFlingConsume = double Function(double velocity, ScrollPosition position);
+typedef NestedScrollListener = double Function(double available, ScrollPosition position);
+typedef NestedScrollFlingListener = double Function(double velocity, ScrollPosition position);
 
 /// Used by [NestedScrollConnection].
 class NestedScrollConnection extends StatefulWidget {
@@ -11,14 +11,16 @@ class NestedScrollConnection extends StatefulWidget {
     this.onPreScroll,
     this.onPostScroll,
     this.onFling,
+    this.onBouncing,
     required this.child,
   });
 
-  final NestedScrollConsume? onPreScroll;
-  final NestedScrollConsume? onPostScroll;
-  final NestedScrollFlingConsume? onFling;
+  final NestedScrollListener? onPreScroll;
+  final NestedScrollListener? onPostScroll;
+  final NestedScrollFlingListener? onFling;
+  final NestedScrollListener? onBouncing;
   final Widget child;
-  
+
   /// Finds the ancestor [NestedScrollConnectionState] from the closest instance of this class
   /// that encloses the given context.
   static NestedScrollConnectionState? of(BuildContext context) {
@@ -39,7 +41,7 @@ class NestedScrollConnectionState extends State<NestedScrollConnection> {
     // The given scroll offset has all been consumed.
     return consumed;
   }
-  
+
   double postScroll(double available, ScrollPosition position) {
     final consumed = widget.onPostScroll?.call(available, position) ?? 0.0;
     if ((consumed - available).abs() > precisionErrorTolerance) {
@@ -57,6 +59,16 @@ class NestedScrollConnectionState extends State<NestedScrollConnection> {
     }
 
     // The given scroll fling velocity has all been consumed.
+    return consumed;
+  }
+
+  double overscroll(double available, ScrollPosition position) {
+    final consumed = widget.onBouncing?.call(available, position) ?? 0.0;
+    if ((consumed - available).abs() > precisionErrorTolerance) {
+      return NestedScrollConnection.of(context)?.overscroll(available - consumed, position) ?? 0.0;
+    }
+    
+    // The given scroll offset has all been consumed.
     return consumed;
   }
 
