@@ -35,7 +35,7 @@ class NestedScrollPosition extends ScrollPositionWithSingleContext {
   bool get isBallisticScrolling => activity is BallisticScrollActivity;
 
   /// Returns whether it is not currently bouncing overscrolling.
-  bool get isBouncing => overscrollPixels.abs() > precisionErrorTolerance;
+  bool get isBouncing => lentPixels.abs() > precisionErrorTolerance;
 
   /// Whether this scroll position are currently overscrolling. FYI,
   /// If this value is true, will perform a non-clamping or
@@ -44,7 +44,7 @@ class NestedScrollPosition extends ScrollPositionWithSingleContext {
 
   /// The total overscrolled pixels in the non-clamping-based scroll behavior
   /// like [BouncingScrollPhysics]. (e.g. IOS and MAC)
-  double overscrollPixels = 0;
+  double lentPixels = 0;
 
   /// Called before the new scroll pixels is consumed in this scroll position.
   double _preScroll(double available) {
@@ -75,6 +75,11 @@ class NestedScrollPosition extends ScrollPositionWithSingleContext {
     return velocity;
   }
 
+  double overscroll(double newPixels) {
+    print(newPixels);
+    return 0.0;
+  }
+
   @override
   void didOverscrollBy(double value) {
     super.didOverscrollBy(value);
@@ -96,14 +101,6 @@ class NestedScrollPosition extends ScrollPositionWithSingleContext {
 
       // When is bouncing overscrolled.
       if (rawPixels >= maxScrollExtent || rawPixels <= minScrollExtent) {
-        overscrollPixels += rawPixels > maxScrollExtent
-          ? rawPixels - maxScrollExtent
-          : rawPixels < minScrollExtent
-          ? rawPixels - minScrollExtent
-          : 0.0;
-
-        // rawPixels -= overscrollPixels;
-
         if (isNestedScrolling && isBallisticScrolling) {
           isNestedScrolling = false;
 
@@ -135,6 +132,12 @@ class NestedScrollPosition extends ScrollPositionWithSingleContext {
 
   @override
   double setPixels(double newPixels) {
+    final overscrolled = applyBoundaryConditions(newPixels + lentPixels);
+    if (overscrolled == 0) {
+      if (minScrollExtent > newPixels) newPixels - minScrollExtent;
+      if (maxScrollExtent < newPixels) newPixels - maxScrollExtent;
+    }
+
     final double available = pixels - newPixels;
     final double consumed = _preScroll(available);
 

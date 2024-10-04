@@ -1,4 +1,5 @@
 import 'package:flutter/widgets.dart';
+import 'package:flutter_appbar/components/nested_scroll_position.dart';
 
 class BallisticNestedScrollActivity extends BallisticScrollActivity {
   BallisticNestedScrollActivity(
@@ -8,7 +9,7 @@ class BallisticNestedScrollActivity extends BallisticScrollActivity {
     super.shouldIgnorePointer
   );
 
-  ScrollPosition get position => delegate as ScrollPosition;
+  NestedScrollPosition get position => delegate as NestedScrollPosition;
 
   double? newPixels;
   double? oldPixels;
@@ -21,6 +22,13 @@ class BallisticNestedScrollActivity extends BallisticScrollActivity {
 
     Future.microtask(() => oldPixels = newPixels);
 
-    return super.applyMoveTo(position.pixels + delta);
+    // The value of pixels for the new scroll offset.
+    final pixels = position.pixels + delta;
+
+    return super.applyMoveTo(pixels);
+  }
+
+  double applyOverscrollTo(double value) {
+    return value;
   }
 }
