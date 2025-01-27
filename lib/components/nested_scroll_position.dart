@@ -184,8 +184,6 @@ class NestedScrollPosition extends ScrollPositionWithSingleContext {
     // A velocity is consumed by nested scroll.
     velocity = _fling(velocity);
 
-    print(isNestedScrolling);
-
     assert(hasPixels);
     final Simulation? simulation = physics.createBallisticSimulation(
       // If it's true, must begin non-clamping scrolling.
