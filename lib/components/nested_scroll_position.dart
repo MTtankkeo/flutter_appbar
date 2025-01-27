@@ -77,10 +77,7 @@ class NestedScrollPosition extends ScrollPositionWithSingleContext {
     return velocity;
   }
 
-  @override
-  void didOverscrollBy(double value) {
-    super.didOverscrollBy(value);
-
+  void didOverscroll() {
     // If not all are consumed, the non-clamping scrolling cannot be performed.
     if (isNestedScrolling && isBallisticScrolling) {
       isNestedScrolling = false;
@@ -88,6 +85,14 @@ class NestedScrollPosition extends ScrollPositionWithSingleContext {
       // Begin clamping ballistic scrolling.
       Future.microtask(() => goBallistic(activity?.velocity ?? 0.0));
     }
+  }
+
+  @override
+  void didOverscrollBy(double value) {
+    super.didOverscrollBy(value);
+
+    // Called because it was overscrolled.
+    didOverscroll();
   }
 
   double overscrollOf(double value, double minScrollExtent, double maxScrollExtent) {
@@ -105,28 +110,36 @@ class NestedScrollPosition extends ScrollPositionWithSingleContext {
       double clipedOverscroll = applyBoundaryConditions(newPixels);
       double systemOverscroll = overscrollOf(newPixels, minScrollExtent, maxScrollExtent);
       double oldPixels = pixels;
-      double rawPixels = newPixels - clipedOverscroll;
+      double rawPixels = newPixels - systemOverscroll;
       double overDelta = systemOverscroll - clipedOverscroll;
+      final isBouncing = overDelta.abs() > precisionErrorTolerance;
 
       // print("system: $systemOverscroll, clipped: $clipedOverscroll, delta: $overDelta");
 
       correctPixels(rawPixels);
-      if (pixels != oldPixels) {
-        notifyListeners();
-        didUpdateScrollPositionBy(pixels - oldPixels);
-      }
 
-      final double consumed = clipedOverscroll != 0.0
-        ? _postScroll(-clipedOverscroll)
+      final double consumed = (isBouncing ? overDelta != 0.0 : clipedOverscroll != 0.0)
+        ? _postScroll(isBouncing ? -overDelta : -clipedOverscroll)
         : 0.0;
 
       clipedOverscroll += consumed;
 
-      if (overDelta.abs() < precisionErrorTolerance
-       && clipedOverscroll.abs() > precisionErrorTolerance) {
-        print("더 이상 오버스크롤을 허용하지 않도록 처리 됨");
-        didOverscrollBy(clipedOverscroll);
-        return clipedOverscroll;
+      if (overDelta.abs() < precisionErrorTolerance) {
+        if (clipedOverscroll.abs() > precisionErrorTolerance) {
+          didOverscrollBy(clipedOverscroll);
+          return overDelta;
+        }
+      } else {
+        final double finalDelta = overDelta + consumed;
+        if (finalDelta.abs() > precisionErrorTolerance) {
+          correctBy(finalDelta);
+          didOverscroll();
+        }
+      }
+
+      if (pixels != oldPixels) {
+        notifyListeners();
+        didUpdateScrollPositionBy(pixels - oldPixels);
       }
     }
 
@@ -138,17 +151,14 @@ class NestedScrollPosition extends ScrollPositionWithSingleContext {
     final bool isOldOverscrolled = pixels < minScrollExtent || pixels > maxScrollExtent;
     final bool isNewOverscrolled = newPixels < minScrollExtent || newPixels > maxScrollExtent;
 
+    // Handling the case where previously in an overscrolled state,
+    // but now the overscroll has resolved.
     if (isOldOverscrolled && !isNewOverscrolled) {
-      // 이전에 오버스크롤 상태였으나, 이제 오버스크롤이 풀렸을 때 처리
-      print("오버스크롤 풀림: $newPixels");
-    } else if (!isOldOverscrolled && isNewOverscrolled) {
-      // 새로운 오버스크롤 상태에 진입했을 때 처리
-      // print("오버스크롤 상태: $newPixels");
-
-      return setPostPixels(newPixels);
-    } else if (isNewOverscrolled) {
-      // 그 외의 경우 처리 (오버스크롤 상태 유지 또는 오버스크롤과 무관한 상태)
-      return super.setPixels(newPixels);
+      if (pixels < minScrollExtent) {
+        correctPixels(minScrollExtent);
+      } else {
+        correctPixels(maxScrollExtent);
+      }
     }
 
     final double available = pixels - newPixels;
@@ -173,6 +183,8 @@ class NestedScrollPosition extends ScrollPositionWithSingleContext {
   void goBallistic(double velocity) {
     // A velocity is consumed by nested scroll.
     velocity = _fling(velocity);
+
+    print(isNestedScrolling);
 
     assert(hasPixels);
     final Simulation? simulation = physics.createBallisticSimulation(
