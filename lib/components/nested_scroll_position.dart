@@ -46,6 +46,8 @@ class NestedScrollPosition extends ScrollPositionWithSingleContext {
   /// like [BouncingScrollPhysics]. (e.g. IOS and MAC)
   double lentPixels = 0;
 
+  late bool isPreviousBouncing = false;
+
   /// Called before the new scroll pixels is consumed in this scroll position.
   double _preScroll(double available) {
     final targetContext = context.notificationContext;
@@ -75,11 +77,6 @@ class NestedScrollPosition extends ScrollPositionWithSingleContext {
     return velocity;
   }
 
-  double overscroll(double newPixels) {
-    print(newPixels);
-    return 0.0;
-  }
-
   @override
   void didOverscrollBy(double value) {
     super.didOverscrollBy(value);
@@ -93,21 +90,25 @@ class NestedScrollPosition extends ScrollPositionWithSingleContext {
     }
   }
 
+  double overscrollOf(double value, double minScrollExtent, double maxScrollExtent) {
+    if (value > maxScrollExtent) {
+      return value - maxScrollExtent;
+    } else if (value < minScrollExtent) {
+      return value - minScrollExtent;
+    }
+
+    return 0.0; // No overscroll
+  }
+
   double setPostPixels(double newPixels) {
     if (newPixels != pixels) {
-      double overscroll = applyBoundaryConditions(newPixels);
+      double clipedOverscroll = applyBoundaryConditions(newPixels);
+      double systemOverscroll = overscrollOf(newPixels, minScrollExtent, maxScrollExtent);
       double oldPixels = pixels;
-      double rawPixels = newPixels - overscroll;
+      double rawPixels = newPixels - clipedOverscroll;
+      double overDelta = systemOverscroll - clipedOverscroll;
 
-      // When is bouncing overscrolled.
-      if (rawPixels >= maxScrollExtent || rawPixels <= minScrollExtent) {
-        if (isNestedScrolling && isBallisticScrolling) {
-          isNestedScrolling = false;
-
-          // Begin clamping ballistic scrolling.
-          Future.microtask(() => goBallistic(activity?.velocity ?? 0.0));
-        }
-      }
+      // print("system: $systemOverscroll, clipped: $clipedOverscroll, delta: $overDelta");
 
       correctPixels(rawPixels);
       if (pixels != oldPixels) {
@@ -115,15 +116,17 @@ class NestedScrollPosition extends ScrollPositionWithSingleContext {
         didUpdateScrollPositionBy(pixels - oldPixels);
       }
 
-      final double consumed = overscroll != 0.0
-        ? _postScroll(-overscroll)
+      final double consumed = clipedOverscroll != 0.0
+        ? _postScroll(-clipedOverscroll)
         : 0.0;
 
-      overscroll += consumed;
+      clipedOverscroll += consumed;
 
-      if (overscroll.abs() > precisionErrorTolerance) {
-        didOverscrollBy(overscroll);
-        return overscroll;
+      if (overDelta.abs() < precisionErrorTolerance
+       && clipedOverscroll.abs() > precisionErrorTolerance) {
+        print("더 이상 오버스크롤을 허용하지 않도록 처리 됨");
+        didOverscrollBy(clipedOverscroll);
+        return clipedOverscroll;
       }
     }
 
@@ -132,10 +135,20 @@ class NestedScrollPosition extends ScrollPositionWithSingleContext {
 
   @override
   double setPixels(double newPixels) {
-    final overscrolled = applyBoundaryConditions(newPixels + lentPixels);
-    if (overscrolled == 0) {
-      if (minScrollExtent > newPixels) newPixels - minScrollExtent;
-      if (maxScrollExtent < newPixels) newPixels - maxScrollExtent;
+    final bool isOldOverscrolled = pixels < minScrollExtent || pixels > maxScrollExtent;
+    final bool isNewOverscrolled = newPixels < minScrollExtent || newPixels > maxScrollExtent;
+
+    if (isOldOverscrolled && !isNewOverscrolled) {
+      // 이전에 오버스크롤 상태였으나, 이제 오버스크롤이 풀렸을 때 처리
+      print("오버스크롤 풀림: $newPixels");
+    } else if (!isOldOverscrolled && isNewOverscrolled) {
+      // 새로운 오버스크롤 상태에 진입했을 때 처리
+      // print("오버스크롤 상태: $newPixels");
+
+      return setPostPixels(newPixels);
+    } else if (isNewOverscrolled) {
+      // 그 외의 경우 처리 (오버스크롤 상태 유지 또는 오버스크롤과 무관한 상태)
+      return super.setPixels(newPixels);
     }
 
     final double available = pixels - newPixels;

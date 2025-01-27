@@ -60,6 +60,7 @@ class MaterialAppBarBehavior extends AppBarBehavior {
     this.floating = false,
     this.dragOnlyExpanding = false,
     this.alwaysScrolling = true,
+    this.alignAnimation = false,
     this.alignDuration = const Duration(milliseconds: 300),
     this.alignCurve = Curves.ease,
   });
@@ -77,6 +78,8 @@ class MaterialAppBarBehavior extends AppBarBehavior {
   /// Whether the appbar can be scroll even when the [Scrollable] is no scroll possible.
   final bool alwaysScrolling;
 
+  final bool alignAnimation;
+
   final Duration alignDuration;
 
   final Curve alignCurve;
@@ -93,15 +96,13 @@ class MaterialAppBarBehavior extends AppBarBehavior {
 
     if (!floating) {
       final bool isDragging = !(scroll as NestedScrollPosition).isBallisticScrolling;
-      
-      if (scroll.pixels > 0) {
+
+      if (scroll.pixels > 0) return 0;
+
+      if (dragOnlyExpanding
+       && isDragging == false
+       && appBar.shrinkedPercent == 1) {
         return 0;
-      } else {
-        if (dragOnlyExpanding
-         && isDragging == false
-         && appBar.shrinkedPercent == 1) {
-          return 0;
-        }
       }
     }
 
@@ -114,8 +115,12 @@ class MaterialAppBarBehavior extends AppBarBehavior {
 
   @override
   AppBarAlignBehavior? align(AppBarPosition appBar, ScrollPosition scroll) {
-    return appBar.expandedPercent < 0.5
-      ? createAlignBehavior(AppBarAlign.expand)
-      : createAlignBehavior(AppBarAlign.shrink);
+    if (alignAnimation) {
+      return appBar.expandedPercent < 0.5
+        ? createAlignBehavior(AppBarAlign.expand)
+        : createAlignBehavior(AppBarAlign.shrink);
+    }
+
+    return null;
   }
 }
