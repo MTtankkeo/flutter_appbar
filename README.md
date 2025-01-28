@@ -25,6 +25,8 @@ The following explains the basic usage of this package.
 ### How to apply the appbar?
 To simply apply an app bar to your application, you can use the `AppBarConnection` and the `AppBar` widgets like this.
 
+> See Also, if you define a separate ScrollController to control the Scrollable widget, you must explicitly pass that ScrollController instance to the scrollController property of AppBarConnection.
+
 ```dart
 AppBarConnection(
   appBars: [
