@@ -10,7 +10,7 @@ class AppBarPosition extends Listenable {
   }) {
     _pixelsNotifier = ValueNotifier<double>(0);
   }
-  
+
   late TickerProvider vsync;
   late AppBarBehavior behavior;
 
@@ -60,7 +60,7 @@ class AppBarPosition extends Listenable {
       _animation!.addListener(() {
         final vector = end - start;
         final newPixels = start + (vector * alignBehavior.curve.transform(_animation!.value));
-        
+
         setPixels(newPixels);
       });
       _animation!.forward();

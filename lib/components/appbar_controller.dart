@@ -77,13 +77,13 @@ class AppBarController extends Listenable {
   void alignAll(ScrollPosition position) {
     for (final it in _positions) { it.align(position); }
   }
-  
+
   @override
   void addListener(VoidCallback listener) {
     assert(!_listeners.contains(listener), "Already exists a given listener.");
     _listeners.add(listener);
   }
-  
+
   @override
   void removeListener(VoidCallback listener) {
     assert(_listeners.contains(listener), "Already not exists a given listener");

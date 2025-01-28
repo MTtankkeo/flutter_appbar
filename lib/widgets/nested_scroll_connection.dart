@@ -47,7 +47,7 @@ class NestedScrollConnectionState extends State<NestedScrollConnection> {
     if ((consumed - available).abs() > precisionErrorTolerance) {
       return NestedScrollConnection.of(context)?.postScroll(available - consumed, position) ?? 0.0;
     }
-    
+
     // The given scroll offset has all been consumed.
     return consumed;
   }
@@ -67,7 +67,7 @@ class NestedScrollConnectionState extends State<NestedScrollConnection> {
     if ((consumed - available).abs() > precisionErrorTolerance) {
       return NestedScrollConnection.of(context)?.overscroll(available - consumed, position) ?? 0.0;
     }
-    
+
     // The given scroll offset has all been consumed.
     return consumed;
   }
