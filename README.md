@@ -11,7 +11,39 @@
     </table>
 </div>
 
+# Introduction
 This package implements the flexible appbar behavior, And we pursue higher performance and responsiveness than the appbar generally provided by Flutter.
 
-> [!WARNING]
-> See Also, This package is still under development...
+## Preview
+The gif image below may appear distorted and choppy due to compression.
+
+
+## Usage
+The following explains the basic usage of this package.
+
+### How to apply the appbar?
+To simply apply an app bar to your application, you can use the `AppBarConnection` and the `AppBar` widgets like this.
+
+```dart
+AppBarConnection(
+  appBars: [
+    AppBar(
+      behavior: MaterialAppBarBehavior(),
+      body: Container(
+        width: 1e10,
+        height: 300,
+        color: Colors.red,
+        alignment: Alignment.center,
+        child: Text("Header", style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold)),
+      ),
+    )
+  ],
+  child: ListView.builder(
+    physics: BouncingScrollPhysics(),
+    itemCount: 100,
+    itemBuilder: (context, index) {
+      return Text("Hello, World! $index");
+    },
+  ),
+)
+```
