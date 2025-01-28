@@ -17,6 +17,7 @@ This package implements the flexible appbar behavior, And we pursue higher perfo
 ## Preview
 The gif image below may appear distorted and choppy due to compression.
 
+![preview](https://github.com/user-attachments/assets/9b077c66-83c3-4374-b217-f37dbe644d01)
 
 ## Usage
 The following explains the basic usage of this package.
