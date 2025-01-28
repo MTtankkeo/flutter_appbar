@@ -60,7 +60,7 @@ class MaterialAppBarBehavior extends AppBarBehavior {
     this.floating = false,
     this.dragOnlyExpanding = false,
     this.alwaysScrolling = true,
-    this.alignAnimation = false,
+    this.alignAnimation = true,
     this.alignDuration = const Duration(milliseconds: 300),
     this.alignCurve = Curves.ease,
   });

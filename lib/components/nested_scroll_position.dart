@@ -119,6 +119,14 @@ class NestedScrollPosition extends ScrollPositionWithSingleContext {
       double overDelta = systemOverscroll - clipedOverscroll;
       final isBouncing = overDelta.abs() > precisionErrorTolerance;
 
+      // Notifies that the scroll offset has changed.
+      void onNotify() {
+        if (pixels != oldPixels) {
+          notifyListeners();
+          didUpdateScrollPositionBy(pixels - oldPixels);
+        }
+      }
+
       // First, apply clipped a given new pixels.
       correctPixels(rawPixels);
 
@@ -131,6 +139,7 @@ class NestedScrollPosition extends ScrollPositionWithSingleContext {
       if (overDelta.abs() < precisionErrorTolerance) {
         if (clipedOverscroll.abs() > precisionErrorTolerance) {
           didOverscrollBy(clipedOverscroll);
+          onNotify();
           return overDelta;
         }
       } else {
@@ -141,10 +150,7 @@ class NestedScrollPosition extends ScrollPositionWithSingleContext {
         }
       }
 
-      if (pixels != oldPixels) {
-        notifyListeners();
-        didUpdateScrollPositionBy(pixels - oldPixels);
-      }
+      onNotify();
     }
 
     return 0.0;
@@ -168,7 +174,7 @@ class NestedScrollPosition extends ScrollPositionWithSingleContext {
         correctPixels(super.maxScrollExtent);
       }
     } else if (isOldOverscrolledForward && isNewOverscrolledBackward) {
-      
+
       // Transition from forward overscroll to backward overscroll.
       correctPixels(super.maxScrollExtent);
     } else if (isOldOverscrolledBackward && isNewOverscrolledForward) {
