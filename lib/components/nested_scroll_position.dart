@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_appbar/flutter_appbar.dart';
@@ -45,6 +47,9 @@ class NestedScrollPosition extends ScrollPositionWithSingleContext {
   /// The total overscrolled pixels in the non-clamping-based scroll behavior
   /// like [BouncingScrollPhysics]. (e.g. IOS and MAC)
   double lentPixels = 0;
+
+  @override
+  double get maxScrollExtent => max(precisionErrorTolerance, super.maxScrollExtent);
 
   late bool isPreviousBouncing = false;
 
@@ -114,8 +119,7 @@ class NestedScrollPosition extends ScrollPositionWithSingleContext {
       double overDelta = systemOverscroll - clipedOverscroll;
       final isBouncing = overDelta.abs() > precisionErrorTolerance;
 
-      // print("system: $systemOverscroll, clipped: $clipedOverscroll, delta: $overDelta");
-
+      // First, apply clipped a given new pixels.
       correctPixels(rawPixels);
 
       final double consumed = (isBouncing ? overDelta != 0.0 : clipedOverscroll != 0.0)
@@ -148,17 +152,29 @@ class NestedScrollPosition extends ScrollPositionWithSingleContext {
 
   @override
   double setPixels(double newPixels) {
-    final bool isOldOverscrolled = pixels < minScrollExtent || pixels > maxScrollExtent;
-    final bool isNewOverscrolled = newPixels < minScrollExtent || newPixels > maxScrollExtent;
+    final bool isOldOverscrolledForward = pixels < super.minScrollExtent;
+    final bool isOldOverscrolledBackward = pixels > super.maxScrollExtent;
+    final bool isNewOverscrolledForward = newPixels < super.minScrollExtent;
+    final bool isNewOverscrolledBackward = newPixels > super.maxScrollExtent;
+    final bool isOldOverscrolled = isOldOverscrolledForward || isOldOverscrolledBackward;
+    final bool isNewOverscrolled = isNewOverscrolledForward || isNewOverscrolledBackward;
 
     // Handling the case where previously in an overscrolled state,
     // but now the overscroll has resolved.
     if (isOldOverscrolled && !isNewOverscrolled) {
       if (pixels < minScrollExtent) {
-        correctPixels(minScrollExtent);
+        correctPixels(super.minScrollExtent);
       } else {
-        correctPixels(maxScrollExtent);
+        correctPixels(super.maxScrollExtent);
       }
+    } else if (isOldOverscrolledForward && isNewOverscrolledBackward) {
+      
+      // Transition from forward overscroll to backward overscroll.
+      correctPixels(super.maxScrollExtent);
+    } else if (isOldOverscrolledBackward && isNewOverscrolledForward) {
+
+      // Transition from backward overscroll to forward overscroll.
+      correctPixels(super.minScrollExtent);
     }
 
     final double available = pixels - newPixels;
