@@ -42,7 +42,6 @@ AppBarConnection(
     )
   ],
   child: ListView.builder(
-    physics: BouncingScrollPhysics(),
     itemCount: 100,
     itemBuilder: (context, index) {
       return Text("Hello, World! $index");
