@@ -1,5 +1,5 @@
 # Introduction
-This package implements the flexible appbar behavior, And we pursue higher performance and responsiveness than the appbar generally provided by Flutter.
+This package implements the flexible app bar behavior, and we pursue higher performance and responsiveness than the app bar generally provided by Flutter. In addition, this package avoids unnecessary gesture contention, ensuring responsiveness in most typical situations.
 
 ## Preview
 The GIF below demonstrates the package in action. Please note that due to compression, the animation may appear distorted or choppy.
