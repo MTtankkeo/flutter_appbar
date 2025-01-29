@@ -47,7 +47,7 @@ class AppBarPosition extends Listenable {
     final alignBehavior = behavior.align(this, scroll);
     if (alignBehavior != null) {
       final start = pixels;
-      final end   = alignBehavior.target == AppBarAlign.expand ? maxExtent : minExtent;
+      final end   = alignBehavior.target == AppBarAlignmentCommand.expand ? maxExtent : minExtent;
 
       /// If the target pixels and the current pixels are the same,
       /// a appbar is no need to align.

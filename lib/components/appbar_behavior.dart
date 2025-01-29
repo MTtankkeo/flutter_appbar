@@ -4,26 +4,27 @@ import 'package:flutter_appbar/components/appbar_position.dart';
 import 'package:flutter_appbar/components/nested_scroll_position.dart';
 
 /// Representing different alignment options for the appbar.
-enum AppBarAlign {
+enum AppBarAlignmentCommand {
   /// Align to expanded state.
   expand,
   /// Align to shrunk state.
   shrink,
 }
 
-class AppBarAlignBehavior {
-  const AppBarAlignBehavior({
+class AppBarAlignmentBehavior {
+  const AppBarAlignmentBehavior({
     required this.target,
     required this.duration,
     required this.curve,
   });
 
-  final AppBarAlign target;
+  final AppBarAlignmentCommand target;
   final Duration duration;
   final Curve curve;
 }
 
-/// Abstract class defining the behavior of the appbar.
+/// The abstract class that defines the behavior of the appbar,
+/// including how it consumes scroll offsets and aligns appbar.
 abstract class AppBarBehavior {
   const AppBarBehavior();
 
@@ -38,14 +39,14 @@ abstract class AppBarBehavior {
   );
 
   /// Determines the alignment of the appbar based on appbar position and scroll.
-  AppBarAlignBehavior? align(AppBarPosition appBar, ScrollPosition scroll);
+  AppBarAlignmentBehavior? align(AppBarPosition appBar, ScrollPosition scroll);
 }
 
 class AbsoluteAppBarBehavior extends AppBarBehavior {
   const AbsoluteAppBarBehavior();
 
   @override
-  AppBarAlignBehavior? align(AppBarPosition appBar, ScrollPosition scroll) => null;
+  AppBarAlignmentBehavior? align(AppBarPosition appBar, ScrollPosition scroll) => null;
 
   @override
   double setPixels(
@@ -84,8 +85,8 @@ class MaterialAppBarBehavior extends AppBarBehavior {
 
   final Curve alignCurve;
   
-  AppBarAlignBehavior createAlignBehavior(AppBarAlign target) {
-    return AppBarAlignBehavior(target: target, duration: alignDuration, curve: alignCurve);
+  AppBarAlignmentBehavior createAlignBehavior(AppBarAlignmentCommand target) {
+    return AppBarAlignmentBehavior(target: target, duration: alignDuration, curve: alignCurve);
   }
 
   @override
@@ -118,11 +119,11 @@ class MaterialAppBarBehavior extends AppBarBehavior {
   }
 
   @override
-  AppBarAlignBehavior? align(AppBarPosition appBar, ScrollPosition scroll) {
+  AppBarAlignmentBehavior? align(AppBarPosition appBar, ScrollPosition scroll) {
     if (alignAnimation) {
       return appBar.expandedPercent < 0.5
-        ? createAlignBehavior(AppBarAlign.expand)
-        : createAlignBehavior(AppBarAlign.shrink);
+        ? createAlignBehavior(AppBarAlignmentCommand.expand)
+        : createAlignBehavior(AppBarAlignmentCommand.shrink);
     }
 
     return null;

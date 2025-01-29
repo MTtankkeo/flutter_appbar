@@ -8,16 +8,19 @@ import 'package:flutter_appbar/widgets/appbar_column.dart';
 import 'package:flutter_appbar/widgets/nested_scroll_connection.dart';
 import 'package:flutter_appbar/widgets/scrollable_gesture_delegator.dart';
 
+/// ## Introduction
 /// Synchronize appbars with [Scrollable] to configure dynamic appbar behavior
-/// by nested scroll.
+/// by nested scroll for your cool and sexy, wonderful application.
 /// 
-/// And, implementable with single [Scrollable].
+/// See Also, And all of this can be implemented as a single [Scrollable].
 /// 
-/// How to use this widget?
+/// ## Usage
+/// 
+/// ### How to use this widget?
 /// ```dart
 /// AppBarConnection(
-///   appBars: [ ...AppBar ],
-///   child: ...
+///   appBars: [ ...AppBar, ...AppBar.builder ],
+///   child: ... // the widget you want.
 /// );
 /// ```
 class AppBarConnection extends StatefulWidget {
@@ -53,7 +56,10 @@ class AppBarConnection extends StatefulWidget {
 }
 
 class AppBarConnectionState extends State<AppBarConnection> {
-  late final AppBarController _controller = widget.controller ?? AppBarController();
+  /// The value defines a unique instance of [AppBarController]
+  /// to manage the positions of the appbar in this widget.
+  late AppBarController _controller = widget.controller ?? AppBarController();
+
   late final NestedScrollController _scrollController = widget.scrollController ?? NestedScrollController();
 
   void attach(AppBarPosition position) => _controller.attach(position);
@@ -65,6 +71,21 @@ class AppBarConnectionState extends State<AppBarConnection> {
       position,
       widget.propagation,
     ); // the total consumed.
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  void didUpdateWidget(AppBarConnection oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    if (oldWidget.controller != null && oldWidget.controller != widget.controller) {
+      _controller = widget.controller!..delegateFrom(_controller);
+    }
   }
 
   @override

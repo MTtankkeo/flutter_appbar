@@ -7,9 +7,16 @@ import 'package:flutter_appbar/flutter_appbar.dart';
 /// Used by [AppBar.builder].
 typedef AppBarBuilder = Widget Function(BuildContext context, AppBarPosition position);
 
+/// This enum provides multiple alignment options for positioning
+/// the appbar relative to the scroll behavior and layout size.
 enum AppBarAlignment {
+  /// Sets to display the same as the scroll item. (default)
   absolute,
+  /// Sets to based on the size of the appbar, the center
+  /// is located at the center of the size of the appbar.
   center,
+  /// Sets to even if the appbar is reduced and expanded,
+  /// the absolute position of the appbar does not change.
   scroll,
 }
 
@@ -76,7 +83,6 @@ class _AppBarState extends State<AppBar> with TickerProviderStateMixin {
   @override
   void dispose() {
     _connection?.detach(_position);
-
     super.dispose();
   }
 
