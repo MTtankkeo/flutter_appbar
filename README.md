@@ -1,16 +1,3 @@
-<div align="center">
-  <img width="200" src="https://github.com/user-attachments/assets/1e705cfa-c9be-4b32-ad4d-a3b8861cc129">
-  <h1>Flutter Appbar</h1>
-  <table>
-        <thead>
-          <tr>
-            <th>Version</th>
-            <th>v1.0.0-dev1</th>
-          </tr>
-        </tbody>
-    </table>
-</div>
-
 # Introduction
 This package implements the flexible appbar behavior, And we pursue higher performance and responsiveness than the appbar generally provided by Flutter.
 
