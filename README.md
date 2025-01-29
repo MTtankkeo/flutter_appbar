@@ -1,5 +1,5 @@
 <div align="center">
-  <img width="" src="https://github.com/user-attachments/assets/535a7285-56f8-4f3f-8356-c9f54aed4d36">
+  <img width="200" src="https://github.com/user-attachments/assets/1e705cfa-c9be-4b32-ad4d-a3b8861cc129">
   <h1>Flutter Appbar</h1>
   <table>
         <thead>
