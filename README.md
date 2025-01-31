@@ -86,7 +86,8 @@ setPixels(double available, AppBarPosition appBar, ScrollPosition scroll)
 ```
 
 ```dart
-align(AppBarPosition appBar, ScrollPosition scroll): Determines the appbar’s alignment based on its position and the current scroll state.
+/// Determines the appbar’s alignment based on its position and the current scroll state.
+align(AppBarPosition appBar, ScrollPosition scroll)
 ```
 
 ### AbsoluteAppBarBehavior
