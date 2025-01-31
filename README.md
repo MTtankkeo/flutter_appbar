@@ -57,8 +57,8 @@ To obtain the `AppBarPosition` for a specific index, the `positionOf()` function
 
 ```dart
 AppBarConnection(
-	controller: controller,
-	appBars: [
+  controller: controller,
+  appBars: [
     AppBar.builder(...), // target to refer
     AppBar.builder(
       behavior: ...,
@@ -70,7 +70,7 @@ AppBarConnection(
       }
     )
   ],
-	child: ...
+  child: ...
 )
 ```
 
