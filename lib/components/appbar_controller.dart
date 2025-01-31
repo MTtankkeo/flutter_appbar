@@ -51,11 +51,7 @@ class AppBarController extends Listenable {
   }
 
   /// Returns attached the appbar position in this controller by given index.
-  AppBarPosition at(int index) {
-    if (_positions.length < index && index < 0) {
-      throw FlutterError("The given index overflowed attached appbar positions length.");
-    }
-
+  AppBarPosition? positionOf(int index) {
     return _positions[index];
   }
 

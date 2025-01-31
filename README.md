@@ -52,6 +52,28 @@ AppBar.builder(
 )
 ```
 
+### How to refer the other appbar position.
+To obtain the `AppBarPosition` for a specific index, the `positionOf()` function of an explicitly defined `AppBarController` can be used.
+
+```dart
+AppBarConnection(
+	controller: controller,
+	appBars: [
+    AppBar.builder(...), // target to refer
+    AppBar.builder(
+      behavior: ...,
+      builder: (context, ) {
+        final position = controller.positionOf(0); // ScrollPosition
+        position?.expandedPercent; // 1.0 or null
+        position?.shrinkedPercent; // 0.0 or null
+        return ...;
+      }
+    )
+  ],
+	child: ...
+)
+```
+
 ### How to customize appbar alignment?
 Try applying the `AppBarAlignment` that is a providing standard enumeration in this package.
 
