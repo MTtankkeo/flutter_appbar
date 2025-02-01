@@ -5,6 +5,7 @@ This package implements the flexible appbar behavior, and we pursue higher perfo
 The GIF below demonstrates the package in action. Please note that due to compression, the animation may appear distorted or choppy.
 
 ![preview](https://github.com/user-attachments/assets/9b077c66-83c3-4374-b217-f37dbe644d01)
+![preview](https://github.com/user-attachments/assets/e8b18258-f764-49e6-8068-4c34b9b6d62b)
 
 ## Usage
 This section covers the basic usage of this package and how to integrate it into your application.
