@@ -110,56 +110,54 @@ class NestedScrollPosition extends ScrollPositionWithSingleContext {
     return 0.0; // No overscroll
   }
 
-  double setPostPixels(double newPixels) {
-    if (newPixels != pixels) {
-      double clipedOverscroll = applyBoundaryConditions(newPixels);
-      double systemOverscroll = overscrollOf(newPixels, minScrollExtent, maxScrollExtent);
-      double oldPixels = pixels;
-      double rawPixels = newPixels - systemOverscroll;
-      double overDelta = systemOverscroll - clipedOverscroll;
-      final isBouncing = overDelta.abs() > precisionErrorTolerance;
+  double setPostPixels(double newPixels, double overscroll) {
+    double clipedOverscroll = overscroll;
+    final double systemOverscroll = overscrollOf(newPixels, minScrollExtent, maxScrollExtent);
+    final double oldPixels = pixels;
+    final double rawPixels = newPixels - systemOverscroll;
+    final double overDelta = systemOverscroll - clipedOverscroll;
+    final isBouncing = overDelta.abs() > precisionErrorTolerance;
 
-      // print("clipedOverscroll: $clipedOverscroll, systemOverscroll: $systemOverscroll, overDelta: $overDelta");
-
-      // Notifies that the scroll offset has changed.
-      void onNotify() {
-        if (pixels != oldPixels) {
-          notifyListeners();
-          didUpdateScrollPositionBy(pixels - oldPixels);
-        }
+    // Notifies that the scroll offset has changed.
+    void onNotify() {
+      if (pixels != oldPixels) {
+        notifyListeners();
+        didUpdateScrollPositionBy(pixels - oldPixels);
       }
-
-      // First, apply clipped a given new pixels.
-      correctPixels(rawPixels);
-
-      final double consumed = (isBouncing ? overDelta != 0.0 : clipedOverscroll != 0.0)
-        ? _postScroll(isBouncing ? -overDelta : -clipedOverscroll)
-        : 0.0;
-
-      clipedOverscroll += consumed;
-
-      if (overDelta.abs() < precisionErrorTolerance) {
-        if (clipedOverscroll.abs() > precisionErrorTolerance) {
-          didOverscrollBy(clipedOverscroll);
-          onNotify();
-          return overDelta;
-        }
-      } else {
-        final double finalDelta = overDelta + consumed;
-        if (finalDelta.abs() > precisionErrorTolerance) {
-          correctBy(finalDelta);
-          didOverscroll();
-        }
-      }
-
-      onNotify();
     }
+
+    // First, apply clipped a given new pixels.
+    correctPixels(rawPixels);
+
+    final double consumed = (isBouncing ? overDelta != 0.0 : clipedOverscroll != 0.0)
+      ? _postScroll(isBouncing ? -overDelta : -clipedOverscroll)
+      : 0.0;
+
+    clipedOverscroll += consumed;
+
+    if (overDelta.abs() < precisionErrorTolerance) {
+      if (clipedOverscroll.abs() > precisionErrorTolerance) {
+        didOverscrollBy(clipedOverscroll);
+        onNotify();
+        return overDelta;
+      }
+    } else {
+      final double finalDelta = overDelta + consumed;
+      if (finalDelta.abs() > precisionErrorTolerance) {
+        correctBy(finalDelta);
+        didOverscroll();
+      }
+    }
+
+    onNotify();
 
     return 0.0;
   }
 
   @override
   double setPixels(double newPixels) {
+    if (pixels == newPixels) return 0.0;
+
     final bool isOldOverscrolledForward = pixels < super.minScrollExtent;
     final bool isOldOverscrolledBackward = pixels > super.maxScrollExtent;
     final bool isNewOverscrolledForward = newPixels < super.minScrollExtent;
@@ -185,14 +183,14 @@ class NestedScrollPosition extends ScrollPositionWithSingleContext {
       correctPixels(super.minScrollExtent);
     }
 
-    double clipedOverscroll = applyBoundaryConditions(newPixels);
-    double systemOverscroll = overscrollOf(newPixels, minScrollExtent, maxScrollExtent);
-    double overDelta = systemOverscroll - clipedOverscroll;
+    final double clipedOverscroll = applyBoundaryConditions(newPixels);
+    final double systemOverscroll = overscrollOf(newPixels, minScrollExtent, maxScrollExtent);
+    final double overDelta = systemOverscroll - clipedOverscroll;
 
-    if (pixels + overDelta <= minScrollExtent
-     || pixels + overDelta >= maxScrollExtent) {
+    if (pixels + overDelta < minScrollExtent
+     || pixels + overDelta > maxScrollExtent) {
       isNestedScrolling = true;
-      return setPostPixels(newPixels);
+      return setPostPixels(newPixels, clipedOverscroll);
     }
 
     final double available = pixels - newPixels;
@@ -204,7 +202,7 @@ class NestedScrollPosition extends ScrollPositionWithSingleContext {
       return 0.0;
     }
 
-    return setPostPixels(newPixels + consumed);
+    return setPostPixels(newPixels + consumed, clipedOverscroll);
   }
 
   /// Reflects the given new pixels in the this position without
