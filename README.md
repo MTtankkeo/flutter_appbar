@@ -40,7 +40,7 @@ AppBarConnection(
 ```
 
 ### How to apply the sized appbar?
-To apply the `SizedAppBar`, you can explicitly define both the minimum and maximum extents for the appbar, allowing you to set fixed sizes rather than having it adjust dynamically, See Also, Note: The SizedAppBar does not provide an alignment option.
+To apply the `SizedAppBar`, you can explicitly define both the minimum and maximum extents for the appbar, allowing you to set fixed sizes rather than having it adjust dynamically, See Also, The SizedAppBar does not provide an alignment option.
 
 ```dart
 SizedAppBar(
