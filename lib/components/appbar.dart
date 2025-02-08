@@ -27,15 +27,15 @@ enum AppBarAlignment {
 class AppBar extends StatefulWidget {
   AppBar({
     super.key,
-    required Widget body,
     required this.behavior,
+    required Widget body,
     this.alignment = AppBarAlignment.scroll,
   }) : builder = ((_, position) => body);
 
   AppBar.builder({
     super.key,
-    required AppBarBuilder builder,
     required this.behavior,
+    required AppBarBuilder builder,
     this.alignment = AppBarAlignment.scroll,
   }) : builder = ((_, position) {
 
@@ -49,6 +49,27 @@ class AppBar extends StatefulWidget {
 
   @override
   State<AppBar> createState() => _AppBarState();
+}
+
+class SizedAppBar extends AppBar {
+  SizedAppBar({
+    super.key, 
+    required this.minExtent,
+    required this.maxExtent,
+    required super.behavior,
+    required super.body,
+  });
+
+  SizedAppBar.builder({
+    super.key,
+    required this.minExtent,
+    required this.maxExtent,
+    required super.behavior,
+    required super.builder,
+  }) : super.builder();
+
+  final double minExtent;
+  final double maxExtent;
 }
 
 class _AppBarState extends State<AppBar> with TickerProviderStateMixin {
@@ -90,6 +111,8 @@ class _AppBarState extends State<AppBar> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     return ClipRRect(
       child: _AppBar(
+        minExtent: widget is SizedAppBar ? (widget as SizedAppBar).minExtent : null,
+        maxExtent: widget is SizedAppBar ? (widget as SizedAppBar).maxExtent : null,
         position: _position,
         alignment: widget.alignment,
         child: widget.builder(context, _position),
@@ -101,21 +124,32 @@ class _AppBarState extends State<AppBar> with TickerProviderStateMixin {
 class _AppBar extends SingleChildRenderObjectWidget {
   const _AppBar({
     required super.child,
+    this.minExtent,
+    this.maxExtent,
     required this.position,
     required this.alignment,
   });
 
+  final double? minExtent;
+  final double? maxExtent;
   final AppBarPosition position;
   final AppBarAlignment alignment;
 
   @override
   RenderObject createRenderObject(BuildContext context) {
-    return RenderAppBar(position: position, alignment: alignment);
+    return RenderAppBar(
+      minExtent: minExtent,
+      maxExtent: maxExtent,
+      position: position,
+      alignment: alignment
+    );
   }
 
   @override
   void updateRenderObject(BuildContext context, RenderAppBar renderObject) {
     renderObject
+      ..minExtent = minExtent
+      ..maxExtent = maxExtent
       ..position = position
       ..alignment = alignment;
   }
@@ -123,9 +157,13 @@ class _AppBar extends SingleChildRenderObjectWidget {
 
 class RenderAppBar extends RenderBox with RenderObjectWithChildMixin<RenderBox> {
   RenderAppBar({
+    required double? minExtent,
+    required double? maxExtent,
     required AppBarPosition position,
     required AppBarAlignment alignment,
   }) {
+    this.minExtent = minExtent;
+    this.maxExtent = maxExtent;
     this.position = position;
     this.alignment = alignment;
   }
@@ -161,6 +199,36 @@ class RenderAppBar extends RenderBox with RenderObjectWithChildMixin<RenderBox> 
     }
   }
 
+  double? get minExtent => _minExtent;
+  double? _minExtent;
+  set minExtent(double? value) {
+    if (_minExtent != value) {
+      _minExtent = value;
+      markNeedsLayout();
+    }
+  }
+
+  double? get maxExtent => _maxExtent;
+  double? _maxExtent;
+  set maxExtent(double? value) {
+    if (_maxExtent != value) {
+      _maxExtent = value;
+      markNeedsLayout();
+    }
+  }
+
+  /// Whether the appbar should operate based on the given max extent(e.g. max height).
+  bool get isSizedLayout => minExtent != null && maxExtent != null;
+
+  @override
+  BoxConstraints get constraints {
+    if (isSizedLayout) {
+      return super.constraints.copyWith(maxHeight: maxExtent! - position.pixels);
+    }
+
+    return super.constraints;
+  }
+
   Offset align(Offset offset) {
     switch (alignment) {
       case AppBarAlignment.absolute: return offset;
@@ -171,14 +239,22 @@ class RenderAppBar extends RenderBox with RenderObjectWithChildMixin<RenderBox> 
 
   @override
   void performLayout() {
-    if (!useCachedSize) {
-      child.layout(constraints, parentUsesSize: true);
-    } else {
-      useCachedSize = false;
-    }
+    // When the size needs to be calculated dynamically.
+    if (!isSizedLayout) {
+      if (!useCachedSize) {
+        child.layout(constraints, parentUsesSize: true);
+      } else {
+        useCachedSize = false;
+      }
 
-    position.maxExtent = child.size.height;
-    size = Size(child.size.width, child.size.height - position.pixels);
+      position.maxExtent = child.size.height;
+      size = Size(child.size.width, child.size.height - position.pixels);
+    } else {
+      child.layout(constraints, parentUsesSize: true);
+
+      position.maxExtent = maxExtent! - minExtent!;
+      size = Size(child.size.width, maxExtent! - position.pixels);
+    }
   }
 
   /// No need to implement hit-test in this [RenderBox].
@@ -189,6 +265,6 @@ class RenderAppBar extends RenderBox with RenderObjectWithChildMixin<RenderBox> 
 
   @override
   void paint(PaintingContext context, Offset offset) {
-    context.paintChild(child, align(offset));
+    context.paintChild(child, isSizedLayout ? offset : align(offset));
   }
 }

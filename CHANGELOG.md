@@ -8,3 +8,7 @@
 
 ## 1.0.0-dev3
 - Fixed an issue by preventing scroll offset from being pre-consumed during forward overscrolling, resolving various issues related to the bouncing scroll physics.
+
+## 1.0.0-dev4
+- Fixed an issue where the appbar did not expand properly.
+- Added the SizedAppBar widget to allow defining a fixed size.

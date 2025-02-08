@@ -5,12 +5,13 @@ This package implements the flexible appbar behavior, and we pursue higher perfo
 The GIF below demonstrates the package in action. Please note that due to compression, the animation may appear distorted or choppy.
 
 ![preview](https://github.com/user-attachments/assets/9b077c66-83c3-4374-b217-f37dbe644d01)
+![preview](https://github.com/user-attachments/assets/e8b18258-f764-49e6-8068-4c34b9b6d62b)
 
 ## Usage
 This section covers the basic usage of this package and how to integrate it into your application.
 
 ### How to apply the appbar?
-To integrate an appbar into your application, use the `AppBarConnection` and AppBar widgets as shown in the example below:
+To integrate an appbar into your application, use the `AppBarConnection` and AppBar widgets as shown in the example below.
 
 > [!NOTE]
 > If you define a separate `ScrollController` for a scrollable widget, you must explicitly pass that instance to the scrollController property of `AppBarConnection` to ensure proper synchronization.
@@ -27,7 +28,7 @@ AppBarConnection(
         alignment: Alignment.center,
         child: Text("Header", style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold)),
       ),
-    )
+    ),
   ],
   child: ListView.builder(
     itemCount: 100,
@@ -35,6 +36,18 @@ AppBarConnection(
       return Text("Hello, World! $index");
     },
   ),
+)
+```
+
+### How to apply the sized appbar?
+To apply the `SizedAppBar`, you can explicitly define both the minimum and maximum extents for the appbar, allowing you to set fixed sizes rather than having it adjust dynamically, See Also, Note: The SizedAppBar does not provide an alignment option.
+
+```dart
+SizedAppBar(
+  minExtent: 0,
+  maxExtent: 200,
+  behavior: MaterialAppBarBehavior(),
+  body: ...
 )
 ```
 

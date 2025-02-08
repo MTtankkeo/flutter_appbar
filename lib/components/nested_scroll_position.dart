@@ -129,11 +129,18 @@ class NestedScrollPosition extends ScrollPositionWithSingleContext {
     // First, apply clipped a given new pixels.
     correctPixels(rawPixels);
 
+    final double available = isBouncing ? -overDelta : -clipedOverscroll;
     final double consumed = (isBouncing ? overDelta != 0.0 : clipedOverscroll != 0.0)
-      ? _postScroll(isBouncing ? -overDelta : -clipedOverscroll)
+      ? _postScroll(available)
       : 0.0;
 
     clipedOverscroll += consumed;
+
+    /// It is also considered nested scrolling when the remaining
+    /// scroll amount is fully consumed in the post phase.
+    if ((consumed - available).abs() < precisionErrorTolerance) {
+      isNestedScrolling = true;
+    }
 
     if (overDelta.abs() < precisionErrorTolerance) {
       if (clipedOverscroll.abs() > precisionErrorTolerance) {
