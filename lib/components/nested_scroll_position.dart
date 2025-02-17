@@ -223,6 +223,18 @@ class NestedScrollPosition extends ScrollPositionWithSingleContext {
     // A velocity is consumed by nested scroll.
     velocity = _fling(velocity);
 
+    // When the scrollable size has changed, but it is already [IdleScrollActivity],
+    // so there is no need to define any further scroll activity.
+    if (velocity.abs() == 0 && activity is IdleScrollActivity) {
+      return;
+    }
+
+    // When infinite scrolling is already possible, there is no need to replace
+    // the [BallisticScrollActivity] instance even if the size has changed.
+    if (velocity != 0 && isNestedScrolling && activity is BallisticNestedScrollActivity) {
+      return;
+    }
+
     assert(hasPixels);
     final Simulation? simulation = physics.createBallisticSimulation(
       // If it's true, must begin non-clamping scrolling.
