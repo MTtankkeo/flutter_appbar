@@ -12,3 +12,6 @@
 ## 1.0.0-dev4
 - Fixed an issue where the appbar did not expand properly.
 - Added the SizedAppBar widget to allow defining a fixed size.
+
+## 1.0.0-beta1
+- Fixed an issue where the scroll activity instance was replaced even when it was not necessary due to changes in the Scrollable's size.
