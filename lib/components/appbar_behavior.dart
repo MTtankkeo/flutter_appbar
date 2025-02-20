@@ -98,12 +98,12 @@ class MaterialAppBarBehavior extends AppBarBehavior {
 
     // APPBAR SCROLLING CONSTRAINTS
 
-    if (scroll.pixels < scroll.minScrollExtent) {
+    if ((scroll as NestedScrollPosition).totalPixels < scroll.minScrollExtent) {
       return 0;
     }
 
     if (!floating) {
-      final bool isDragging = !(scroll as NestedScrollPosition).isBallisticScrolling;
+      final bool isDragging = scroll.isBallisticScrolling;
 
       // No consume when scroll offset is zero ~ infinity.
       if (scroll.pixels > 0) return 0;

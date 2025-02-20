@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_appbar/flutter_appbar.dart';
 
 class NestedScrollEndNotification extends ScrollNotification {
@@ -84,7 +85,7 @@ class NestedScrollPosition extends ScrollPositionWithSingleContext {
   }
 
   /// Called before the new overscrolled about bouncing is reflected.
-  double bouncing(double available) {
+  double _bouncing(double available) {
     final targetContext = context.notificationContext;
     if (targetContext != null) {
       return NestedScrollConnection.of(targetContext)?.bouncing(available, this) ?? available;
@@ -112,9 +113,9 @@ class NestedScrollPosition extends ScrollPositionWithSingleContext {
   }
 
   double overscrollOf(double value, double minScrollExtent, double maxScrollExtent) {
-    if (value > maxScrollExtent) {
+    if (lentPixels + value > maxScrollExtent) {
       return value - maxScrollExtent;
-    } else if (value < minScrollExtent) {
+    } else if (lentPixels + value < minScrollExtent) {
       return value - minScrollExtent;
     }
 
@@ -163,7 +164,7 @@ class NestedScrollPosition extends ScrollPositionWithSingleContext {
     } else {
       final double bouncingDelta = overDelta + consumed;
       if (bouncingDelta.abs() > precisionErrorTolerance) {
-        final double consumed = bouncing(bouncingDelta);
+        final double consumed = _bouncing(bouncingDelta);
         final double lastDelta = bouncingDelta - consumed;
 
         lentPixels += consumed;
@@ -182,20 +183,33 @@ class NestedScrollPosition extends ScrollPositionWithSingleContext {
   }
 
   @override
+  void applyUserOffset(double delta) {
+    updateUserScrollDirection(delta > 0.0 ? ScrollDirection.forward : ScrollDirection.reverse);
+    setPixels(pixels - physics.applyPhysicsToUserOffset(copyWith(pixels: totalPixels), delta));
+  }
+
+  @override
   double setPixels(double newPixels) {
     if (pixels == newPixels) return 0.0;
 
-    final bool isOldOverscrolledForward = pixels < super.minScrollExtent;
-    final bool isOldOverscrolledBackward = pixels > super.maxScrollExtent;
-    final bool isNewOverscrolledForward = newPixels < super.minScrollExtent;
-    final bool isNewOverscrolledBackward = newPixels > super.maxScrollExtent;
+    // Request the final consumption to ensure [lentPixels] recovers to zero.
+    if (lentPixels + newPixels == minScrollExtent) {
+      final consumed = _bouncing(-lentPixels);
+      lentPixels += consumed;
+      return setPostPixels(minScrollExtent, 0);
+    }
+
+    final bool isOldOverscrolledForward = totalPixels < super.minScrollExtent;
+    final bool isOldOverscrolledBackward = totalPixels > super.maxScrollExtent;
+    final bool isNewOverscrolledForward = lentPixels + newPixels < super.minScrollExtent;
+    final bool isNewOverscrolledBackward = lentPixels + newPixels > super.maxScrollExtent;
     final bool isOldOverscrolled = isOldOverscrolledForward || isOldOverscrolledBackward;
     final bool isNewOverscrolled = isNewOverscrolledForward || isNewOverscrolledBackward;
 
     // Handling the case where previously in an overscrolled state,
     // but now the overscroll has resolved.
     if (isOldOverscrolled && !isNewOverscrolled) {
-      if (pixels < minScrollExtent) {
+      if (totalPixels < minScrollExtent) {
         correctPixels(super.minScrollExtent);
       } else {
         correctPixels(super.maxScrollExtent);
