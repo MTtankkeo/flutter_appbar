@@ -104,9 +104,6 @@ class AppBarConnectionState extends State<AppBarConnection> {
       child: NestedScrollConnection(
         onPreScroll: _handleNestedScroll,
         onPostScroll: _handleNestedScroll,
-        onBouncing: (available, position) {
-          return available / 2;
-        },
         child: Column(
           children: [
             // Wrap the widget that acts as a scroll gesture delegator to enable
