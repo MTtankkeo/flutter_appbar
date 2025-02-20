@@ -35,7 +35,7 @@ class NestedScrollConnectionState extends State<NestedScrollConnection> {
   double preScroll(double available, ScrollPosition position) {
     final consumed = widget.onPreScroll?.call(available, position) ?? 0.0;
     if ((consumed - available).abs() > precisionErrorTolerance) {
-      return NestedScrollConnection.of(context)?.preScroll(available - consumed, position) ?? 0.0;
+      return NestedScrollConnection.of(context)?.preScroll(available - consumed, position) ?? consumed;
     }
 
     // The given scroll offset has all been consumed.
@@ -45,7 +45,7 @@ class NestedScrollConnectionState extends State<NestedScrollConnection> {
   double postScroll(double available, ScrollPosition position) {
     final consumed = widget.onPostScroll?.call(available, position) ?? 0.0;
     if ((consumed - available).abs() > precisionErrorTolerance) {
-      return NestedScrollConnection.of(context)?.postScroll(available - consumed, position) ?? 0.0;
+      return NestedScrollConnection.of(context)?.postScroll(available - consumed, position) ?? consumed;
     }
 
     // The given scroll offset has all been consumed.
@@ -65,7 +65,7 @@ class NestedScrollConnectionState extends State<NestedScrollConnection> {
   double bouncing(double available, ScrollPosition position) {
     final consumed = widget.onBouncing?.call(available, position) ?? 0.0;
     if ((consumed - available).abs() > precisionErrorTolerance) {
-      return NestedScrollConnection.of(context)?.bouncing(available - consumed, position) ?? 0.0;
+      return NestedScrollConnection.of(context)?.bouncing(available - consumed, position) ?? consumed;
     }
 
     // The given scroll offset has all been consumed.
