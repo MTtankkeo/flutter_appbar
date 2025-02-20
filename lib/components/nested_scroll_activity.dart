@@ -16,7 +16,7 @@ class BallisticNestedScrollActivity extends BallisticScrollActivity {
 
   @override
   bool applyMoveTo(double value) {
-    oldPixels ??= position.pixels;
+    oldPixels ??= position.totalPixels;
     newPixels = value;
     final delta = newPixels! - oldPixels!;
 

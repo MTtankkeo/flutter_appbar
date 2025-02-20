@@ -47,6 +47,9 @@ class NestedScrollPosition extends ScrollPositionWithSingleContext {
   /// The total consumed pixels about bouncing like [BouncingScrollPhysics]. (e.g. IOS and MAC)
   double lentPixels = 0;
 
+  /// Returns the pixels that is final value combined with [lentPixels] and [pixels].
+  double get totalPixels => super.pixels + lentPixels;
+
   @override
   double get maxScrollExtent => max(precisionErrorTolerance, super.maxScrollExtent);
 
@@ -84,7 +87,7 @@ class NestedScrollPosition extends ScrollPositionWithSingleContext {
   double bouncing(double available) {
     final targetContext = context.notificationContext;
     if (targetContext != null) {
-      return NestedScrollConnection.of(targetContext)?.fling(available, this) ?? available;
+      return NestedScrollConnection.of(targetContext)?.bouncing(available, this) ?? available;
     }
 
     return available;
@@ -150,6 +153,7 @@ class NestedScrollPosition extends ScrollPositionWithSingleContext {
       isNestedScrolling = true;
     }
 
+    // When overscrolling is clipped or bouncing.
     if (overDelta.abs() < precisionErrorTolerance) {
       if (clipedOverscroll.abs() > precisionErrorTolerance) {
         didOverscrollBy(clipedOverscroll);
@@ -157,9 +161,17 @@ class NestedScrollPosition extends ScrollPositionWithSingleContext {
         return overDelta;
       }
     } else {
-      final double finalDelta = overDelta + consumed;
-      if (finalDelta.abs() > precisionErrorTolerance) {
-        correctBy(finalDelta);
+      final double bouncingDelta = overDelta + consumed;
+      if (bouncingDelta.abs() > precisionErrorTolerance) {
+        final double consumed = bouncing(bouncingDelta);
+        final double lastDelta = bouncingDelta - consumed;
+
+        lentPixels += consumed;
+
+        if (lastDelta.abs() > precisionErrorTolerance) {
+          correctBy(lastDelta);
+        }
+
         didOverscroll();
       }
     }
@@ -253,8 +265,8 @@ class NestedScrollPosition extends ScrollPositionWithSingleContext {
     final Simulation? simulation = physics.createBallisticSimulation(
       // If it's true, must begin non-clamping scrolling.
       isNestedScrolling
-        ? copyWith(minScrollExtent: -double.infinity, maxScrollExtent: double.infinity)
-        : copyWith(),
+        ? copyWith(minScrollExtent: -double.infinity, maxScrollExtent: double.infinity, pixels: totalPixels)
+        : copyWith(pixels: totalPixels),
       velocity
     );
 
