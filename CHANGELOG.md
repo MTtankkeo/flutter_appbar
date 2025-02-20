@@ -15,3 +15,6 @@
 
 ## 1.0.0-beta1
 - Fixed an issue where the scroll activity instance was replaced even when it was not necessary due to changes in the Scrollable's size.
+
+## 1.0.1
+- Fixed an issue where the scroll activity does not change to Idle even when the velocity is 0.

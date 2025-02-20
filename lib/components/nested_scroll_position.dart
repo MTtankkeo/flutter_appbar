@@ -231,6 +231,12 @@ class NestedScrollPosition extends ScrollPositionWithSingleContext {
     // A velocity is consumed by nested scroll.
     velocity = _fling(velocity);
 
+    // When the velocity is zero and the current activity is [BallisticScrollActivity],
+    // it means the scroll has come to rest, so switch to idle state.
+    if (velocity.abs() == 0 && activity is BallisticScrollActivity) {
+      return goIdle();
+    }
+
     // When the scrollable size has changed, but it is already [IdleScrollActivity],
     // so there is no need to define any further scroll activity.
     if (velocity.abs() == 0 && activity is IdleScrollActivity) {
