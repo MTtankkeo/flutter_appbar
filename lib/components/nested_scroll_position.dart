@@ -44,8 +44,7 @@ class NestedScrollPosition extends ScrollPositionWithSingleContext {
   /// non-bouncing scrolling.
   bool isNestedScrolling = false;
 
-  /// The total overscrolled pixels in the non-clamping-based scroll behavior
-  /// like [BouncingScrollPhysics]. (e.g. IOS and MAC)
+  /// The total consumed pixels about bouncing like [BouncingScrollPhysics]. (e.g. IOS and MAC)
   double lentPixels = 0;
 
   @override

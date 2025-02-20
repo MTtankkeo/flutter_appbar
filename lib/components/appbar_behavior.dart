@@ -79,12 +79,15 @@ class MaterialAppBarBehavior extends AppBarBehavior {
   /// Whether the appbar can be scroll even when the [Scrollable] is no scroll possible.
   final bool alwaysScrolling;
 
+  /// Whether to align the appbar when the scroll is ended.
   final bool alignAnimation;
 
+  /// The duration of the appbar alignment animation.
   final Duration alignDuration;
 
+  /// The curve of the appbar alignment animation.
   final Curve alignCurve;
-  
+
   AppBarAlignmentBehavior createAlignBehavior(AppBarAlignmentCommand target) {
     return AppBarAlignmentBehavior(target: target, duration: alignDuration, curve: alignCurve);
   }
@@ -102,6 +105,7 @@ class MaterialAppBarBehavior extends AppBarBehavior {
     if (!floating) {
       final bool isDragging = !(scroll as NestedScrollPosition).isBallisticScrolling;
 
+      // No consume when scroll offset is zero ~ infinity.
       if (scroll.pixels > 0) return 0;
 
       if (dragOnlyExpanding
