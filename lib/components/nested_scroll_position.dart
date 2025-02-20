@@ -73,6 +73,7 @@ class NestedScrollPosition extends ScrollPositionWithSingleContext {
     return 0.0;
   }
 
+  /// Called before the new velocity for ballistic scrolling is used.
   double _fling(double velocity) {
     final targetContext = context.notificationContext;
     if (targetContext != null) {
@@ -80,6 +81,16 @@ class NestedScrollPosition extends ScrollPositionWithSingleContext {
     }
 
     return velocity;
+  }
+
+  /// Called before the new overscrolled about bouncing is reflected.
+  double bouncing(double available) {
+    final targetContext = context.notificationContext;
+    if (targetContext != null) {
+      return NestedScrollConnection.of(targetContext)?.fling(available, this) ?? available;
+    }
+
+    return available;
   }
 
   void didOverscroll() {

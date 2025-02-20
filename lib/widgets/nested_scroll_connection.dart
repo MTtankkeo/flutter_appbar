@@ -62,10 +62,10 @@ class NestedScrollConnectionState extends State<NestedScrollConnection> {
     return consumed;
   }
 
-  double overscroll(double available, ScrollPosition position) {
+  double bouncing(double available, ScrollPosition position) {
     final consumed = widget.onBouncing?.call(available, position) ?? 0.0;
     if ((consumed - available).abs() > precisionErrorTolerance) {
-      return NestedScrollConnection.of(context)?.overscroll(available - consumed, position) ?? 0.0;
+      return NestedScrollConnection.of(context)?.bouncing(available - consumed, position) ?? 0.0;
     }
 
     // The given scroll offset has all been consumed.
