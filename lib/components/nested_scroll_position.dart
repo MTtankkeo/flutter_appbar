@@ -51,8 +51,6 @@ class NestedScrollPosition extends ScrollPositionWithSingleContext {
   @override
   double get maxScrollExtent => max(precisionErrorTolerance, super.maxScrollExtent);
 
-  late bool isPreviousBouncing = false;
-
   /// Called before the new scroll pixels is consumed in this scroll position.
   double _preScroll(double available) {
     final targetContext = context.notificationContext;
