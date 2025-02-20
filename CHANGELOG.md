@@ -18,3 +18,7 @@
 
 ## 1.0.1
 - Fixed an issue where the scroll activity does not change to Idle even when the velocity is 0.
+
+## 1.0.2
+- Fixed the junk issue related to clipping during overscrolling.
+- Added basic logic for bouncing overscroll consumption (still in development).

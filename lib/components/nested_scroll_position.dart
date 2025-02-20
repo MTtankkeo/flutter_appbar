@@ -122,11 +122,10 @@ class NestedScrollPosition extends ScrollPositionWithSingleContext {
     return 0.0; // No overscroll
   }
 
-  double setPostPixels(double newPixels, double overscroll) {
-    double clipedOverscroll = overscroll;
-    final double systemOverscroll = overscrollOf(newPixels, minScrollExtent, maxScrollExtent);
+  double setPostPixels(double newPixels, double clipedOverscroll, double systemOverscroll) {
+    final double overscroll = overscrollOf(newPixels, minScrollExtent, maxScrollExtent);
     final double oldPixels = pixels;
-    final double rawPixels = newPixels - systemOverscroll;
+    final double rawPixels = newPixels - overscroll;
     final double overDelta = systemOverscroll - clipedOverscroll;
     final isBouncing = overDelta.abs() > precisionErrorTolerance;
 
@@ -159,7 +158,7 @@ class NestedScrollPosition extends ScrollPositionWithSingleContext {
       if (clipedOverscroll.abs() > precisionErrorTolerance) {
         didOverscrollBy(clipedOverscroll);
         onNotify();
-        return overDelta;
+        return clipedOverscroll;
       }
     } else {
       final double bouncingDelta = overDelta + consumed;
@@ -196,7 +195,7 @@ class NestedScrollPosition extends ScrollPositionWithSingleContext {
     if (lentPixels + newPixels == minScrollExtent) {
       final consumed = _bouncing(-lentPixels);
       lentPixels += consumed;
-      return setPostPixels(minScrollExtent, 0);
+      return setPostPixels(minScrollExtent, 0, 0);
     }
 
     final bool isOldOverscrolledForward = totalPixels < super.minScrollExtent;
@@ -231,7 +230,7 @@ class NestedScrollPosition extends ScrollPositionWithSingleContext {
     if (pixels + overDelta < minScrollExtent
      || pixels + overDelta > maxScrollExtent) {
       isNestedScrolling = true;
-      return setPostPixels(newPixels, clipedOverscroll);
+      return setPostPixels(newPixels, clipedOverscroll, systemOverscroll);
     }
 
     final double available = pixels - newPixels;
@@ -243,7 +242,7 @@ class NestedScrollPosition extends ScrollPositionWithSingleContext {
       return 0.0;
     }
 
-    return setPostPixels(newPixels + consumed, clipedOverscroll);
+    return setPostPixels(newPixels + consumed, clipedOverscroll, systemOverscroll);
   }
 
   /// Reflects the given new pixels in the this position without
