@@ -9,7 +9,13 @@ class AppBarPosition extends Listenable {
     double initialPixels = 0,
   }) {
     _pixelsNotifier = ValueNotifier<double>(0);
+    _pixelsNotifier.addListener(notifyListeners);
+
+    _lentPixelsNotifier = ValueNotifier<double>(0);
+    _lentPixelsNotifier.addListener(notifyListeners);
   }
+
+  late final _listeners = ObserverList<VoidCallback>();
 
   late TickerProvider vsync;
   late AppBarBehavior behavior;
@@ -19,6 +25,10 @@ class AppBarPosition extends Listenable {
   double get pixels => _pixelsNotifier.value;
   late final ValueNotifier<double> _pixelsNotifier;
   set pixels(double value) => _pixelsNotifier.value = value;
+
+  double get lentPixels => _lentPixelsNotifier.value;
+  late final ValueNotifier<double> _lentPixelsNotifier;
+  set lentPixels(double value) => _lentPixelsNotifier.value = value;
 
   double minExtent = 0;
   double maxExtent = 0;
@@ -74,11 +84,19 @@ class AppBarPosition extends Listenable {
 
   @override
   void addListener(VoidCallback listener) {
-    _pixelsNotifier.addListener(listener);
+    assert(!_listeners.contains(listener), "Already exists a given listener.");
+    _listeners.add(listener);
   }
 
   @override
   void removeListener(VoidCallback listener) {
-    _pixelsNotifier.removeListener(listener);
+    assert(_listeners.contains(listener), "Already not exists a given listener.");
+    _listeners.remove(listener);
+  }
+
+  void notifyListeners() {
+    for (final listener in _listeners) {
+      listener.call();
+    }
   }
 }

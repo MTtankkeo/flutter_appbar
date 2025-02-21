@@ -55,13 +55,13 @@ class AppBarController extends Listenable {
     return _positions[index];
   }
 
-  double consumeAll(double available, ScrollPosition scroll, AppbarPropagation propagation) {
+  double consumeWith(double available, AppbarPropagation propagation, Function(double, AppBarPosition) func) {
     final targets = available < 0 ? _positions : _positions.reversed;
     double consumed = 0;
 
     for (final it in targets) {
       final previousConsumed = consumed;
-      consumed += it.behavior.setPixels(available - consumed, it, scroll);
+      consumed += func.call(available - consumed, it);
 
       // If when all consumed, stops the travel.
       if ((consumed - available).abs() < precisionErrorTolerance) {
@@ -76,6 +76,14 @@ class AppBarController extends Listenable {
     }
 
     return consumed;
+  }
+
+  double consumeScroll(double available, ScrollPosition scroll, AppbarPropagation propagation) {
+    return consumeWith(available, propagation, (p1, p2) => p2.behavior.setPixels(p1, p2, scroll));
+  }
+
+  double consumeBouncing(double available, ScrollPosition scroll, AppbarPropagation propagation) {
+    return consumeWith(available, propagation, (p1, p2) => p2.behavior.setBouncing(p1, p2, scroll));
   }
 
   void clearAlignAll() {

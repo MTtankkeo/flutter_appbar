@@ -164,12 +164,12 @@ class NestedScrollPosition extends ScrollPositionWithSingleContext {
       final double bouncingDelta = overDelta + consumed;
       if (bouncingDelta.abs() > precisionErrorTolerance) {
         final double consumed = _bouncing(bouncingDelta);
-        final double lastDelta = bouncingDelta - consumed;
+        final double restDelta = bouncingDelta - consumed;
 
         lentPixels += consumed;
 
-        if (lastDelta.abs() > precisionErrorTolerance) {
-          correctBy(lastDelta);
+        if (restDelta.abs() > precisionErrorTolerance) {
+          correctBy(restDelta);
         }
 
         didOverscroll();
@@ -212,6 +212,13 @@ class NestedScrollPosition extends ScrollPositionWithSingleContext {
         correctPixels(super.minScrollExtent);
       } else {
         correctPixels(super.maxScrollExtent);
+      }
+
+      // Ensure that the remaining [lentPixels] are fully consumed
+      // since it is no longer an bouncing overscroll.
+      if (lentPixels.abs() > precisionErrorTolerance) {
+        final consumed = _bouncing(-lentPixels);
+        lentPixels += consumed;
       }
     } else if (isOldOverscrolledForward && isNewOverscrolledBackward) {
 

@@ -38,9 +38,10 @@ class AppBarConnection extends StatefulWidget {
 
   final AppbarPropagation propagation;
 
+  /// The controller that defines states([AppBarPosition]) and other features of the appbar.
   final AppBarController? controller;
 
-  /// This controller is define scroll controller of [PrimaryScrollController].
+  /// The controller that defines scroll controller of [PrimaryScrollController].
   final NestedScrollController? scrollController;
 
   /// Finds the ancestor [AppBarConnectionState] from the closest instance of this class
@@ -66,11 +67,19 @@ class AppBarConnectionState extends State<AppBarConnection> {
   void detach(AppBarPosition position) => _controller.detach(position);
 
   double _handleNestedScroll(double available, ScrollPosition position) {
-    return _controller.consumeAll(
+    return _controller.consumeScroll(
       available,
       position,
       widget.propagation,
-    ); // the total consumed.
+    );
+  }
+
+  double _handleBouncing(double available, ScrollPosition position) {
+    return _controller.consumeBouncing(
+      available,
+      position,
+      widget.propagation
+    );
   }
 
   @override
@@ -88,6 +97,8 @@ class AppBarConnectionState extends State<AppBarConnection> {
     }
   }
 
+  double overscrolled = 0;
+
   @override
   Widget build(BuildContext context) {
     return NotificationListener<ScrollNotification>(
@@ -102,6 +113,7 @@ class AppBarConnectionState extends State<AppBarConnection> {
         return false;
       },
       child: NestedScrollConnection(
+        onBouncing: _handleBouncing,
         onPreScroll: _handleNestedScroll,
         onPostScroll: _handleNestedScroll,
         child: Column(

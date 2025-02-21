@@ -128,12 +128,17 @@ align(AppBarPosition appBar, ScrollPosition scroll)
 ### AbsoluteAppBarBehavior
 This behavior keeps the appbar in a fixed position, ignoring scroll interactions.
 
+| Property | Description |
+|----------|-------------|
+| `bouncing` | Whether the appbar will be synchronized when bouncing overscroll occurs. |
+
 ### MaterialAppBarBehavior
 This behavior mimics the Material 3 design behavior for appbars, supporting floating, dragging, and alignment animations.
 
 | Property | Description |
 |----------|-------------|
 | `floating` | Allows the appbar to expand and collapse without requiring the user to scroll to the top. |
+| `bouncing` | Whether the appbar will be synchronized when bouncing overscroll occurs. |
 | `dragOnlyExpanding` | Prevents the appbar from expanding automatically when scrolling up. It can only be expanded by dragging. (Cannot be used with `floating`.) |
 | `alwaysScrolling` | Ensures the appbar can be scrolled even when the content is not scrollable. Useful for keeping the appbar responsive. |
 | `alignAnimation` | Enables smooth animation when the appbar switches between expanded and collapsed states. |

@@ -22,3 +22,10 @@
 ## 1.0.2
 - Fixed the junk issue related to clipping during overscrolling.
 - Added basic logic for bouncing overscroll consumption (still in development).
+
+## 1.1.0
+- Added `DrivenAppBarBehavior`, which handles the bouncing synchronization of the app bar. (`AbsoluteAppBarBehavior` and `MaterialAppBarBehavior` now inherit from the `DrivenAppBarBehavior` class.)
+- Added `bouncing` property in `AbsoluteAppBarBehavior`.
+- Added `bouncing` property in `MaterialAppBarBehavior`.
+- Added related logic in `AppBarConnection` to enable synchronization with bouncing.
+- Added the bouncingAlignment property to the AppBar, allowing the layout alignment of the app bar to be defined when synchronized with bouncing.

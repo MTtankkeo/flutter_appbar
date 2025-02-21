@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_appbar/components/appbar_position.dart';
@@ -38,12 +39,39 @@ abstract class AppBarBehavior {
     ScrollPosition scroll,
   );
 
+  double setBouncing(
+    double available,
+    AppBarPosition appBar,
+    ScrollPosition scroll
+  );
+
   /// Determines the alignment of the appbar based on appbar position and scroll.
   AppBarAlignmentBehavior? align(AppBarPosition appBar, ScrollPosition scroll);
 }
 
-class AbsoluteAppBarBehavior extends AppBarBehavior {
-  const AbsoluteAppBarBehavior();
+abstract class DrivenAppBarBehavior extends AppBarBehavior {
+  const DrivenAppBarBehavior({
+    required this.bouncing
+  });
+
+  /// Whether the appbar will be synchronized when bouncing overscroll occurs.
+  final bool bouncing;
+
+  @override
+  double setBouncing(double available, AppBarPosition appBar, ScrollPosition scroll) {
+    if (bouncing && (scroll as NestedScrollPosition).totalPixels + available <= 0) {
+      appBar.lentPixels += available;
+      return available;
+    }
+
+    return 0;
+  }
+}
+
+class AbsoluteAppBarBehavior extends DrivenAppBarBehavior {
+  const AbsoluteAppBarBehavior({
+    super.bouncing = false
+  });
 
   @override
   AppBarAlignmentBehavior? align(AppBarPosition appBar, ScrollPosition scroll) => null;
@@ -56,8 +84,9 @@ class AbsoluteAppBarBehavior extends AppBarBehavior {
   ) => 0;
 }
 
-class MaterialAppBarBehavior extends AppBarBehavior {
+class MaterialAppBarBehavior extends DrivenAppBarBehavior {
   const MaterialAppBarBehavior({
+    super.bouncing = false,
     this.floating = false,
     this.dragOnlyExpanding = false,
     this.alwaysScrolling = true,
@@ -106,7 +135,7 @@ class MaterialAppBarBehavior extends AppBarBehavior {
       final bool isDragging = scroll.isBallisticScrolling;
 
       // No consume when scroll offset is zero ~ infinity.
-      if (scroll.pixels > 0) return 0;
+      if (scroll.pixels > precisionErrorTolerance) return 0;
 
       if (dragOnlyExpanding
        && isDragging == false

@@ -30,6 +30,7 @@ class AppBar extends StatefulWidget {
     required this.behavior,
     required Widget body,
     this.alignment = AppBarAlignment.scroll,
+    this.bouncingAlignment = AppBarAlignment.scroll
   }) : builder = ((_, position) => body);
 
   AppBar.builder({
@@ -37,6 +38,7 @@ class AppBar extends StatefulWidget {
     required this.behavior,
     required AppBarBuilder builder,
     this.alignment = AppBarAlignment.scroll,
+    this.bouncingAlignment = AppBarAlignment.scroll
   }) : builder = ((_, position) {
 
     // When position is updated, the widget state is also updated.
@@ -46,6 +48,7 @@ class AppBar extends StatefulWidget {
   final AppBarBuilder builder;
   final AppBarBehavior behavior;
   final AppBarAlignment alignment;
+  final AppBarAlignment bouncingAlignment;
 
   @override
   State<AppBar> createState() => _AppBarState();
@@ -53,7 +56,7 @@ class AppBar extends StatefulWidget {
 
 class SizedAppBar extends AppBar {
   SizedAppBar({
-    super.key, 
+    super.key,
     required this.minExtent,
     required this.maxExtent,
     required super.behavior,
@@ -115,6 +118,7 @@ class _AppBarState extends State<AppBar> with TickerProviderStateMixin {
         maxExtent: widget is SizedAppBar ? (widget as SizedAppBar).maxExtent : null,
         position: _position,
         alignment: widget.alignment,
+        bouncingAlignment: widget.bouncingAlignment,
         child: widget.builder(context, _position),
       ),
     );
@@ -128,12 +132,14 @@ class _AppBar extends SingleChildRenderObjectWidget {
     this.maxExtent,
     required this.position,
     required this.alignment,
+    required this.bouncingAlignment
   });
 
   final double? minExtent;
   final double? maxExtent;
   final AppBarPosition position;
   final AppBarAlignment alignment;
+  final AppBarAlignment bouncingAlignment;
 
   @override
   RenderObject createRenderObject(BuildContext context) {
@@ -141,7 +147,8 @@ class _AppBar extends SingleChildRenderObjectWidget {
       minExtent: minExtent,
       maxExtent: maxExtent,
       position: position,
-      alignment: alignment
+      alignment: alignment,
+      bouncingAlignment: bouncingAlignment
     );
   }
 
@@ -151,7 +158,8 @@ class _AppBar extends SingleChildRenderObjectWidget {
       ..minExtent = minExtent
       ..maxExtent = maxExtent
       ..position = position
-      ..alignment = alignment;
+      ..alignment = alignment
+      ..bouncingAlignment = bouncingAlignment;
   }
 }
 
@@ -161,15 +169,19 @@ class RenderAppBar extends RenderBox with RenderObjectWithChildMixin<RenderBox> 
     required double? maxExtent,
     required AppBarPosition position,
     required AppBarAlignment alignment,
+    required AppBarAlignment bouncingAlignment
   }) {
     this.minExtent = minExtent;
     this.maxExtent = maxExtent;
     this.position = position;
     this.alignment = alignment;
+    this.bouncingAlignment = bouncingAlignment;
   }
 
   @override
   RenderBox get child => super.child!;
+
+  double get lentPixels => position.lentPixels.abs();
 
   /// When the child size previously measured in the layout phase should be recycled.
   bool useCachedSize = false;
@@ -199,6 +211,15 @@ class RenderAppBar extends RenderBox with RenderObjectWithChildMixin<RenderBox> 
     }
   }
 
+  AppBarAlignment get bouncingAlignment => _bouncingAlignment!;
+  AppBarAlignment? _bouncingAlignment;
+  set bouncingAlignment(AppBarAlignment value) {
+    if (_bouncingAlignment != value) {
+      _bouncingAlignment = value;
+      markNeedsLayout();
+    }
+  }
+
   double? get minExtent => _minExtent;
   double? _minExtent;
   set minExtent(double? value) {
@@ -223,18 +244,28 @@ class RenderAppBar extends RenderBox with RenderObjectWithChildMixin<RenderBox> 
   @override
   BoxConstraints get constraints {
     if (isSizedLayout) {
-      return super.constraints.copyWith(maxHeight: maxExtent! - position.pixels);
+      return super.constraints.copyWith(maxHeight: (maxExtent! - position.pixels) + lentPixels);
     }
 
     return super.constraints;
   }
 
-  Offset align(Offset offset) {
+  Offset translate(Offset offset) {
+    Offset result;
+
     switch (alignment) {
-      case AppBarAlignment.absolute: return offset;
-      case AppBarAlignment.center: return Offset(offset.dx, offset.dy - position.pixels / 2);
-      case AppBarAlignment.scroll: return Offset(offset.dx, offset.dy - position.pixels);
+      case AppBarAlignment.absolute: result = offset;
+      case AppBarAlignment.center: result = Offset(offset.dx, offset.dy - position.pixels / 2);
+      case AppBarAlignment.scroll: result = Offset(offset.dx, offset.dy - position.pixels);
     }
+
+    switch (bouncingAlignment) {
+      case AppBarAlignment.absolute: result = result.translate(0, 0);
+      case AppBarAlignment.center: result = result.translate(0, lentPixels / 2);
+      case AppBarAlignment.scroll: result = result.translate(0, lentPixels);
+    }
+
+    return result;
   }
 
   @override
@@ -247,13 +278,19 @@ class RenderAppBar extends RenderBox with RenderObjectWithChildMixin<RenderBox> 
         useCachedSize = false;
       }
 
+      final double appBarPixels = child.size.height - position.pixels;
+      final double appBarHeight = appBarPixels + lentPixels;
+
       position.maxExtent = child.size.height;
-      size = Size(child.size.width, child.size.height - position.pixels);
+      size = Size(child.size.width, appBarHeight);
     } else {
       child.layout(constraints, parentUsesSize: true);
 
+      final double appBarPixels = maxExtent! - position.pixels;
+      final double appBarHeight = appBarPixels + lentPixels;
+
       position.maxExtent = maxExtent! - minExtent!;
-      size = Size(child.size.width, maxExtent! - position.pixels);
+      size = Size(child.size.width, appBarHeight);
     }
   }
 
@@ -265,6 +302,6 @@ class RenderAppBar extends RenderBox with RenderObjectWithChildMixin<RenderBox> 
 
   @override
   void paint(PaintingContext context, Offset offset) {
-    context.paintChild(child, isSizedLayout ? offset : align(offset));
+    context.paintChild(child, isSizedLayout ? offset : translate(offset));
   }
 }
