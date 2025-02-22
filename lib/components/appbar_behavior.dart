@@ -127,7 +127,11 @@ class MaterialAppBarBehavior extends DrivenAppBarBehavior {
 
     // APPBAR SCROLLING CONSTRAINTS
 
-    if ((scroll as NestedScrollPosition).totalPixels < scroll.minScrollExtent) {
+    scroll = scroll as NestedScrollPosition;
+
+    // No consume when bouncing overscroll for appbar pixels safety.
+    if (scroll.totalPixels < scroll.minScrollExtent
+     || scroll.totalPixels > scroll.maxScrollExtent) {
       return 0;
     }
 
