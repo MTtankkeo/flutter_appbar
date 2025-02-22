@@ -36,3 +36,4 @@
 
 ## 1.1.2
 - Added `synchronizeWith` function to synchronize appbar updates between specified indices, ensuring that when the appbar at the first index is updated, the appbar at the second index is also updated accordingly.
+- Fixed an issue where the appbar did not properly consume the overscroll when the overscroll direction immediately switched to forward or backward, or vice versa, causing abnormal behavior.

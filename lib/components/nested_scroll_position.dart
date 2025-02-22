@@ -94,6 +94,12 @@ class NestedScrollPosition extends ScrollPositionWithSingleContext {
     return available;
   }
 
+  /// Ensures that the remaining [lentPixels] is completely consumed by the appbar.
+  void _ensureLentPixels() {
+    final consumed = _bouncing(-lentPixels);
+    lentPixels += consumed;
+  }
+
   void didOverscroll() {
     // If not all are consumed, the non-clamping scrolling cannot be performed.
     if (isNestedScrolling && isBallisticScrolling) {
@@ -193,8 +199,7 @@ class NestedScrollPosition extends ScrollPositionWithSingleContext {
 
     // Request the final consumption to ensure [lentPixels] recovers to zero.
     if (lentPixels + newPixels == minScrollExtent) {
-      final consumed = _bouncing(-lentPixels);
-      lentPixels += consumed;
+      _ensureLentPixels();
       return setPostPixels(minScrollExtent, 0, 0);
     }
 
@@ -205,6 +210,13 @@ class NestedScrollPosition extends ScrollPositionWithSingleContext {
     final bool isOldOverscrolled = isOldOverscrolledForward || isOldOverscrolledBackward;
     final bool isNewOverscrolled = isNewOverscrolledForward || isNewOverscrolledBackward;
 
+    // When the overscroll direction immediately switches to
+    // the forward or backward direction, or vice versa.
+    if (isOldOverscrolledForward && isNewOverscrolledBackward
+     || isOldOverscrolledBackward && isNewOverscrolledForward) {
+      _ensureLentPixels();
+    }
+
     // Handling the case where previously in an overscrolled state,
     // but now the overscroll has resolved.
     if (isOldOverscrolled && !isNewOverscrolled) {
@@ -214,11 +226,10 @@ class NestedScrollPosition extends ScrollPositionWithSingleContext {
         correctPixels(super.maxScrollExtent);
       }
 
-      // Ensure that the remaining [lentPixels] are fully consumed
+      // Ensures that the remaining [lentPixels] are fully consumed
       // since it is no longer an bouncing overscroll.
       if (lentPixels.abs() > precisionErrorTolerance) {
-        final consumed = _bouncing(-lentPixels);
-        lentPixels += consumed;
+        _ensureLentPixels();
       }
     } else if (isOldOverscrolledForward && isNewOverscrolledBackward) {
 
