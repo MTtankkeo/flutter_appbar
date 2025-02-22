@@ -132,13 +132,11 @@ class MaterialAppBarBehavior extends DrivenAppBarBehavior {
     }
 
     if (!floating) {
-      final bool isDragging = scroll.isBallisticScrolling;
-
       // No consume when scroll offset is zero ~ infinity.
       if (scroll.pixels > precisionErrorTolerance) return 0;
 
       if (dragOnlyExpanding
-       && isDragging == false
+       && scroll.isBallisticScrolling
        && appBar.shrinkedPercent == 1) {
         return 0;
       }

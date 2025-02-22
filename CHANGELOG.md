@@ -29,3 +29,7 @@
 - Added `bouncing` property in `MaterialAppBarBehavior`.
 - Added related logic in `AppBarConnection` to enable synchronization with bouncing.
 - Added the bouncingAlignment property to the AppBar, allowing the layout alignment of the app bar to be defined when synchronized with bouncing.
+
+## 1.1.1
+- Fixed an issue where the dragOnlyExpanding option in `MaterialAppBarBehavior` was not working correctly.
+- Fixed an issue where the app bar was not scrolling correctly in Bouncing even when scrolling was not possible.

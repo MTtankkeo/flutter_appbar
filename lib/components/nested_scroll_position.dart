@@ -237,7 +237,6 @@ class NestedScrollPosition extends ScrollPositionWithSingleContext {
     if (pixels + overDelta < minScrollExtent
      || pixels + overDelta > maxScrollExtent) {
       isNestedScrolling = true;
-      return setPostPixels(newPixels, clipedOverscroll, systemOverscroll);
     }
 
     final double available = pixels - newPixels;
