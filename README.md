@@ -69,6 +69,13 @@ AppBar.builder(
 To obtain the `AppBarPosition` for a specific index, the `positionOf()` function of an explicitly defined `AppBarController` can be used.
 
 ```dart
+@override
+void initState() {
+  super.initState();
+
+  WidgetsBinding.instance.addPostFrameCallback((_) => controller.synchronizeWith(0, 1));
+}
+
 AppBarConnection(
   controller: controller,
   appBars: [

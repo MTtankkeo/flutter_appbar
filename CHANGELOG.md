@@ -33,3 +33,6 @@
 ## 1.1.1
 - Fixed an issue where the dragOnlyExpanding option in `MaterialAppBarBehavior` was not working correctly.
 - Fixed an issue where the app bar was not scrolling correctly in Bouncing even when scrolling was not possible.
+
+## 1.1.2
+- Added `synchronizeWith` function to synchronize appbar updates between specified indices, ensuring that when the appbar at the first index is updated, the appbar at the second index is also updated accordingly.

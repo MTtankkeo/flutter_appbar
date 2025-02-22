@@ -94,6 +94,14 @@ class AppBarController extends Listenable {
     for (final it in _positions) { it.align(position); }
   }
 
+  /// Synchronizes so that when the app bar corresponding to the first argument (index) is
+  /// updated, the app bar corresponding to the second argument (index) is also updated.
+  void synchronizeWith(int source, int target) {
+    assert(positionOf(source) != null, "");
+    assert(positionOf(target) != null, "");
+    positionOf(source)?.addListener(positionOf(target)!.notifyListeners);
+  }
+
   /// Delegates all positions and context from a given controller to itself
   /// and removes all positions from the given controller, ensuring that
   /// each appbar position exists only once in the controller.
