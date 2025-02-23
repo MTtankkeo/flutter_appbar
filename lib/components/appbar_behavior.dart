@@ -24,7 +24,7 @@ class AppBarAlignmentBehavior {
   final Curve curve;
 }
 
-/// The abstract class that defines the behavior of the appbar,
+/// The abstract class that defines the behavior of the appbar that is
 /// including how it consumes scroll offsets and aligns appbar.
 abstract class AppBarBehavior {
   const AppBarBehavior();

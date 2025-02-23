@@ -45,9 +45,18 @@ class AppBar extends StatefulWidget {
     return AnimatedBuilder(animation: position, builder: (context, _) => builder(context, position));
   });
 
+  /// The function that creates a widget for the appbar.
   final AppBarBuilder builder;
+
+  /// The instance that defines the behavior of the appbar that is
+  /// including how it consumes scroll offsets and aligns appbar.
   final AppBarBehavior behavior;
+
+  /// The enumeration that defines the type of the appbar alignment.
   final AppBarAlignment alignment;
+
+  /// The enumeration that defines the type of the appbar alignment
+  /// when bouncing overscroll.
   final AppBarAlignment bouncingAlignment;
 
   @override
@@ -298,6 +307,20 @@ class RenderAppBar extends RenderBox with RenderObjectWithChildMixin<RenderBox> 
   @override
   bool hitTestChildren(BoxHitTestResult result, {required Offset position}) {
     return child.hitTest(result, position: position);
+  }
+
+  @override
+  bool hitTest(BoxHitTestResult result, {required Offset position}) {
+    final Offset translatedOffset = isSizedLayout ? Offset.zero : translate(Offset.zero);
+
+    // Adjusts the position to compensate for the offset modification.
+    return result.addWithPaintOffset(
+      offset: translatedOffset,
+      position: position,
+      hitTest: (result, position) {
+        return super.hitTest(result, position: position);
+      },
+    );
   }
 
   @override

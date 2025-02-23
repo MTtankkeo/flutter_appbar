@@ -46,3 +46,7 @@
 
 ## 1.1.5 ~ 1.1.6
 - Fixed an issue [#3](https://github.com/MTtankkeo/flutter_appbar/issues/3).
+
+## 1.1.7
+- Fixed an issue where hit testing did not work correctly when the app bar was scrolled status.
+- Added additional comments for documentation.
