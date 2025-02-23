@@ -40,3 +40,6 @@
 
 ## 1.1.3
 - Fixed an issue related to bouncing overscroll about appbar pixels safety.
+
+## 1.1.4
+- Fixed an issue where the alignment animation did not run when wrapped with `TabBarView`.

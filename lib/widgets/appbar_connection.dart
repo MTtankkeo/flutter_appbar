@@ -103,7 +103,6 @@ class AppBarConnectionState extends State<AppBarConnection> {
   Widget build(BuildContext context) {
     return NotificationListener<ScrollNotification>(
       onNotification: (notification) {
-        if (notification.depth != 0) return false;
         if (notification is NestedScrollEndNotification) {
           _controller.alignAll(notification.target);
         } else if (notification is ScrollStartNotification) {
