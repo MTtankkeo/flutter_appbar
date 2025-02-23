@@ -273,6 +273,12 @@ class NestedScrollPosition extends ScrollPositionWithSingleContext {
     // A velocity is consumed by nested scroll.
     velocity = _fling(velocity);
 
+    // Fixed an issue for #3:
+    // https://github.com/MTtankkeo/flutter_appbar/issues/3
+    if (velocity.abs() == 0 && activity is DragScrollActivity) {
+      isNestedScrolling = false;
+    }
+
     // When the velocity is zero and the current activity is [BallisticScrollActivity],
     // it means the scroll has come to rest, so switch to idle state.
     if (velocity.abs() == 0 && activity is BallisticScrollActivity) {
