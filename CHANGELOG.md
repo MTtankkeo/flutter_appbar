@@ -45,4 +45,4 @@
 - Fixed an issue [#2](https://github.com/MTtankkeo/flutter_appbar/issues/2) where the alignment animation did not run when wrapped with `TabBarView`.
 
 ## 1.1.5
-- Fixed an issue [#2](https://github.com/MTtankkeo/flutter_appbar/issues/2).
+- Fixed an issue [#3](https://github.com/MTtankkeo/flutter_appbar/issues/3).
