@@ -1,6 +1,6 @@
 name: flutter_appbar
 description: "This package implements the flexible appbar behavior, And we pursue higher performance and responsiveness than the appbar generally provided by Flutter."
-version: 1.2.0
+version: 1.2.1
 publisher: ttankkeo112@gmail.com
 repository: https://github.com/MTtankkeo/flutter_appbar
 

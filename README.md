@@ -97,10 +97,20 @@ AppBarConnection(
 ### How to customize appbar alignment?
 Try applying the `AppBarAlignment` that is a providing standard enumeration in this package.
 
-```kotlin
+```dart
 AppBar(
   behavior: MaterialAppBarBehavior(),
   alignment: AppBarAlignment.center, // like this
+  body: ...
+)
+```
+
+### How to apply initial offset of the appbar?
+`initialOffset` defines the initial expansion or collapse state of the appbar and must be a value between 0 and 1.
+
+```dart
+AppBar(
+  initialOffset: 1, // 0 ~ 1
   body: ...
 )
 ```

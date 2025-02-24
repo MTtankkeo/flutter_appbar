@@ -6,9 +6,12 @@ class AppBarPosition extends Listenable {
   AppBarPosition({
     required this.vsync,
     required this.behavior,
-    double initialPixels = 0,
+    double initialOffset = 0,
   }) {
-    _offsetNotifier = ValueNotifier<double>(0);
+    assert(initialOffset >= 0, "The [initialOffset] must be from 0 to 1");
+    assert(initialOffset <= 1, "The [initialOffset] must be from 0 to 1");
+
+    _offsetNotifier = ValueNotifier<double>(initialOffset);
     _offsetNotifier.addListener(notifyListeners);
 
     _lentPixelsNotifier = ValueNotifier<double>(0);

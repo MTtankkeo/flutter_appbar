@@ -30,7 +30,8 @@ class AppBar extends StatefulWidget {
     required this.behavior,
     required Widget body,
     this.alignment = AppBarAlignment.scroll,
-    this.bouncingAlignment = AppBarAlignment.scroll
+    this.bouncingAlignment = AppBarAlignment.scroll,
+    this.initialOffset = 0,
   }) : builder = ((_, position) => body);
 
   AppBar.builder({
@@ -38,7 +39,8 @@ class AppBar extends StatefulWidget {
     required this.behavior,
     required AppBarBuilder builder,
     this.alignment = AppBarAlignment.scroll,
-    this.bouncingAlignment = AppBarAlignment.scroll
+    this.bouncingAlignment = AppBarAlignment.scroll,
+    this.initialOffset = 0,
   }) : builder = ((_, position) {
 
     // When position is updated, the widget state is also updated.
@@ -59,6 +61,10 @@ class AppBar extends StatefulWidget {
   /// when bouncing overscroll.
   final AppBarAlignment bouncingAlignment;
 
+  /// The value that defines initial normalized appbar offset.
+  /// Therefore, this value must be defined from 0 to 1.
+  final double initialOffset;
+
   @override
   State<AppBar> createState() => _AppBarState();
 }
@@ -66,6 +72,7 @@ class AppBar extends StatefulWidget {
 class SizedAppBar extends AppBar {
   SizedAppBar({
     super.key,
+    super.initialOffset,
     required this.minExtent,
     required this.maxExtent,
     required super.behavior,
@@ -74,6 +81,7 @@ class SizedAppBar extends AppBar {
 
   SizedAppBar.builder({
     super.key,
+    super.initialOffset,
     required this.minExtent,
     required this.maxExtent,
     required super.behavior,
@@ -87,7 +95,8 @@ class SizedAppBar extends AppBar {
 class _AppBarState extends State<AppBar> with TickerProviderStateMixin {
   late final AppBarPosition _position = AppBarPosition(
     vsync: this,
-    behavior: widget.behavior
+    behavior: widget.behavior,
+    initialOffset: widget.initialOffset
   );
 
   late final AppBarConnectionState? _connection;
