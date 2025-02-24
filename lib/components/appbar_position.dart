@@ -8,13 +8,15 @@ class AppBarPosition extends Listenable {
     required this.behavior,
     double initialPixels = 0,
   }) {
-    _pixelsNotifier = ValueNotifier<double>(0);
-    _pixelsNotifier.addListener(notifyListeners);
+    _offsetNotifier = ValueNotifier<double>(0);
+    _offsetNotifier.addListener(notifyListeners);
 
     _lentPixelsNotifier = ValueNotifier<double>(0);
     _lentPixelsNotifier.addListener(notifyListeners);
   }
 
+  /// The observer list that defines function that is called
+  /// when the pixels of the appbar position changed.
   late final _listeners = ObserverList<VoidCallback>();
 
   late TickerProvider vsync;
@@ -22,9 +24,18 @@ class AppBarPosition extends Listenable {
 
   AnimationController? _animation;
 
-  double get pixels => _pixelsNotifier.value;
-  late final ValueNotifier<double> _pixelsNotifier;
-  set pixels(double value) => _pixelsNotifier.value = value;
+  /// Returns the normalized pixels of the appbar position.
+  double get offset => _offsetNotifier.value;
+
+  /// The instance that defines the normalized pixels of the appbar position.
+  late final ValueNotifier<double> _offsetNotifier;
+
+  /// Defines the normalized pixels of the appbar position.
+  set offset(double value) {
+    assert(value >= 0, "A given value must be from 0 to 1");
+    assert(value <= 1, "A given value must be from 0 to 1");
+    _offsetNotifier.value = value;
+  }
 
   double get lentPixels => _lentPixelsNotifier.value;
   late final ValueNotifier<double> _lentPixelsNotifier;
@@ -33,20 +44,24 @@ class AppBarPosition extends Listenable {
   double minExtent = 0;
   double maxExtent = 0;
 
+  /// Returns the pixels where the appbar can scroll.
+  double get extent => maxExtent - minExtent;
+
+  /// Returns the current intrinsic pixels of the appbar position.
+  double get pixels => extent * offset;
+
+  /// The value that defines the layout intrinsic size of the appbar.
+  double? height;
+
   double get expandedPercent => maxExtent == 0 ? 1 : 1 - shrinkedPercent;
-  double get shrinkedPercent => maxExtent == 0 ? 0 : pixels / maxExtent;
+  double get shrinkedPercent => maxExtent == 0 ? 0 : offset;
 
   /// Returns the value that finally reflected [newPixels].
   double setPixels(double newPixels) {
-    final oldPixels = pixels;
+    final double oldPixels = pixels;
+    final double normalized = newPixels < 0 ? 0 : newPixels / extent;
 
-    if (newPixels < minExtent) {
-      pixels = minExtent;
-    } else if (newPixels > maxExtent) {
-      pixels = maxExtent;
-    } else {
-      pixels = newPixels;
-    }
+    offset = normalized.abs().clamp(0, 1);
 
     return oldPixels - pixels;
   }

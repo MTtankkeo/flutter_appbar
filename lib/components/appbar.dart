@@ -283,6 +283,7 @@ class RenderAppBar extends RenderBox with RenderObjectWithChildMixin<RenderBox> 
     if (!isSizedLayout) {
       if (!useCachedSize) {
         child.layout(constraints, parentUsesSize: true);
+        position.maxExtent = child.size.height;
       } else {
         useCachedSize = false;
       }
@@ -290,15 +291,14 @@ class RenderAppBar extends RenderBox with RenderObjectWithChildMixin<RenderBox> 
       final double appBarPixels = child.size.height - position.pixels;
       final double appBarHeight = appBarPixels + lentPixels;
 
-      position.maxExtent = child.size.height;
       size = Size(child.size.width, appBarHeight);
     } else {
       child.layout(constraints, parentUsesSize: true);
+      position.maxExtent = maxExtent! - minExtent!;
 
       final double appBarPixels = maxExtent! - position.pixels;
       final double appBarHeight = appBarPixels + lentPixels;
 
-      position.maxExtent = maxExtent! - minExtent!;
       size = Size(child.size.width, appBarHeight);
     }
   }

@@ -54,3 +54,6 @@
 ## 1.2.0
 - Updated by removing the existing legacy appbar alignment-related code and adding functions such as `notifyScrollEnd`, `performAlignment`, `expand`, and `shrink` to allow more flexible external control over alignment.
 - Updated `AbsoluteAppBarBehavior`, which previously did not support alignment, to allow external control over appbar alignment animations.
+
+## 1.2.1
+- Fixed an issue where the appbar would expand again when its height increased in the fully shrinked state by normalizing its offset to a range of 0 to 1 instead of using the pixels unit.
