@@ -51,31 +51,46 @@ class AppBarPosition extends Listenable {
     return oldPixels - pixels;
   }
 
+  /// Returns the value that finally reflected [delta].
   double setPixelsWithDelta(double delta) => setPixels(pixels - delta);
 
-  void align(ScrollPosition scroll) {
-    final alignBehavior = behavior.align(this, scroll);
-    if (alignBehavior != null) {
-      final start = pixels;
-      final end   = alignBehavior.target == AppBarAlignmentCommand.expand ? maxExtent : minExtent;
-
-      /// If the target pixels and the current pixels are the same,
-      /// a appbar is no need to align.
-      if ((pixels - end).abs() < precisionErrorTolerance) {
-        return;
-      }
-
-      _animation?.dispose();
-      _animation = AnimationController(vsync: vsync, duration: alignBehavior.duration);
-      _animation!.addListener(() {
-        final vector = end - start;
-        final newPixels = start + (vector * alignBehavior.curve.transform(_animation!.value));
-
-        setPixels(newPixels);
-      });
-      _animation!.forward();
+  /// Animates alignment of the appbar by a given scroll position
+  /// and the alignment behavior of the current behavior.
+  bool notifyScrollEnd(ScrollPosition scroll) {
+    final alignment = behavior.align(this, scroll);
+    if (alignment != null) {
+      performAlignment(alignment);
+      return true;
     }
+
+    return false;
   }
+
+  /// Animates alignment of the appbar by a given scroll position
+  /// and a given appbar alignment behavior.
+  void performAlignment(AppBarAlignmentCommand command) {
+    final start = pixels;
+    final end = command == AppBarAlignmentCommand.shrink ? maxExtent : minExtent;
+
+    /// If the target pixels and the current pixels are the same,
+    /// a appbar is no need to align.
+    if ((pixels - end).abs() < precisionErrorTolerance) {
+      return;
+    }
+
+    _animation?.dispose();
+    _animation = AnimationController(vsync: vsync, duration: behavior.alignDuration);
+    _animation!.addListener(() {
+      final newVector = end - start;
+      final newPixels = start + (newVector * behavior.alignCurve.transform(_animation!.value));
+
+      setPixels(newPixels);
+    });
+    _animation!.forward();
+  }
+
+  void expand() => performAlignment(AppBarAlignmentCommand.expand);
+  void shrink() => performAlignment(AppBarAlignmentCommand.shrink);
 
   void clearAlign() {
     _animation?.dispose();

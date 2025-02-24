@@ -12,22 +12,19 @@ enum AppBarAlignmentCommand {
   shrink,
 }
 
-class AppBarAlignmentBehavior {
-  const AppBarAlignmentBehavior({
-    required this.target,
-    required this.duration,
-    required this.curve,
-  });
-
-  final AppBarAlignmentCommand target;
-  final Duration duration;
-  final Curve curve;
-}
-
 /// The abstract class that defines the behavior of the appbar that is
 /// including how it consumes scroll offsets and aligns appbar.
 abstract class AppBarBehavior {
-  const AppBarBehavior();
+  const AppBarBehavior({
+    required this.alignDuration,
+    required this.alignCurve,
+  });
+
+  /// The duration of the appbar alignment animation.
+  final Duration alignDuration;
+
+  /// The curve of the appbar alignment animation.
+  final Curve alignCurve;
 
   /// Updates the given appbar based on available scroll offset,
   /// the current appbar position, and the scroll position.
@@ -46,12 +43,14 @@ abstract class AppBarBehavior {
   );
 
   /// Determines the alignment of the appbar based on appbar position and scroll.
-  AppBarAlignmentBehavior? align(AppBarPosition appBar, ScrollPosition scroll);
+  AppBarAlignmentCommand? align(AppBarPosition appBar, ScrollPosition scroll);
 }
 
 abstract class DrivenAppBarBehavior extends AppBarBehavior {
   const DrivenAppBarBehavior({
-    required this.bouncing
+    required this.bouncing,
+    super.alignDuration = const Duration(milliseconds: 300),
+    super.alignCurve = Curves.ease,
   });
 
   /// Whether the appbar will be synchronized when bouncing overscroll occurs.
@@ -74,7 +73,7 @@ class AbsoluteAppBarBehavior extends DrivenAppBarBehavior {
   });
 
   @override
-  AppBarAlignmentBehavior? align(AppBarPosition appBar, ScrollPosition scroll) => null;
+  AppBarAlignmentCommand? align(AppBarPosition appBar, ScrollPosition scroll) => null;
 
   @override
   double setPixels(
@@ -87,12 +86,12 @@ class AbsoluteAppBarBehavior extends DrivenAppBarBehavior {
 class MaterialAppBarBehavior extends DrivenAppBarBehavior {
   const MaterialAppBarBehavior({
     super.bouncing = false,
+    super.alignDuration,
+    super.alignCurve,
+    this.alignAnimation = true,
     this.floating = false,
     this.dragOnlyExpanding = false,
     this.alwaysScrolling = true,
-    this.alignAnimation = true,
-    this.alignDuration = const Duration(milliseconds: 300),
-    this.alignCurve = Curves.ease,
   });
 
   /// Whether the appbar can be expanded and contracted without
@@ -110,16 +109,6 @@ class MaterialAppBarBehavior extends DrivenAppBarBehavior {
 
   /// Whether to align the appbar when the scroll is ended.
   final bool alignAnimation;
-
-  /// The duration of the appbar alignment animation.
-  final Duration alignDuration;
-
-  /// The curve of the appbar alignment animation.
-  final Curve alignCurve;
-
-  AppBarAlignmentBehavior createAlignBehavior(AppBarAlignmentCommand target) {
-    return AppBarAlignmentBehavior(target: target, duration: alignDuration, curve: alignCurve);
-  }
 
   @override
   double setPixels(double available, AppBarPosition appBar, ScrollPosition scroll) {
@@ -154,11 +143,11 @@ class MaterialAppBarBehavior extends DrivenAppBarBehavior {
   }
 
   @override
-  AppBarAlignmentBehavior? align(AppBarPosition appBar, ScrollPosition scroll) {
+  AppBarAlignmentCommand? align(AppBarPosition appBar, ScrollPosition scroll) {
     if (alignAnimation) {
       return appBar.expandedPercent < 0.5
-        ? createAlignBehavior(AppBarAlignmentCommand.expand)
-        : createAlignBehavior(AppBarAlignmentCommand.shrink);
+        ? AppBarAlignmentCommand.shrink
+        : AppBarAlignmentCommand.expand;
     }
 
     return null;

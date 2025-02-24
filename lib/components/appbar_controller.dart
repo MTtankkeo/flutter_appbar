@@ -91,7 +91,7 @@ class AppBarController extends Listenable {
   }
 
   void alignAll(ScrollPosition position) {
-    for (final it in _positions) { it.align(position); }
+    for (final it in _positions) { it.notifyScrollEnd(position); }
   }
 
   /// Synchronizes so that when the app bar corresponding to the first argument (index) is
