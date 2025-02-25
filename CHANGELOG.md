@@ -58,3 +58,6 @@
 ## 1.2.1
 - Fixed an issue where the appbar would expand again when its height increased in the fully shrinked state by normalizing its offset to a range of 0 to 1 instead of using the pixels unit.
 - Added the `initialOffset` property to `AppBar` and `SizedAppBar`, which defines the initial expansion or collapse state of the app bar and must be a value between 0 and 1.
+
+## 1.2.2
+- Fixed an issue where Flutter default stretch overscroll effect behaved unnaturally when scrolling was not possible with `ClampingScrollPhysics`.

@@ -52,7 +52,15 @@ class NestedScrollPosition extends ScrollPositionWithSingleContext {
   double get totalPixels => super.pixels + lentPixels;
 
   @override
-  double get maxScrollExtent => max(precisionErrorTolerance, super.maxScrollExtent);
+  double get maxScrollExtent {
+    // Since BouncingScrollPhysics does not allow scrolling when maxScrollExtent is 0,
+    // it is defined as a value close to zero but not exactly zero, as shown below.
+    if (physics is BouncingScrollPhysics) {
+      return max(precisionErrorTolerance, super.maxScrollExtent);
+    }
+
+    return super.maxScrollExtent;
+  }
 
   /// Called before the new scroll pixels is consumed in this scroll position.
   double _preScroll(double available) {
