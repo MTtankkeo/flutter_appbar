@@ -61,3 +61,6 @@
 
 ## 1.2.2
 - Fixed an issue where Flutter default stretch overscroll effect behaved unnaturally when scrolling was not possible with `ClampingScrollPhysics`.
+
+## 1.2.3
+- Fixed an issue where the appbar could reference outdated `maxScrollExtent` values because the `Scrollable` widget layout intrinsic size changes were updated only after all size calculations were completed.

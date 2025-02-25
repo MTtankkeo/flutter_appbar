@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -139,7 +141,15 @@ class MaterialAppBarBehavior extends DrivenAppBarBehavior {
       if (appBar.maxExtent > scroll.maxScrollExtent) return 0;
     }
 
-    return appBar.setPixelsWithDelta(available);
+    final double consumed = appBar.setPixelsWithDelta(available);
+    final double minScrollExtent = scroll.minScrollExtent;
+    final double maxScrollExtent = scroll.maxScrollExtent;
+
+    // When the app bar scrolls the layout intrinsic size changes so this
+    // information is preemptively communicated to the [ScrollPosition].
+    scroll.applyContentDimensions(minScrollExtent, max(minScrollExtent, maxScrollExtent + consumed));
+
+    return consumed;
   }
 
   @override
