@@ -147,7 +147,9 @@ class MaterialAppBarBehavior extends DrivenAppBarBehavior {
 
     // When the app bar scrolls the layout intrinsic size changes so this
     // information is preemptively communicated to the [ScrollPosition].
-    scroll.applyContentDimensions(minScrollExtent, max(minScrollExtent, maxScrollExtent + consumed));
+    if (consumed.abs() > precisionErrorTolerance) {
+      scroll.applyContentDimensions(minScrollExtent, max(minScrollExtent, maxScrollExtent + consumed));
+    }
 
     return consumed;
   }
