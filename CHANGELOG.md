@@ -64,3 +64,8 @@
 
 ## 1.2.3
 - Fixed an issue where the appbar could reference outdated `maxScrollExtent` values because the `Scrollable` widget layout intrinsic size changes were updated only after all size calculations were completed.
+
+## 1.3.0
+- Added `EffectUtil` class for the appbar effect calculation.
+- Added `AppBarFadeEffect.onShrink` widget that apply fade-out effect by a given appbar position.
+- Added `AppBarFadeEffect.onExpand` widget that apply fade-out effect by a given appbar position.
