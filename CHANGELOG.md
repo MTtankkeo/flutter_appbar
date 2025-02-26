@@ -69,3 +69,7 @@
 - Added `EffectUtil` class for the appbar effect calculation.
 - Added `AppBarFadeEffect.onShrink` widget that apply fade-out effect by a given appbar position.
 - Added `AppBarFadeEffect.onExpand` widget that apply fade-out effect by a given appbar position.
+
+## 1.3.1
+- Fixed an issue where multiple instances of `ScrollController` were created when `NestedScrollConnection` was nested two or more times in the widget tree.
+- Fixed an issue where the `alwaysScrolling` option related logic in `MaterialAppBarBehavior` did not correctly determine the scrollability of the appbar.

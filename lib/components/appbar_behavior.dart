@@ -138,7 +138,7 @@ class MaterialAppBarBehavior extends DrivenAppBarBehavior {
     }
 
     if (!alwaysScrolling) {
-      if (appBar.maxExtent > scroll.maxScrollExtent) return 0;
+      if (appBar.extent > scroll.maxScrollExtent + appBar.pixels) return 0;
     }
 
     final double consumed = appBar.setPixelsWithDelta(available);
