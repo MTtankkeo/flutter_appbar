@@ -61,7 +61,8 @@ class AppBarConnectionState extends State<AppBarConnection> {
   /// to manage the positions of the appbar in this widget.
   late AppBarController _controller = widget.controller ?? AppBarController();
 
-  late final NestedScrollController _scrollController = widget.scrollController ?? NestedScrollController();
+  /// The value defines instance of NestedScrollController.
+  late final NestedScrollController _scrollController;
 
   void attach(AppBarPosition position) => _controller.attach(position);
   void detach(AppBarPosition position) => _controller.detach(position);
@@ -81,6 +82,18 @@ class AppBarConnectionState extends State<AppBarConnection> {
       widget.propagation
     );
   }
+  
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    final ScrollController inherited = PrimaryScrollController.of(context);
+    if (inherited is NestedScrollController) {
+      _scrollController = inherited;
+    } else {
+      _scrollController = widget.scrollController ?? NestedScrollController();
+    }
+  }
 
   @override
   void dispose() {
@@ -96,8 +109,6 @@ class AppBarConnectionState extends State<AppBarConnection> {
       _controller = widget.controller!..delegateFrom(_controller);
     }
   }
-
-  double overscrolled = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -127,6 +138,7 @@ class AppBarConnectionState extends State<AppBarConnection> {
             // With scrollable.
             Expanded(
               child: PrimaryScrollController(
+                scrollDirection: Axis.vertical,
                 controller: _scrollController,
                 child: widget.child
               ),

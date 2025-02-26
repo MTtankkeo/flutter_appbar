@@ -52,7 +52,7 @@ class AppBarController extends Listenable {
 
   /// Returns attached the appbar position in this controller by given index.
   AppBarPosition? positionOf(int index) {
-    return _positions[index];
+    return (index < _positions.length) ? _positions[index] : null;
   }
 
   double consumeWith(double available, AppbarPropagation propagation, Function(double, AppBarPosition) func) {
