@@ -82,17 +82,13 @@ class AppBarConnectionState extends State<AppBarConnection> {
       widget.propagation
     );
   }
-  
+
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
 
-    final ScrollController inherited = PrimaryScrollController.of(context);
-    if (inherited is NestedScrollController) {
-      _scrollController = inherited;
-    } else {
-      _scrollController = widget.scrollController ?? NestedScrollController();
-    }
+    // Initializes the scroll controller for the nested scroll position.
+    _scrollController = AppBarConnection.of(context)?._scrollController ?? NestedScrollController();
   }
 
   @override

@@ -73,3 +73,6 @@
 ## 1.3.1
 - Fixed an issue where multiple instances of `ScrollController` were created when `NestedScrollConnection` was nested two or more times in the widget tree.
 - Fixed an issue where the `alwaysScrolling` option related logic in `MaterialAppBarBehavior` did not correctly determine the scrollability of the appbar.
+
+## 1.3.2
+- Fixed an issue where an exception occurred in `ScrollController` when the widget tree structure changed(e.g. detach and then attach).
