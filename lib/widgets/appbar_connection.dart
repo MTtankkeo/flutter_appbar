@@ -29,6 +29,7 @@ class AppBarConnection extends StatefulWidget {
     required this.appBars,
     required this.child,
     this.propagation = AppbarPropagation.next,
+    this.nestedPropagation = NestedScrollConnectionPropagation.selfFirst,
     this.controller,
     this.scrollController,
   });
@@ -37,6 +38,9 @@ class AppBarConnection extends StatefulWidget {
   final Widget child;
 
   final AppbarPropagation propagation;
+
+  /// The enumeration that defines the propagation type of the nested scroll connection.
+  final NestedScrollConnectionPropagation nestedPropagation;
 
   /// The controller that defines states([AppBarPosition]) and other features of the appbar.
   final AppBarController? controller;
@@ -122,6 +126,7 @@ class AppBarConnectionState extends State<AppBarConnection> {
         onBouncing: _handleBouncing,
         onPreScroll: _handleNestedScroll,
         onPostScroll: _handleNestedScroll,
+        propagation: widget.nestedPropagation,
         child: Column(
           children: [
             // Wrap the widget that acts as a scroll gesture delegator to enable

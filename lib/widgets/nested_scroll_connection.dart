@@ -1,8 +1,19 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
+/// Signature for the callback that is called when nested scroll event consuming.
 typedef NestedScrollListener = double Function(double available, ScrollPosition position);
-typedef NestedScrollFlingListener = double Function(double velocity, ScrollPosition position);
+
+/// The enumeration that defines how nested scrolling events are handled.
+enum NestedScrollConnectionPropagation {
+  /// Sets the current widget to handle scrolling events first  
+  /// before passing any remaining events to an ancestor.
+  selfFirst,
+
+  /// Sets scrolling events to be deferred to an ancestor  
+  /// before being handled by the current widget.
+  deferToAncestor
+}
 
 /// Used by [NestedScrollConnection].
 class NestedScrollConnection extends StatefulWidget {
@@ -12,13 +23,15 @@ class NestedScrollConnection extends StatefulWidget {
     this.onPostScroll,
     this.onFling,
     this.onBouncing,
+    this.propagation = NestedScrollConnectionPropagation.selfFirst,
     required this.child,
   });
 
   final NestedScrollListener? onPreScroll;
   final NestedScrollListener? onPostScroll;
-  final NestedScrollFlingListener? onFling;
+  final NestedScrollListener? onFling;
   final NestedScrollListener? onBouncing;
+  final NestedScrollConnectionPropagation propagation;
   final Widget child;
 
   /// Finds the ancestor [NestedScrollConnectionState] from the closest instance of this class
@@ -32,44 +45,43 @@ class NestedScrollConnection extends StatefulWidget {
 }
 
 class NestedScrollConnectionState extends State<NestedScrollConnection> {
-  double preScroll(double available, ScrollPosition position) {
-    final consumed = widget.onPreScroll?.call(available, position) ?? 0.0;
-    if ((consumed - available).abs() > precisionErrorTolerance) {
-      return NestedScrollConnection.of(context)?.preScroll(available - consumed, position) ?? consumed;
+  double consumeWith(
+    double available,
+    ScrollPosition position,
+    NestedScrollListener? selfListener,
+    NestedScrollListener? ancestorListener
+  ) {
+    final double consumed;
+
+    if (widget.propagation == NestedScrollConnectionPropagation.selfFirst) {
+      consumed = selfListener?.call(available, position) ?? 0.0;
+      if ((consumed - available).abs() > precisionErrorTolerance) {
+        return ancestorListener?.call(available - consumed, position) ?? consumed;
+      }
+    } else {
+      consumed = ancestorListener?.call(available, position) ?? 0.0;
+      if ((consumed - available).abs() > precisionErrorTolerance) {
+        return selfListener?.call(available - consumed, position) ?? consumed;
+      }
     }
 
-    // The given scroll offset has all been consumed.
     return consumed;
+  }
+
+  double preScroll(double available, ScrollPosition position) {
+    return consumeWith(available, position, widget.onPreScroll, NestedScrollConnection.of(context)?.preScroll);
   }
 
   double postScroll(double available, ScrollPosition position) {
-    final consumed = widget.onPostScroll?.call(available, position) ?? 0.0;
-    if ((consumed - available).abs() > precisionErrorTolerance) {
-      return NestedScrollConnection.of(context)?.postScroll(available - consumed, position) ?? consumed;
-    }
-
-    // The given scroll offset has all been consumed.
-    return consumed;
+    return consumeWith(available, position, widget.onPostScroll, NestedScrollConnection.of(context)?.postScroll);
   }
 
-  double fling(double velocity, ScrollPosition position) {
-    final consumed = widget.onFling?.call(velocity, position) ?? velocity;
-    if ((consumed - velocity).abs() > precisionErrorTolerance) {
-      return NestedScrollConnection.of(context)?.fling(consumed, position) ?? consumed;
-    }
-
-    // The given scroll fling velocity has all been consumed.
-    return consumed;
+  double fling(double available, ScrollPosition position) {
+    return consumeWith(available, position, widget.onFling, NestedScrollConnection.of(context)?.fling);
   }
 
   double bouncing(double available, ScrollPosition position) {
-    final consumed = widget.onBouncing?.call(available, position) ?? 0.0;
-    if ((consumed - available).abs() > precisionErrorTolerance) {
-      return NestedScrollConnection.of(context)?.bouncing(available - consumed, position) ?? consumed;
-    }
-
-    // The given scroll offset has all been consumed.
-    return consumed;
+    return consumeWith(available, position, widget.onBouncing, NestedScrollConnection.of(context)?.bouncing);
   }
 
   @override

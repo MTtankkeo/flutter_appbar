@@ -279,7 +279,7 @@ class NestedScrollPosition extends ScrollPositionWithSingleContext {
   @override
   void goBallistic(double velocity) {
     // A velocity is consumed by nested scroll.
-    velocity = _fling(velocity);
+    velocity = velocity - _fling(velocity);
 
     // Fixed an issue for #3:
     // https://github.com/MTtankkeo/flutter_appbar/issues/3

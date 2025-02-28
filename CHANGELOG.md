@@ -76,3 +76,10 @@
 
 ## 1.3.2
 - Fixed an issue where an exception occurred in `ScrollController` when the widget tree structure changed(e.g. detach and then attach).
+
+## 1.4.0
+- Added `NestedScrollConnectionPropagation` enumeration for NestedScrollConnection widget.
+- Added `propagation` property that is NestedScrollConnectionPropagation type in NestedScrollConnection widget.
+- Added `nestedPropagation` property that is NestedScrollConnectionPropagation type in AppBarConnection widget.
+- Remove `NestedScrollFlingListener` typedef.
+- Changed the fling listener to a consuming.

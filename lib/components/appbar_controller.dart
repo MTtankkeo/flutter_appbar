@@ -94,7 +94,7 @@ class AppBarController extends Listenable {
     for (final it in _positions) { it.notifyScrollEnd(position); }
   }
 
-  /// Synchronizes so that when the app bar corresponding to the first argument (index) is
+  /// Synchronizes so that when the appbar corresponding to the first argument (index) is
   /// updated, the app bar corresponding to the second argument (index) is also updated.
   void synchronizeWith(int source, int target) {
     assert(positionOf(source) != null);
