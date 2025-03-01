@@ -22,20 +22,6 @@ class AppBarController extends Listenable {
   /// The listeners called when a state of this controller changed.
   final _listeners = ObserverList<VoidCallback>();
 
-  /// The value defines the instance of [EdgeInsets] for the appbar padding.
-  EdgeInsets _padding = const EdgeInsets.all(0.0);
-
-  /// Returns the instance of [EdgeInsets] for the appbar padding.
-  EdgeInsets get padding {
-    return _padding;
-  }
-
-  /// Defines the appbar padding as a given [insets].
-  set padding(EdgeInsets insets) {
-    _padding = insets;
-    notifyListeners();
-  }
-
   /// Delegates the task of adding the appbar position to this controller
   /// to ensure it can be reliably detached and disposed later.
   void attach(AppBarPosition position) {

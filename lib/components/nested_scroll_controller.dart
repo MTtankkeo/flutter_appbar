@@ -16,6 +16,13 @@ class NestedScrollController extends ScrollController {
     ScrollContext context,
     ScrollPosition? oldPosition
   ) {
-    return NestedScrollPosition(physics: physics, context: context, oldPosition: oldPosition);
+    return NestedScrollPosition(
+      physics: physics,
+      context: context,
+      initialPixels: initialScrollOffset,
+      keepScrollOffset: keepScrollOffset,
+      oldPosition: oldPosition,
+      debugLabel: debugLabel,
+    );
   }
 }

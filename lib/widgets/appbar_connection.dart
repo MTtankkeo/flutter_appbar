@@ -129,25 +129,35 @@ class AppBarConnectionState extends State<AppBarConnection> {
         onPreScroll: _handleNestedScroll,
         onPostScroll: _handleNestedScroll,
         propagation: widget.nestedPropagation,
-        child: Column(
-          children: [
-            // Wrap the widget that acts as a scroll gesture delegator to enable
-            // scrolling by dragging a appbar.
-            ScrollableGestureDelegator(
-              controller: _scrollController,
-              child: AppBarColumn(controller: _controller, children: widget.appBars)
-            ),
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            assert(constraints.maxWidth != double.infinity);
+            assert(constraints.maxHeight != double.infinity);
+            return Column(
+              children: [
+                // Wrap the widget that acts as a scroll gesture delegator to enable
+                // scrolling by dragging a appbar.
+                ScrollableGestureDelegator(
+                  controller: _scrollController,
+                  child: AppBarColumn(
+                    controller: _controller,
+                    constraints: constraints,
+                    children: widget.appBars
+                  ),
+                ),
 
-            // With scrollable.
-            Expanded(
-              child: PrimaryScrollController(
-                scrollDirection: Axis.vertical,
-                controller: _scrollController,
-                child: widget.child
-              ),
-            ),
-          ],
-        ),
+                // With scrollable.
+                Expanded(
+                  child: PrimaryScrollController(
+                    scrollDirection: Axis.vertical,
+                    controller: _scrollController,
+                    child: widget.child
+                  ),
+                ),
+              ],
+            );
+          },
+        )
       ),
     );
   }
