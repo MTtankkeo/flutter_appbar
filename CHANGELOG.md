@@ -83,3 +83,6 @@
 - Added `nestedPropagation` property that is NestedScrollConnectionPropagation type in AppBarConnection widget.
 - Remove `NestedScrollFlingListener` typedef.
 - Changed the fling listener to a consuming.
+
+## 1.4.1
+- Fixed an issue about not initialized `NestedScrollController` inistacne in `AppBarConnection` widget.

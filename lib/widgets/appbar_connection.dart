@@ -92,7 +92,9 @@ class AppBarConnectionState extends State<AppBarConnection> {
     super.didChangeDependencies();
 
     // Initializes the scroll controller for the nested scroll position.
-    _scrollController = AppBarConnection.of(context)?._scrollController ?? NestedScrollController();
+    _scrollController = widget.scrollController
+      ?? AppBarConnection.of(context)?._scrollController
+      ?? NestedScrollController();
   }
 
   @override
