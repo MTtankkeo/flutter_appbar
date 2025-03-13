@@ -92,7 +92,7 @@ class SizedAppBar extends AppBar {
   final double maxExtent;
 }
 
-class _AppBarState extends State<AppBar> with TickerProviderStateMixin {
+class _AppBarState extends State<AppBar> with TickerProviderStateMixin, WidgetsBindingObserver {
   late final AppBarPosition _position = AppBarPosition(
     vsync: this,
     behavior: widget.behavior,
@@ -201,21 +201,13 @@ class RenderAppBar extends RenderBox with RenderObjectWithChildMixin<RenderBox> 
 
   double get lentPixels => position.lentPixels.abs();
 
-  /// When the child size previously measured in the layout phase should be recycled.
-  bool useCachedSize = false;
-
   AppBarPosition get position => _position!;
   AppBarPosition? _position;
   set position(AppBarPosition value) {
     if (_position != value) {
+      _position?.removeListener(markNeedsLayout);
       _position = value;
-      _position!.addListener(() {
-
-        // Because the size of the child widget itself has not updated,
-        // there is no need to remeasure size of child widget in the layout phase.
-        useCachedSize = true;
-        markNeedsLayout();
-      });
+      _position!.addListener(markNeedsLayout);
       markNeedsLayout();
     }
   }
@@ -290,12 +282,8 @@ class RenderAppBar extends RenderBox with RenderObjectWithChildMixin<RenderBox> 
   void performLayout() {
     // When the size needs to be calculated dynamically.
     if (!isSizedLayout) {
-      if (!useCachedSize) {
-        child.layout(constraints, parentUsesSize: true);
-        position.maxExtent = child.size.height;
-      } else {
-        useCachedSize = false;
-      }
+      child.layout(constraints, parentUsesSize: true);
+      position.maxExtent = child.size.height;
 
       final double appBarPixels = child.size.height - position.pixels;
       final double appBarHeight = appBarPixels + lentPixels;

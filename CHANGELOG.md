@@ -111,3 +111,6 @@
 - Fixed an issue where an overflow-related exception would occur when the appbar exceeded the parent height, allowing it to extend beyond the parent without causing errors.
 
 - Fixed an issue about not working initialScrollOffset in `NestedScrollController`.
+
+## 1.4.3
+- Fixed an issue where the appbar would not render in situations where both the viewport changed and its position was updated.
