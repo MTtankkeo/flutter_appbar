@@ -18,7 +18,9 @@ class ScrollableGestureDelegator extends StatefulWidget {
 
 class _ScrollableGestureDelegatorState extends State<ScrollableGestureDelegator> {
   ScrollPosition? get position {
-    return widget.controller.positions.isNotEmpty ? widget.controller.position : null;
+    return widget.controller.positions.isNotEmpty
+      ? widget.controller.positions.last
+      : null;
   }
 
   @override

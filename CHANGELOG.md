@@ -114,3 +114,6 @@
 
 ## 1.4.3
 - Fixed an issue where the appbar would not render in situations where both the viewport changed and its position was updated.
+
+## 1.4.4
+- Fixed an issue in `ScrollableGestureDelegator` where it did not flexibly reference the last ScrollPosition when multiple were present.
