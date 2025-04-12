@@ -15,6 +15,9 @@ enum NestedScrollConnectionPropagation {
   deferToAncestor
 }
 
+/// A widget that allows the ancestor to consume the new scroll offset occurring
+/// in a descendant [Scrollable] widget before it is consumed by the child.
+/// 
 /// Used by [NestedScrollConnection].
 class NestedScrollConnection extends StatefulWidget {
   const NestedScrollConnection({

@@ -1,4 +1,4 @@
-library flutter_appbar;
+library;
 
 export "components/appbar.dart";
 export "components/appbar_behavior.dart";

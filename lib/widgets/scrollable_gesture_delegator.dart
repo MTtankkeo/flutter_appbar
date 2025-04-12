@@ -1,6 +1,7 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/widgets.dart';
 
+/// A widget that deliver a gesture for [Scrollable] to a given [ScrollController].
 @protected
 class ScrollableGestureDelegator extends StatefulWidget {
   const ScrollableGestureDelegator({
