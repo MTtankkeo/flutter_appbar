@@ -25,7 +25,18 @@ class AppBarPosition extends Listenable {
   late TickerProvider vsync;
   late AppBarBehavior behavior;
 
+  /// Controls the animation for appbar alignment. (e.g., expanding, shrinking).
+  ///
+  /// This instance of [AnimationController] is typically used to drive
+  /// animations that visually represent the alignment of the app bar,
+  /// such as during expand or shrink operations.
   AnimationController? _animation;
+
+  /// Returns the pixels representing the expanded state of the appbar.
+  double get expandedPixels => 0.0;
+
+  /// Returns the pixels representing the shrinked state of the appbar.
+  double get shrinkedPixels => extent;
 
   /// Returns the normalized pixels of the appbar position.
   double get offset => _offsetNotifier.value;
@@ -56,7 +67,10 @@ class AppBarPosition extends Listenable {
   /// The value that defines the layout intrinsic size of the appbar.
   double? height;
 
+  /// The current expansion percentage(0.0 ~ 1.0) of the appbar.
   double get expandedPercent => maxExtent == 0 ? 1 : 1 - shrinkedPercent;
+
+  /// The current shrinking percentage(0.0 ~ 1.0) of the appbar.
   double get shrinkedPercent => maxExtent == 0 ? 0 : offset;
 
   /// Returns the value that finally reflected [newPixels].
@@ -107,8 +121,31 @@ class AppBarPosition extends Listenable {
     _animation!.forward();
   }
 
-  void expand() => performAlignment(AppBarAlignmentCommand.expand);
-  void shrink() => performAlignment(AppBarAlignmentCommand.shrink);
+  /// Expands the appbar to its expanded state, optionally with animation.
+  /// 
+  /// If [useAnimate] is true (default), the expansion will be animated.
+  /// Otherwise, the app bar will snap to its expanded size immediately.
+  void expand({bool useAnimate = true}) {
+    if (useAnimate) {
+      performAlignment(AppBarAlignmentCommand.expand);
+      return;
+    }
+
+    setPixels(expandedPixels);
+  }
+
+  /// Shrinks the appbar to its shrinked state, optionally with animation.
+  /// 
+  /// If [useAnimate] is true (default), the shrinking will be animated.
+  /// Otherwise, the app bar will snap to its shrunk size immediately.
+  void shrink({bool useAnimate = true}) {
+    if (useAnimate) {
+      performAlignment(AppBarAlignmentCommand.shrink);
+      return;
+    }
+
+    setPixels(shrinkedPixels);
+  }
 
   void clearAlign() {
     _animation?.dispose();
