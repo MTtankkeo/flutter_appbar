@@ -117,3 +117,6 @@
 
 ## 1.4.4
 - Fixed an issue in `ScrollableGestureDelegator` where it did not flexibly reference the last ScrollPosition when multiple were present.
+
+## 1.4.5
+- Fixed an issue for [#3](https://github.com/MTtankkeo/flutter_appbar/issues/6) about `CupertinoSliverRefreshControl` sliver widget.

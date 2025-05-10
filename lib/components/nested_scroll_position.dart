@@ -287,10 +287,10 @@ class NestedScrollPosition extends ScrollPositionWithSingleContext {
       isNestedScrolling = false;
     }
 
-    // When the scrollable size has changed, but it is already [IdleScrollActivity],
-    // so there is no need to define any further scroll activity.
-    if (velocity.abs() == 0 && activity is IdleScrollActivity) {
-      return;
+    // Fixed an issue for #6
+    // https://github.com/MTtankkeo/flutter_appbar/issues/6
+    if (activity is IdleScrollActivity) {
+      isNestedScrolling = false;
     }
 
     // When infinite scrolling is already possible, there is no need to replace
