@@ -1,6 +1,8 @@
 # Introduction
 This package implements the flexible appbar behavior, and we pursue higher performance and responsiveness than the appbar generally provided by Flutter. In addition, this package avoids unnecessary gesture contention, ensuring responsiveness in most typical situations.
 
+> I recommend using it with [flutter_refresh_indicator](https://pub.dev/packages/flutter_refresh_indicator)
+
 ## Preview
 The GIF below demonstrates the package in action. Please note that due to compression, the animation may appear distorted or choppy.
 
