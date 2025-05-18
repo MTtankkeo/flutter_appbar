@@ -64,9 +64,6 @@ class AppBarPosition extends Listenable {
   /// Returns the current intrinsic pixels of the appbar position.
   double get pixels => extent * offset;
 
-  /// The value that defines the layout intrinsic size of the appbar.
-  double? height;
-
   /// The current expansion percentage(0.0 ~ 1.0) of the appbar.
   double get expandedPercent => maxExtent == 0 ? 1 : 1 - shrinkedPercent;
 

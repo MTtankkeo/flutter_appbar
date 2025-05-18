@@ -26,14 +26,14 @@ class AppBarController extends Listenable {
   /// to ensure it can be reliably detached and disposed later.
   void attach(AppBarPosition position) {
     assert(!_positions.contains(position), "Already attached in this controller.");
-    _positions.add(position);
+    _positions.add(position..addListener(notifyListeners));
   }
 
   /// Delegates the task of detaching and disposing of the appbar position
   /// to ensure consistency with [attach] function.
   void detach(AppBarPosition position) {
     assert(_positions.contains(position), "Already not attached in this controller.");
-    _positions.remove(position);
+    _positions.remove(position..removeListener(notifyListeners));
   }
 
   /// Returns attached the appbar position in this controller by given index.
