@@ -8,9 +8,9 @@ enum AppbarPropagation {
 }
 
 /// This class provides essential functionality and roles for managing and tracking the appbar.
-/// 
+///
 /// See Also, It performs the following roles:
-/// 
+///
 /// - Manages the competition for consuming scroll offsets among app bars.
 /// - Defines and manages the state of app bars.
 /// - Rebuilds the layout through alignment and listeners.
@@ -25,14 +25,18 @@ class AppBarController extends Listenable {
   /// Delegates the task of adding the appbar position to this controller
   /// to ensure it can be reliably detached and disposed later.
   void attach(AppBarPosition position) {
-    assert(!_positions.contains(position), "Already attached in this controller.");
+    assert(
+      !_positions.contains(position),
+      "Already attached in this controller.",
+    );
     _positions.add(position..addListener(notifyListeners));
   }
 
   /// Delegates the task of detaching and disposing of the appbar position
   /// to ensure consistency with [attach] function.
   void detach(AppBarPosition position) {
-    assert(_positions.contains(position), "Already not attached in this controller.");
+    assert(_positions.contains(position),
+        "Already not attached in this controller.");
     _positions.remove(position..removeListener(notifyListeners));
   }
 
@@ -41,7 +45,8 @@ class AppBarController extends Listenable {
     return (index < _positions.length) ? _positions[index] : null;
   }
 
-  double consumeWith(double available, AppbarPropagation propagation, Function(double, AppBarPosition) func) {
+  double consumeWith(double available, AppbarPropagation propagation,
+      Function(double, AppBarPosition) func) {
     final targets = available < 0 ? _positions : _positions.reversed;
     double consumed = 0;
 
@@ -64,20 +69,40 @@ class AppBarController extends Listenable {
     return consumed;
   }
 
-  double consumeScroll(double available, ScrollPosition scroll, AppbarPropagation propagation) {
-    return consumeWith(available, propagation, (p1, p2) => p2.behavior.setPixels(p1, p2, scroll));
+  double consumeScroll(
+    double available,
+    ScrollPosition scroll,
+    AppbarPropagation propagation,
+  ) {
+    return consumeWith(
+      available,
+      propagation,
+      (p1, p2) => p2.behavior.setPixels(p1, p2, scroll),
+    );
   }
 
-  double consumeBouncing(double available, ScrollPosition scroll, AppbarPropagation propagation) {
-    return consumeWith(available, propagation, (p1, p2) => p2.behavior.setBouncing(p1, p2, scroll));
+  double consumeBouncing(
+    double available,
+    ScrollPosition scroll,
+    AppbarPropagation propagation,
+  ) {
+    return consumeWith(
+      available,
+      propagation,
+      (p1, p2) => p2.behavior.setBouncing(p1, p2, scroll),
+    );
   }
 
   void clearAlignAll() {
-    for (final it in _positions) { it.clearAlign(); }
+    for (final it in _positions) {
+      it.clearAlign();
+    }
   }
 
   void alignAll(ScrollPosition position) {
-    for (final it in _positions) { it.notifyScrollEnd(position); }
+    for (final it in _positions) {
+      it.notifyScrollEnd(position);
+    }
   }
 
   /// Synchronizes so that when the appbar corresponding to the first argument (index) is
@@ -104,7 +129,10 @@ class AppBarController extends Listenable {
 
   @override
   void removeListener(VoidCallback listener) {
-    assert(_listeners.contains(listener), "Already not exists a given listener");
+    assert(
+      _listeners.contains(listener),
+      "Already not exists a given listener.",
+    );
     _listeners.remove(listener);
   }
 

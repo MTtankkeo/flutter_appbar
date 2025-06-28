@@ -6,7 +6,7 @@ class BallisticNestedScrollActivity extends BallisticScrollActivity {
     super.delegate,
     super.simulation,
     super.vsync,
-    super.shouldIgnorePointer
+    super.shouldIgnorePointer,
   );
 
   NestedScrollPosition get position => delegate as NestedScrollPosition;

@@ -57,7 +57,7 @@ class RenderAppBarColumn extends SingleChildRenderObjectWidget {
   const RenderAppBarColumn({
     super.key,
     required super.child,
-    required this.constraints
+    required this.constraints,
   });
 
   /// The instance that defines constraints that dictate the maximum allowable size.
@@ -69,14 +69,18 @@ class RenderAppBarColumn extends SingleChildRenderObjectWidget {
   }
 
   @override
-  void updateRenderObject(BuildContext context, covariant AppBarColumnRenderBox renderObject) {
+  void updateRenderObject(
+    BuildContext context,
+    covariant AppBarColumnRenderBox renderObject,
+  ) {
     renderObject.parentConstraints = constraints;
   }
 }
 
 /// A custom render-box that ensures the app bar column does not overflow
 /// by enforcing size constraints from the parent widget(i.g. ancestor).
-class AppBarColumnRenderBox extends RenderBox with RenderObjectWithChildMixin<RenderBox> {
+class AppBarColumnRenderBox extends RenderBox
+    with RenderObjectWithChildMixin<RenderBox> {
   AppBarColumnRenderBox({required BoxConstraints parentConstraints}) {
     _parentConstraints = parentConstraints;
   }
@@ -105,7 +109,7 @@ class AppBarColumnRenderBox extends RenderBox with RenderObjectWithChildMixin<Re
     // Clamps the size to the parent constraints to prevent layout overflow.
     size = Size(
       child.size.width.clamp(0, parentConstraints.maxWidth),
-      child.size.height.clamp(0, parentConstraints.maxHeight)
+      child.size.height.clamp(0, parentConstraints.maxHeight),
     );
   }
 

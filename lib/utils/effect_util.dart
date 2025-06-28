@@ -1,4 +1,3 @@
-
 class EffectUtil {
   static double invertInRange(double value, double start, double end) {
     double minValue = start < end ? start : end;

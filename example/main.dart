@@ -28,10 +28,19 @@ class MainApp extends StatelessWidget {
                   child: const Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text("Header", style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold)),
-                      Text("dragOnlyExpanding: true", style: TextStyle(fontSize: 16)),
+                      Text(
+                        "Header",
+                        style: TextStyle(
+                          fontSize: 32,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      Text(
+                        "dragOnlyExpanding: true",
+                        style: TextStyle(fontSize: 16),
+                      ),
                     ],
-                  )
+                  ),
                 ),
               ),
               AppBar(
@@ -43,7 +52,13 @@ class MainApp extends StatelessWidget {
                   alignment: Alignment.center,
                   child: const Column(
                     children: [
-                      Text("AppBar", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                      Text(
+                        "AppBar",
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                       Text("floating: true", style: TextStyle(fontSize: 16)),
                     ],
                   ),
@@ -53,7 +68,10 @@ class MainApp extends StatelessWidget {
             child: ListView.builder(
               itemCount: 100,
               itemBuilder: (context, index) {
-                return Text("Hello, World! $index", style: const TextStyle(color: Colors.white));
+                return Text(
+                  "Hello, World! $index",
+                  style: const TextStyle(color: Colors.white),
+                );
               },
             ),
           ),

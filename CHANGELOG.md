@@ -120,3 +120,6 @@
 
 ## 1.4.5
 - Fixed an issue for [#6](https://github.com/MTtankkeo/flutter_appbar/issues/6) about `CupertinoSliverRefreshControl` sliver widget.
+
+## 1.4.6
+- Refactored code to follow Dart formatting conventions.

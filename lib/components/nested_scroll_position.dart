@@ -17,13 +17,13 @@ class NestedScrollEndNotification extends ScrollNotification {
 
 /// Facilitate the implementation of appbar behavior through interaction
 /// with [NestedScrollConnection].
-/// 
+///
 /// By default, if scroll offset consumed all by appbar,
 /// must be maintain the `non-clamping` or `non-bouncing` scrolling behavior.
-/// 
+///
 /// - This implies that ballistic scroll-activity should be performed
 ///   without considering the min-extent and max-extent of the scroll.
-/// 
+///
 /// Used by [NestedScrollController].
 class NestedScrollPosition extends ScrollPositionWithSingleContext {
   NestedScrollPosition({
@@ -66,7 +66,9 @@ class NestedScrollPosition extends ScrollPositionWithSingleContext {
   double _preScroll(double available) {
     final targetContext = context.notificationContext;
     if (targetContext != null) {
-      return NestedScrollConnection.of(targetContext)?.preScroll(available, this) ?? 0.0;
+      return NestedScrollConnection.of(targetContext)
+              ?.preScroll(available, this) ??
+          0.0;
     }
 
     return 0.0;
@@ -76,7 +78,9 @@ class NestedScrollPosition extends ScrollPositionWithSingleContext {
   double _postScroll(double available) {
     final targetContext = context.notificationContext;
     if (targetContext != null) {
-      return NestedScrollConnection.of(targetContext)?.postScroll(available, this) ?? 0.0;
+      return NestedScrollConnection.of(targetContext)
+              ?.postScroll(available, this) ??
+          0.0;
     }
 
     return 0.0;
@@ -86,7 +90,8 @@ class NestedScrollPosition extends ScrollPositionWithSingleContext {
   double _fling(double velocity) {
     final targetContext = context.notificationContext;
     if (targetContext != null) {
-      return NestedScrollConnection.of(targetContext)?.fling(velocity, this) ?? velocity;
+      return NestedScrollConnection.of(targetContext)?.fling(velocity, this) ??
+          velocity;
     }
 
     return velocity;
@@ -96,7 +101,9 @@ class NestedScrollPosition extends ScrollPositionWithSingleContext {
   double _bouncing(double available) {
     final targetContext = context.notificationContext;
     if (targetContext != null) {
-      return NestedScrollConnection.of(targetContext)?.bouncing(available, this) ?? available;
+      return NestedScrollConnection.of(targetContext)
+              ?.bouncing(available, this) ??
+          available;
     }
 
     return available;
@@ -126,7 +133,11 @@ class NestedScrollPosition extends ScrollPositionWithSingleContext {
     didOverscroll();
   }
 
-  double overscrollOf(double value, double minScrollExtent, double maxScrollExtent) {
+  double overscrollOf(
+    double value,
+    double minScrollExtent,
+    double maxScrollExtent,
+  ) {
     if (lentPixels + value > maxScrollExtent) {
       return value - maxScrollExtent;
     } else if (lentPixels + value < minScrollExtent) {
@@ -136,8 +147,13 @@ class NestedScrollPosition extends ScrollPositionWithSingleContext {
     return 0.0; // No overscroll
   }
 
-  double setPostPixels(double newPixels, double clipedOverscroll, double systemOverscroll) {
-    final double overscroll = overscrollOf(newPixels, minScrollExtent, maxScrollExtent);
+  double setPostPixels(
+    double newPixels,
+    double clipedOverscroll,
+    double systemOverscroll,
+  ) {
+    final double overscroll =
+        overscrollOf(newPixels, minScrollExtent, maxScrollExtent);
     final double oldPixels = pixels;
     final double rawPixels = newPixels - overscroll;
     final double overDelta = systemOverscroll - clipedOverscroll;
@@ -155,9 +171,10 @@ class NestedScrollPosition extends ScrollPositionWithSingleContext {
     correctPixels(rawPixels);
 
     final double available = isBouncing ? -overDelta : -clipedOverscroll;
-    final double consumed = (isBouncing ? overDelta != 0.0 : clipedOverscroll != 0.0)
-      ? _postScroll(available)
-      : 0.0;
+    final double consumed =
+        (isBouncing ? overDelta != 0.0 : clipedOverscroll != 0.0)
+            ? _postScroll(available)
+            : 0.0;
 
     clipedOverscroll += consumed;
 
@@ -197,8 +214,10 @@ class NestedScrollPosition extends ScrollPositionWithSingleContext {
 
   @override
   void applyUserOffset(double delta) {
-    updateUserScrollDirection(delta > 0.0 ? ScrollDirection.forward : ScrollDirection.reverse);
-    setPixels(pixels - physics.applyPhysicsToUserOffset(copyWith(pixels: totalPixels), delta));
+    updateUserScrollDirection(
+        delta > 0.0 ? ScrollDirection.forward : ScrollDirection.reverse);
+    setPixels(pixels -
+        physics.applyPhysicsToUserOffset(copyWith(pixels: totalPixels), delta));
   }
 
   @override
@@ -213,15 +232,19 @@ class NestedScrollPosition extends ScrollPositionWithSingleContext {
 
     final bool isOldOverscrolledForward = totalPixels < super.minScrollExtent;
     final bool isOldOverscrolledBackward = totalPixels > super.maxScrollExtent;
-    final bool isNewOverscrolledForward = lentPixels + newPixels < super.minScrollExtent;
-    final bool isNewOverscrolledBackward = lentPixels + newPixels > super.maxScrollExtent;
-    final bool isOldOverscrolled = isOldOverscrolledForward || isOldOverscrolledBackward;
-    final bool isNewOverscrolled = isNewOverscrolledForward || isNewOverscrolledBackward;
+    final bool isNewOverscrolledForward =
+        lentPixels + newPixels < super.minScrollExtent;
+    final bool isNewOverscrolledBackward =
+        lentPixels + newPixels > super.maxScrollExtent;
+    final bool isOldOverscrolled =
+        isOldOverscrolledForward || isOldOverscrolledBackward;
+    final bool isNewOverscrolled =
+        isNewOverscrolledForward || isNewOverscrolledBackward;
 
     // When the overscroll direction immediately switches to
     // the forward or backward direction, or vice versa.
-    if (isOldOverscrolledForward && isNewOverscrolledBackward
-     || isOldOverscrolledBackward && isNewOverscrolledForward) {
+    if (isOldOverscrolledForward && isNewOverscrolledBackward ||
+        isOldOverscrolledBackward && isNewOverscrolledForward) {
       _ensureLentPixels();
     }
 
@@ -240,21 +263,23 @@ class NestedScrollPosition extends ScrollPositionWithSingleContext {
         _ensureLentPixels();
       }
     } else if (isOldOverscrolledForward && isNewOverscrolledBackward) {
-
       // Transition from forward overscroll to backward overscroll.
       correctPixels(super.maxScrollExtent);
     } else if (isOldOverscrolledBackward && isNewOverscrolledForward) {
-
       // Transition from backward overscroll to forward overscroll.
       correctPixels(super.minScrollExtent);
     }
 
     final double clipedOverscroll = applyBoundaryConditions(newPixels);
-    final double systemOverscroll = overscrollOf(newPixels, minScrollExtent, maxScrollExtent);
+    final double systemOverscroll = overscrollOf(
+      newPixels,
+      minScrollExtent,
+      maxScrollExtent,
+    );
     final double overDelta = systemOverscroll - clipedOverscroll;
 
-    if (pixels + overDelta < minScrollExtent
-     || pixels + overDelta > maxScrollExtent) {
+    if (pixels + overDelta < minScrollExtent ||
+        pixels + overDelta > maxScrollExtent) {
       isNestedScrolling = true;
     }
 
@@ -267,7 +292,8 @@ class NestedScrollPosition extends ScrollPositionWithSingleContext {
       return 0.0;
     }
 
-    return setPostPixels(newPixels + consumed, clipedOverscroll, systemOverscroll);
+    return setPostPixels(
+        newPixels + consumed, clipedOverscroll, systemOverscroll);
   }
 
   /// Reflects the given new pixels in the this position without
@@ -295,18 +321,23 @@ class NestedScrollPosition extends ScrollPositionWithSingleContext {
 
     // When infinite scrolling is already possible, there is no need to replace
     // the [BallisticScrollActivity] instance even if the size has changed.
-    if (velocity != 0 && isNestedScrolling && activity is BallisticNestedScrollActivity) {
+    if (velocity != 0 &&
+        isNestedScrolling &&
+        activity is BallisticNestedScrollActivity) {
       return;
     }
 
     assert(hasPixels);
     final Simulation? simulation = physics.createBallisticSimulation(
-      // If it's true, must begin non-clamping scrolling.
-      isNestedScrolling
-        ? copyWith(minScrollExtent: -double.infinity, maxScrollExtent: double.infinity, pixels: totalPixels)
-        : copyWith(pixels: totalPixels),
-      velocity
-    );
+        // If it's true, must begin non-clamping scrolling.
+        isNestedScrolling
+            ? copyWith(
+                minScrollExtent: -double.infinity,
+                maxScrollExtent: double.infinity,
+                pixels: totalPixels,
+              )
+            : copyWith(pixels: totalPixels),
+        velocity);
 
     if (simulation != null) {
       beginActivity(BallisticNestedScrollActivity(
@@ -328,7 +359,7 @@ class NestedScrollPosition extends ScrollPositionWithSingleContext {
       NestedScrollEndNotification(
         metrics: copyWith(),
         context: context.notificationContext,
-        target: this
+        target: this,
       ),
     );
   }

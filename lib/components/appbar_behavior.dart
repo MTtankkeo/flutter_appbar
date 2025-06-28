@@ -10,6 +10,7 @@ import 'package:flutter_appbar/components/nested_scroll_position.dart';
 enum AppBarAlignmentCommand {
   /// Align to expanded state.
   expand,
+
   /// Align to shrunk state.
   shrink,
 }
@@ -30,7 +31,7 @@ abstract class AppBarBehavior {
 
   /// Updates the given appbar based on available scroll offset,
   /// the current appbar position, and the scroll position.
-  /// 
+  ///
   /// And, returns the value remaining after consumption.
   double setPixels(
     double available,
@@ -41,7 +42,7 @@ abstract class AppBarBehavior {
   double setBouncing(
     double available,
     AppBarPosition appBar,
-    ScrollPosition scroll
+    ScrollPosition scroll,
   );
 
   /// Determines the alignment of the appbar based on appbar position and scroll.
@@ -59,8 +60,14 @@ abstract class DrivenAppBarBehavior extends AppBarBehavior {
   final bool bouncing;
 
   @override
-  double setBouncing(double available, AppBarPosition appBar, ScrollPosition scroll) {
-    if (bouncing && (scroll as NestedScrollPosition).totalPixels + available <= 0) {
+  double setBouncing(
+    double available,
+    AppBarPosition appBar,
+    ScrollPosition scroll,
+  ) {
+    scroll = scroll as NestedScrollPosition;
+
+    if (bouncing && scroll.totalPixels + available <= 0) {
       appBar.lentPixels += available;
       return available;
     }
@@ -70,19 +77,24 @@ abstract class DrivenAppBarBehavior extends AppBarBehavior {
 }
 
 class AbsoluteAppBarBehavior extends DrivenAppBarBehavior {
-  const AbsoluteAppBarBehavior({
-    super.bouncing = false
-  });
+  const AbsoluteAppBarBehavior({super.bouncing = false});
 
   @override
-  AppBarAlignmentCommand? align(AppBarPosition appBar, ScrollPosition scroll) => null;
+  AppBarAlignmentCommand? align(
+    AppBarPosition appBar,
+    ScrollPosition scroll,
+  ) {
+    return null;
+  }
 
   @override
   double setPixels(
     double available,
     AppBarPosition appBar,
-    ScrollPosition scroll
-  ) => 0;
+    ScrollPosition scroll,
+  ) {
+    return 0.0;
+  }
 }
 
 class MaterialAppBarBehavior extends DrivenAppBarBehavior {
@@ -101,7 +113,7 @@ class MaterialAppBarBehavior extends DrivenAppBarBehavior {
   final bool floating;
 
   /// Whether the appbar can only be expanded by drag.
-  /// 
+  ///
   /// See also:
   /// - If [floating] is true, must be define false.
   final bool dragOnlyExpanding;
@@ -113,16 +125,18 @@ class MaterialAppBarBehavior extends DrivenAppBarBehavior {
   final bool alignAnimation;
 
   @override
-  double setPixels(double available, AppBarPosition appBar, ScrollPosition scroll) {
-    assert(floating ? !dragOnlyExpanding : true, "[floating] and [dragOnlyExpanding] cannot be used together.");
+  double setPixels(
+      double available, AppBarPosition appBar, ScrollPosition scroll) {
+    assert(floating ? !dragOnlyExpanding : true,
+        "[floating] and [dragOnlyExpanding] cannot be used together.");
 
     // APPBAR SCROLLING CONSTRAINTS
 
     scroll = scroll as NestedScrollPosition;
 
     // No consume when bouncing overscroll for appbar pixels safety.
-    if (scroll.totalPixels < scroll.minScrollExtent
-     || scroll.totalPixels > scroll.maxScrollExtent) {
+    if (scroll.totalPixels < scroll.minScrollExtent ||
+        scroll.totalPixels > scroll.maxScrollExtent) {
       return 0;
     }
 
@@ -130,9 +144,9 @@ class MaterialAppBarBehavior extends DrivenAppBarBehavior {
       // No consume when scroll offset is zero ~ infinity.
       if (scroll.pixels > precisionErrorTolerance) return 0;
 
-      if (dragOnlyExpanding
-       && scroll.isBallisticScrolling
-       && appBar.shrinkedPercent == 1) {
+      if (dragOnlyExpanding &&
+          scroll.isBallisticScrolling &&
+          appBar.shrinkedPercent == 1) {
         return 0;
       }
     }
@@ -148,7 +162,10 @@ class MaterialAppBarBehavior extends DrivenAppBarBehavior {
     // When the app bar scrolls the layout intrinsic size changes so this
     // information is preemptively communicated to the [ScrollPosition].
     if (consumed.abs() > precisionErrorTolerance) {
-      scroll.applyContentDimensions(minScrollExtent, max(minScrollExtent, maxScrollExtent + consumed));
+      scroll.applyContentDimensions(
+        minScrollExtent,
+        max(minScrollExtent, maxScrollExtent + consumed),
+      );
     }
 
     return consumed;
@@ -158,8 +175,8 @@ class MaterialAppBarBehavior extends DrivenAppBarBehavior {
   AppBarAlignmentCommand? align(AppBarPosition appBar, ScrollPosition scroll) {
     if (alignAnimation) {
       return appBar.expandedPercent < 0.5
-        ? AppBarAlignmentCommand.shrink
-        : AppBarAlignmentCommand.expand;
+          ? AppBarAlignmentCommand.shrink
+          : AppBarAlignmentCommand.expand;
     }
 
     return null;

@@ -3,18 +3,23 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_appbar/flutter_appbar.dart';
 
 /// Signature for a function that creates a widget for a appbar.
-/// 
+///
 /// Used by [AppBar.builder].
-typedef AppBarBuilder = Widget Function(BuildContext context, AppBarPosition position);
+typedef AppBarBuilder = Widget Function(
+  BuildContext context,
+  AppBarPosition position,
+);
 
 /// This enum provides multiple alignment options for positioning
 /// the appbar relative to the scroll behavior and layout size.
 enum AppBarAlignment {
   /// Sets to display the same as the scroll item. (default)
   absolute,
+
   /// Sets to based on the size of the appbar, the center
   /// is located at the center of the size of the appbar.
   center,
+
   /// Sets to even if the appbar is reduced and expanded,
   /// the absolute position of the appbar does not change.
   scroll,
@@ -41,14 +46,12 @@ class AppBar extends StatefulWidget {
     this.alignment = AppBarAlignment.scroll,
     this.bouncingAlignment = AppBarAlignment.scroll,
     this.initialOffset = 0,
-  }) : builder = ((_, position) {
-
-    // When position is updated, the widget state is also updated.
-    return AnimatedBuilder(animation: position, builder: (context, _) => builder(context, position));
-  });
+  }) {
+    builder = _defaultBuilder;
+  }
 
   /// The function that creates a widget for the appbar.
-  final AppBarBuilder builder;
+  late final AppBarBuilder builder;
 
   /// The instance that defines the behavior of the appbar that is
   /// including how it consumes scroll offsets and aligns appbar.
@@ -64,6 +67,14 @@ class AppBar extends StatefulWidget {
   /// The value that defines initial normalized appbar offset.
   /// Therefore, this value must be defined from 0 to 1.
   final double initialOffset;
+
+  /// When position is updated, the widget state is also updated.
+  Widget _defaultBuilder(BuildContext _, AppBarPosition position) {
+    return ListenableBuilder(
+      listenable: position,
+      builder: (context, _) => builder(context, position),
+    );
+  }
 
   @override
   State<AppBar> createState() => _AppBarState();
@@ -92,11 +103,12 @@ class SizedAppBar extends AppBar {
   final double maxExtent;
 }
 
-class _AppBarState extends State<AppBar> with TickerProviderStateMixin, WidgetsBindingObserver {
+class _AppBarState extends State<AppBar>
+    with TickerProviderStateMixin, WidgetsBindingObserver {
   late final AppBarPosition _position = AppBarPosition(
     vsync: this,
     behavior: widget.behavior,
-    initialOffset: widget.initialOffset
+    initialOffset: widget.initialOffset,
   );
 
   late final AppBarConnectionState? _connection;
@@ -106,7 +118,8 @@ class _AppBarState extends State<AppBar> with TickerProviderStateMixin, WidgetsB
     super.initState();
 
     _connection = AppBarConnection.of(context);
-    assert(_connection != null, "AppBarConnection widget does not exist at the ancestor.");
+    assert(_connection != null,
+        "AppBarConnection widget does not exist at the ancestor.");
 
     // Attach the initial position to the appbar controller.
     _connection?.attach(_position);
@@ -130,10 +143,12 @@ class _AppBarState extends State<AppBar> with TickerProviderStateMixin, WidgetsB
 
   @override
   Widget build(BuildContext context) {
+    final bool isSizedAppBar = widget is SizedAppBar;
+
     return ClipRRect(
       child: _AppBar(
-        minExtent: widget is SizedAppBar ? (widget as SizedAppBar).minExtent : null,
-        maxExtent: widget is SizedAppBar ? (widget as SizedAppBar).maxExtent : null,
+        minExtent: isSizedAppBar ? (widget as SizedAppBar).minExtent : null,
+        maxExtent: isSizedAppBar ? (widget as SizedAppBar).maxExtent : null,
         position: _position,
         alignment: widget.alignment,
         bouncingAlignment: widget.bouncingAlignment,
@@ -150,7 +165,7 @@ class _AppBar extends SingleChildRenderObjectWidget {
     this.maxExtent,
     required this.position,
     required this.alignment,
-    required this.bouncingAlignment
+    required this.bouncingAlignment,
   });
 
   final double? minExtent;
@@ -166,7 +181,7 @@ class _AppBar extends SingleChildRenderObjectWidget {
       maxExtent: maxExtent,
       position: position,
       alignment: alignment,
-      bouncingAlignment: bouncingAlignment
+      bouncingAlignment: bouncingAlignment,
     );
   }
 
@@ -181,13 +196,14 @@ class _AppBar extends SingleChildRenderObjectWidget {
   }
 }
 
-class RenderAppBar extends RenderBox with RenderObjectWithChildMixin<RenderBox> {
+class RenderAppBar extends RenderBox
+    with RenderObjectWithChildMixin<RenderBox> {
   RenderAppBar({
     required double? minExtent,
     required double? maxExtent,
     required AppBarPosition position,
     required AppBarAlignment alignment,
-    required AppBarAlignment bouncingAlignment
+    required AppBarAlignment bouncingAlignment,
   }) {
     this.minExtent = minExtent;
     this.maxExtent = maxExtent;
@@ -254,7 +270,9 @@ class RenderAppBar extends RenderBox with RenderObjectWithChildMixin<RenderBox> 
   @override
   BoxConstraints get constraints {
     if (isSizedLayout) {
-      return super.constraints.copyWith(maxHeight: (maxExtent! - position.pixels) + lentPixels);
+      return super
+          .constraints
+          .copyWith(maxHeight: (maxExtent! - position.pixels) + lentPixels);
     }
 
     return super.constraints;
@@ -264,15 +282,21 @@ class RenderAppBar extends RenderBox with RenderObjectWithChildMixin<RenderBox> 
     Offset result;
 
     switch (alignment) {
-      case AppBarAlignment.absolute: result = offset;
-      case AppBarAlignment.center: result = Offset(offset.dx, offset.dy - position.pixels / 2);
-      case AppBarAlignment.scroll: result = Offset(offset.dx, offset.dy - position.pixels);
+      case AppBarAlignment.absolute:
+        result = offset;
+      case AppBarAlignment.center:
+        result = Offset(offset.dx, offset.dy - position.pixels / 2);
+      case AppBarAlignment.scroll:
+        result = Offset(offset.dx, offset.dy - position.pixels);
     }
 
     switch (bouncingAlignment) {
-      case AppBarAlignment.absolute: result = result.translate(0, 0);
-      case AppBarAlignment.center: result = result.translate(0, lentPixels / 2);
-      case AppBarAlignment.scroll: result = result.translate(0, lentPixels);
+      case AppBarAlignment.absolute:
+        result = result.translate(0, 0);
+      case AppBarAlignment.center:
+        result = result.translate(0, lentPixels / 2);
+      case AppBarAlignment.scroll:
+        result = result.translate(0, lentPixels);
     }
 
     return result;
@@ -308,7 +332,8 @@ class RenderAppBar extends RenderBox with RenderObjectWithChildMixin<RenderBox> 
 
   @override
   bool hitTest(BoxHitTestResult result, {required Offset position}) {
-    final Offset translatedOffset = isSizedLayout ? Offset.zero : translate(Offset.zero);
+    final Offset translatedOffset =
+        isSizedLayout ? Offset.zero : translate(Offset.zero);
 
     // Adjusts the position to compensate for the offset modification.
     return result.addWithPaintOffset(

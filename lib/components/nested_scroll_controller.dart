@@ -14,7 +14,7 @@ class NestedScrollController extends ScrollController {
   ScrollPosition createScrollPosition(
     ScrollPhysics physics,
     ScrollContext context,
-    ScrollPosition? oldPosition
+    ScrollPosition? oldPosition,
   ) {
     return NestedScrollPosition(
       physics: physics,

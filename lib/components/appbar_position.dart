@@ -99,7 +99,8 @@ class AppBarPosition extends Listenable {
   /// and a given appbar alignment behavior.
   void performAlignment(AppBarAlignmentCommand command) {
     final start = pixels;
-    final end = command == AppBarAlignmentCommand.shrink ? maxExtent : minExtent;
+    final end =
+        command == AppBarAlignmentCommand.shrink ? maxExtent : minExtent;
 
     /// If the target pixels and the current pixels are the same,
     /// a appbar is no need to align.
@@ -108,10 +109,12 @@ class AppBarPosition extends Listenable {
     }
 
     _animation?.dispose();
-    _animation = AnimationController(vsync: vsync, duration: behavior.alignDuration);
+    _animation =
+        AnimationController(vsync: vsync, duration: behavior.alignDuration);
     _animation!.addListener(() {
       final newVector = end - start;
-      final newPixels = start + (newVector * behavior.alignCurve.transform(_animation!.value));
+      final newPixels = start +
+          (newVector * behavior.alignCurve.transform(_animation!.value));
 
       setPixels(newPixels);
     });
@@ -119,7 +122,7 @@ class AppBarPosition extends Listenable {
   }
 
   /// Expands the appbar to its expanded state, optionally with animation.
-  /// 
+  ///
   /// If [useAnimate] is true (default), the expansion will be animated.
   /// Otherwise, the app bar will snap to its expanded size immediately.
   void expand({bool useAnimate = true}) {
@@ -132,7 +135,7 @@ class AppBarPosition extends Listenable {
   }
 
   /// Shrinks the appbar to its shrinked state, optionally with animation.
-  /// 
+  ///
   /// If [useAnimate] is true (default), the shrinking will be animated.
   /// Otherwise, the app bar will snap to its shrunk size immediately.
   void shrink({bool useAnimate = true}) {
@@ -157,7 +160,10 @@ class AppBarPosition extends Listenable {
 
   @override
   void removeListener(VoidCallback listener) {
-    assert(_listeners.contains(listener), "Already not exists a given listener.");
+    assert(
+      _listeners.contains(listener),
+      "Already not exists a given listener.",
+    );
     _listeners.remove(listener);
   }
 

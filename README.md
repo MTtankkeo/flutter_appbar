@@ -1,6 +1,12 @@
 # Introduction
 This package implements the flexible appbar behavior, and we pursue higher performance and responsiveness than the appbar generally provided by Flutter. In addition, this package avoids unnecessary gesture contention, ensuring responsiveness in most typical situations.
 
+## Related Packages
+| Name | Introduction |
+| ---- | ------------ |
+| [flutter_refresh_indicator](https://pub.dev/packages/flutter_refresh_indicator) | A flexible, native-like refresh indicator built on flutter_appbar. |
+| [flutter_infinite_scroll_pagination ](https://pub.dev/packages/flutter_infinite_scroll_pagination) | Easy infinite scroll loading with one-line wrapping, no setup needed. |
+
 ## Preview
 The GIF below demonstrates the package in action. Please note that due to compression, the animation may appear distorted or choppy.
 

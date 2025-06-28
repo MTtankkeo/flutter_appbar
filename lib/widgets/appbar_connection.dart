@@ -11,11 +11,11 @@ import 'package:flutter_appbar/widgets/scrollable_gesture_delegator.dart';
 /// ## Introduction
 /// Synchronize appbars with [Scrollable] to configure dynamic appbar behavior
 /// by nested scroll for your cool and sexy, wonderful application.
-/// 
+///
 /// See Also, And all of this can be implemented as a single [Scrollable].
-/// 
+///
 /// ## Usage
-/// 
+///
 /// ### How to use this widget?
 /// ```dart
 /// AppBarConnection(
@@ -50,7 +50,7 @@ class AppBarConnection extends StatefulWidget {
 
   /// Finds the ancestor [AppBarConnectionState] from the closest instance of this class
   /// that encloses the given context.
-  /// 
+  ///
   /// Used by [AppBar].
   static AppBarConnectionState? of(BuildContext context) {
     return context.findAncestorStateOfType<AppBarConnectionState>();
@@ -80,11 +80,7 @@ class AppBarConnectionState extends State<AppBarConnection> {
   }
 
   double _handleBouncing(double available, ScrollPosition position) {
-    return _controller.consumeBouncing(
-      available,
-      position,
-      widget.propagation
-    );
+    return _controller.consumeBouncing(available, position, widget.propagation);
   }
 
   @override
@@ -92,9 +88,9 @@ class AppBarConnectionState extends State<AppBarConnection> {
     super.didChangeDependencies();
 
     // Initializes the scroll controller for the nested scroll position.
-    _scrollController = widget.scrollController
-      ?? AppBarConnection.of(context)?._scrollController
-      ?? NestedScrollController();
+    _scrollController = widget.scrollController ??
+        AppBarConnection.of(context)?._scrollController ??
+        NestedScrollController();
   }
 
   @override
@@ -107,7 +103,8 @@ class AppBarConnectionState extends State<AppBarConnection> {
   void didUpdateWidget(AppBarConnection oldWidget) {
     super.didUpdateWidget(oldWidget);
 
-    if (oldWidget.controller != null && oldWidget.controller != widget.controller) {
+    if (oldWidget.controller != null &&
+        oldWidget.controller != widget.controller) {
       _controller = widget.controller!..delegateFrom(_controller);
     }
   }
@@ -125,40 +122,39 @@ class AppBarConnectionState extends State<AppBarConnection> {
         return false;
       },
       child: NestedScrollConnection(
-        onBouncing: _handleBouncing,
-        onPreScroll: _handleNestedScroll,
-        onPostScroll: _handleNestedScroll,
-        propagation: widget.nestedPropagation,
-        child: LayoutBuilder(
-          builder: (context, constraints) {
-            assert(constraints.maxWidth != double.infinity);
-            assert(constraints.maxHeight != double.infinity);
-            return Column(
-              children: [
-                // Wrap the widget that acts as a scroll gesture delegator to enable
-                // scrolling by dragging a appbar.
-                ScrollableGestureDelegator(
-                  controller: _scrollController,
-                  child: AppBarColumn(
-                    controller: _controller,
-                    constraints: constraints,
-                    children: widget.appBars
-                  ),
-                ),
-
-                // With scrollable.
-                Expanded(
-                  child: PrimaryScrollController(
-                    scrollDirection: Axis.vertical,
+          onBouncing: _handleBouncing,
+          onPreScroll: _handleNestedScroll,
+          onPostScroll: _handleNestedScroll,
+          propagation: widget.nestedPropagation,
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              assert(constraints.maxWidth != double.infinity);
+              assert(constraints.maxHeight != double.infinity);
+              return Column(
+                children: [
+                  // Wrap the widget that acts as a scroll gesture delegator to enable
+                  // scrolling by dragging a appbar.
+                  ScrollableGestureDelegator(
                     controller: _scrollController,
-                    child: widget.child
+                    child: AppBarColumn(
+                      controller: _controller,
+                      constraints: constraints,
+                      children: widget.appBars,
+                    ),
                   ),
-                ),
-              ],
-            );
-          },
-        )
-      ),
+
+                  // With scrollable.
+                  Expanded(
+                    child: PrimaryScrollController(
+                      scrollDirection: Axis.vertical,
+                      controller: _scrollController,
+                      child: widget.child,
+                    ),
+                  ),
+                ],
+              );
+            },
+          )),
     );
   }
 }
