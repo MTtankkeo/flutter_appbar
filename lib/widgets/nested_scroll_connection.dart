@@ -3,7 +3,15 @@ import 'package:flutter/widgets.dart';
 
 /// Signature for the callback that is called when nested scroll event consuming.
 typedef NestedScrollListener = double Function(
-    double available, ScrollPosition position);
+  double available,
+  ScrollPosition position,
+);
+
+/// Signature for the callback that returns a [NestedScrollListener] which
+/// handles nested scroll consumption logic based on the connection.
+typedef NestedScrollConsumer = NestedScrollListener? Function(
+  NestedScrollConnection connection,
+);
 
 /// The enumeration that defines how nested scrolling events are handled.
 enum NestedScrollConnectionPropagation {
@@ -13,7 +21,11 @@ enum NestedScrollConnectionPropagation {
 
   /// Sets scrolling events to be deferred to an ancestor
   /// before being handled by the current widget.
-  deferToAncestor
+  deferToAncestor,
+
+  /// Sets downward scrolls to be handled by the child first,
+  /// while upward scrolls are handled by the ancestor first.
+  directional,
 }
 
 /// A widget that allows the ancestor to consume the new scroll offset occurring
@@ -27,7 +39,7 @@ class NestedScrollConnection extends StatefulWidget {
     this.onPostScroll,
     this.onFling,
     this.onBouncing,
-    this.propagation = NestedScrollConnectionPropagation.selfFirst,
+    this.propagation = NestedScrollConnectionPropagation.directional,
     required this.child,
   });
 
@@ -38,8 +50,8 @@ class NestedScrollConnection extends StatefulWidget {
   final NestedScrollConnectionPropagation propagation;
   final Widget child;
 
-  /// Finds the ancestor [NestedScrollConnectionState] from the closest instance of this class
-  /// that encloses the given context.
+  /// Finds the ancestor [NestedScrollConnectionState] from the closest
+  /// instance of this class that encloses the given context.
   static NestedScrollConnectionState? of(BuildContext context) {
     return context.findAncestorStateOfType<NestedScrollConnectionState>();
   }
@@ -49,23 +61,55 @@ class NestedScrollConnection extends StatefulWidget {
 }
 
 class NestedScrollConnectionState extends State<NestedScrollConnection> {
+  /// Returns a list of [NestedScrollConnection] widgets
+  /// including self and all ancestor widgets up the tree.
+  List<NestedScrollConnection> findSelfAndAncestorWidgets() {
+    final List<NestedScrollConnection> widgets = [widget];
+
+    context.visitAncestorElements((element) {
+      if (element.widget is NestedScrollConnection) {
+        widgets.add(element.widget as NestedScrollConnection);
+      }
+
+      return true;
+    });
+
+    return widgets;
+  }
+
   double consumeWith(
-      double available,
-      ScrollPosition position,
-      NestedScrollListener? selfListener,
-      NestedScrollListener? ancestorListener) {
-    final double consumed;
+    double available,
+    ScrollPosition position,
+    NestedScrollConsumer selfConsumer,
+    NestedScrollConsumer ancestorConsumer,
+  ) {
+    double consumed = 0;
 
     if (widget.propagation == NestedScrollConnectionPropagation.selfFirst) {
-      consumed = selfListener?.call(available, position) ?? 0.0;
+      consumed = selfConsumer(widget)?.call(available, position) ?? 0.0;
       if ((consumed - available).abs() > precisionErrorTolerance) {
-        return ancestorListener?.call(available - consumed, position) ??
+        return ancestorConsumer(widget)?.call(available - consumed, position) ??
+            consumed;
+      }
+    } else if (widget.propagation ==
+        NestedScrollConnectionPropagation.deferToAncestor) {
+      consumed = ancestorConsumer(widget)?.call(available, position) ?? 0.0;
+      if ((consumed - available).abs() > precisionErrorTolerance) {
+        return selfConsumer(widget)?.call(available - consumed, position) ??
             consumed;
       }
     } else {
-      consumed = ancestorListener?.call(available, position) ?? 0.0;
-      if ((consumed - available).abs() > precisionErrorTolerance) {
-        return selfListener?.call(available - consumed, position) ?? consumed;
+      final targets = available > 0
+          ? findSelfAndAncestorWidgets()
+          : findSelfAndAncestorWidgets().reversed;
+
+      for (final it in targets) {
+        consumed += selfConsumer(it)?.call(available - consumed, position) ?? 0;
+
+        // If when all consumed, stops the travel.
+        if ((consumed - available).abs() < precisionErrorTolerance) {
+          break;
+        }
       }
     }
 
@@ -73,23 +117,39 @@ class NestedScrollConnectionState extends State<NestedScrollConnection> {
   }
 
   double preScroll(double available, ScrollPosition position) {
-    return consumeWith(available, position, widget.onPreScroll,
-        NestedScrollConnection.of(context)?.preScroll);
+    return consumeWith(
+      available,
+      position,
+      (connection) => connection.onPreScroll,
+      (connection) => NestedScrollConnection.of(context)?.preScroll,
+    );
   }
 
   double postScroll(double available, ScrollPosition position) {
-    return consumeWith(available, position, widget.onPostScroll,
-        NestedScrollConnection.of(context)?.postScroll);
+    return consumeWith(
+      available,
+      position,
+      (connection) => connection.onPostScroll,
+      (connection) => NestedScrollConnection.of(context)?.postScroll,
+    );
   }
 
   double fling(double available, ScrollPosition position) {
-    return consumeWith(available, position, widget.onFling,
-        NestedScrollConnection.of(context)?.fling);
+    return consumeWith(
+      available,
+      position,
+      (connection) => connection.onFling,
+      (connection) => NestedScrollConnection.of(context)?.fling,
+    );
   }
 
   double bouncing(double available, ScrollPosition position) {
-    return consumeWith(available, position, widget.onBouncing,
-        NestedScrollConnection.of(context)?.bouncing);
+    return consumeWith(
+      available,
+      position,
+      (connection) => connection.onBouncing,
+      (connection) => NestedScrollConnection.of(context)?.bouncing,
+    );
   }
 
   @override

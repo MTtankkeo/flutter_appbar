@@ -123,3 +123,7 @@
 
 ## 1.4.6
 - Refactored code to follow Dart formatting conventions.
+
+## 1.5.0
+- Added `NestedScrollConnectionPropagation.directional` option and set it as the default behavior.  
+It now works flexibly and correctly in most scenarios without requiring developers to manually define `NestedScrollConnectionPropagation` for each case.

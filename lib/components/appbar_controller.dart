@@ -45,8 +45,11 @@ class AppBarController extends Listenable {
     return (index < _positions.length) ? _positions[index] : null;
   }
 
-  double consumeWith(double available, AppbarPropagation propagation,
-      Function(double, AppBarPosition) func) {
+  double consumeWith(
+    double available,
+    AppbarPropagation propagation,
+    Function(double, AppBarPosition) func,
+  ) {
     final targets = available < 0 ? _positions : _positions.reversed;
     double consumed = 0;
 
