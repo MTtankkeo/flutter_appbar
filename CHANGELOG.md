@@ -127,3 +127,8 @@
 ## 1.5.0
 - Added `NestedScrollConnectionPropagation.directional` option and set it as the default behavior.  
 It now works flexibly and correctly in most scenarios without requiring developers to manually define `NestedScrollConnectionPropagation` for each case.
+
+## 1.6.0
+- Added `NestedScrollPredicate` typedef for predicates that determine when all events from child widgets should be consumed and taken over in specific situations.
+
+- Added `predicate` option to `NestedScrollConnection` to support custom predicate logic for nested scroll event handling.

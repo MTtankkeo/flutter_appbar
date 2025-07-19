@@ -7,6 +7,13 @@ typedef NestedScrollListener = double Function(
   ScrollPosition position,
 );
 
+/// Signature for the predicate that is used when all events from child
+/// widgets need to be consumed and taken over in specific situations.
+typedef NestedScrollPredicate = bool Function(
+  double available,
+  ScrollPosition position,
+);
+
 /// Signature for the callback that returns a [NestedScrollListener] which
 /// handles nested scroll consumption logic based on the connection.
 typedef NestedScrollConsumer = NestedScrollListener? Function(
@@ -39,6 +46,7 @@ class NestedScrollConnection extends StatefulWidget {
     this.onPostScroll,
     this.onFling,
     this.onBouncing,
+    this.predicate,
     this.propagation = NestedScrollConnectionPropagation.directional,
     required this.child,
   });
@@ -47,6 +55,7 @@ class NestedScrollConnection extends StatefulWidget {
   final NestedScrollListener? onPostScroll;
   final NestedScrollListener? onFling;
   final NestedScrollListener? onBouncing;
+  final NestedScrollPredicate? predicate;
   final NestedScrollConnectionPropagation propagation;
   final Widget child;
 
@@ -83,28 +92,48 @@ class NestedScrollConnectionState extends State<NestedScrollConnection> {
     NestedScrollConsumer selfConsumer,
     NestedScrollConsumer ancestorConsumer,
   ) {
+    final List<NestedScrollConnection> delegators =
+        findSelfAndAncestorWidgets();
+
+    // Current consumed amount from available.
     double consumed = 0;
 
+    // Returns the remaining offset after consumption.
+    double remained() => available - consumed;
+
+    for (final delegator in delegators) {
+      if (delegator.predicate?.call(available, position) ?? false) {
+        consumed += selfConsumer(delegator)?.call(remained(), position) ?? 0.0;
+
+        // When the available offset has been fully consumed.
+        if ((consumed - available).abs() < precisionErrorTolerance) {
+          return consumed;
+        }
+      }
+    }
+
     if (widget.propagation == NestedScrollConnectionPropagation.selfFirst) {
-      consumed = selfConsumer(widget)?.call(available, position) ?? 0.0;
+      consumed += selfConsumer(widget)?.call(remained(), position) ?? 0.0;
+
+      // When the available offset is not fully consumed,
+      // delegate the remainder to the ancestor.
       if ((consumed - available).abs() > precisionErrorTolerance) {
-        return ancestorConsumer(widget)?.call(available - consumed, position) ??
-            consumed;
+        return ancestorConsumer(widget)?.call(remained(), position) ?? consumed;
       }
     } else if (widget.propagation ==
         NestedScrollConnectionPropagation.deferToAncestor) {
-      consumed = ancestorConsumer(widget)?.call(available, position) ?? 0.0;
+      consumed += ancestorConsumer(widget)?.call(remained(), position) ?? 0.0;
+
+      // When the available offset is not fully consumed,
+      // delegate the remainder to the ancestor.
       if ((consumed - available).abs() > precisionErrorTolerance) {
-        return selfConsumer(widget)?.call(available - consumed, position) ??
-            consumed;
+        return selfConsumer(widget)?.call(remained(), position) ?? consumed;
       }
     } else {
-      final targets = available > 0
-          ? findSelfAndAncestorWidgets()
-          : findSelfAndAncestorWidgets().reversed;
+      final targets = available > 0 ? delegators : delegators.reversed;
 
       for (final it in targets) {
-        consumed += selfConsumer(it)?.call(available - consumed, position) ?? 0;
+        consumed += selfConsumer(it)?.call(remained(), position) ?? 0;
 
         // If when all consumed, stops the travel.
         if ((consumed - available).abs() < precisionErrorTolerance) {
