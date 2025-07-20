@@ -130,7 +130,20 @@ class NestedScrollConnectionState extends State<NestedScrollConnection> {
         return selfConsumer(widget)?.call(remained(), position) ?? consumed;
       }
     } else {
-      final targets = available > 0 ? delegators : delegators.reversed;
+      final prioritized = List<NestedScrollConnection>.from(delegators)
+        ..sort((a, b) {
+          int priority(NestedScrollConnection c) {
+            return switch (c.propagation) {
+              NestedScrollConnectionPropagation.selfFirst => 0,
+              NestedScrollConnectionPropagation.directional => 1,
+              NestedScrollConnectionPropagation.deferToAncestor => 2,
+            };
+          }
+
+          return priority(a).compareTo(priority(b));
+        });
+
+      final targets = available > 0 ? prioritized : prioritized.reversed;
 
       for (final it in targets) {
         consumed += selfConsumer(it)?.call(remained(), position) ?? 0;

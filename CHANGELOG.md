@@ -132,3 +132,7 @@ It now works flexibly and correctly in most scenarios without requiring develope
 - Added `NestedScrollPredicate` typedef for predicates that determine when all events from child widgets should be consumed and taken over in specific situations.
 
 - Added `predicate` option to `NestedScrollConnection` to support custom predicate logic for nested scroll event handling.
+
+## 1.6.1
+- Improved nested scroll handling by adding explicit priority sorting in directional propagation mode.
+This ensures that widgets with `NestedScrollConnectionPropagation.deferToAncestor` propagation are always processed last, respecting the intended scroll event priority order.
