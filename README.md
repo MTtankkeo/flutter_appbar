@@ -6,6 +6,7 @@ This package implements the flexible appbar behavior, and we pursue higher perfo
 | ---- | ------------ |
 | [flutter_refresh_indicator](https://pub.dev/packages/flutter_refresh_indicator) | A flexible, native-like refresh indicator built on flutter_appbar. |
 | [flutter_infinite_scroll_pagination ](https://pub.dev/packages/flutter_infinite_scroll_pagination) | Easy infinite scroll loading with one-line wrapping, no setup needed. |
+| [flutter_scroll_bottom_sheet](https://pub.dev/packages/flutter_scroll_bottom_sheet) | A bottom sheet widget that syncs smoothly with scroll events for a seamless UX. |
 
 ## Preview
 The GIF below demonstrates the package in action. Please note that due to compression, the animation may appear distorted or choppy.
