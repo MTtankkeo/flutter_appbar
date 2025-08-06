@@ -46,12 +46,16 @@ class AppBar extends StatefulWidget {
     this.alignment = AppBarAlignment.scroll,
     this.bouncingAlignment = AppBarAlignment.scroll,
     this.initialOffset = 0,
-  }) {
-    builder = _defaultBuilder;
-  }
+  }) : builder = ((_, position) {
+          /// When position is updated, the widget state is also updated.
+          return ListenableBuilder(
+            listenable: position,
+            builder: (context, _) => builder(context, position),
+          );
+        });
 
   /// The function that creates a widget for the appbar.
-  late final AppBarBuilder builder;
+  final AppBarBuilder builder;
 
   /// The instance that defines the behavior of the appbar that is
   /// including how it consumes scroll offsets and aligns appbar.
@@ -67,14 +71,6 @@ class AppBar extends StatefulWidget {
   /// The value that defines initial normalized appbar offset.
   /// Therefore, this value must be defined from 0 to 1.
   final double initialOffset;
-
-  /// When position is updated, the widget state is also updated.
-  Widget _defaultBuilder(BuildContext _, AppBarPosition position) {
-    return ListenableBuilder(
-      listenable: position,
-      builder: (context, _) => builder(context, position),
-    );
-  }
 
   @override
   State<AppBar> createState() => _AppBarState();

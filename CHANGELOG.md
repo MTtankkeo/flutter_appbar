@@ -136,3 +136,6 @@ It now works flexibly and correctly in most scenarios without requiring develope
 ## 1.6.1
 - Improved nested scroll handling by adding explicit priority sorting in directional propagation mode.
 This ensures that widgets with `NestedScrollConnectionPropagation.deferToAncestor` propagation are always processed last, respecting the intended scroll event priority order.
+
+## 1.6.2
+- Fixed an issue about `AppBar.builder`.
