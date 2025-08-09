@@ -139,3 +139,6 @@ This ensures that widgets with `NestedScrollConnectionPropagation.deferToAncesto
 
 ## 1.6.2
 - Fixed an issue about `AppBar.builder`.
+
+## 1.6.3
+- Fixed an issue where `RenderAppBar` could produce invalid BoxConstraints with a negative `maxHeight` in specific environments, causing layout exceptions during `performLayout`.

@@ -266,9 +266,10 @@ class RenderAppBar extends RenderBox
   @override
   BoxConstraints get constraints {
     if (isSizedLayout) {
+      final double height = (maxExtent! - position.pixels) + lentPixels;
       return super
           .constraints
-          .copyWith(maxHeight: (maxExtent! - position.pixels) + lentPixels);
+          .copyWith(maxHeight: height.clamp(0.0, double.infinity));
     }
 
     return super.constraints;
