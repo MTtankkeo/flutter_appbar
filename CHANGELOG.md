@@ -142,3 +142,8 @@ This ensures that widgets with `NestedScrollConnectionPropagation.deferToAncesto
 
 ## 1.6.3
 - Fixed an issue where `RenderAppBar` could produce invalid BoxConstraints with a negative `maxHeight` in specific environments, causing layout exceptions during `performLayout`.
+
+## 1.6.4
+- Removed `AppBarPosition` listener during `detach` to prevent lingering callbacks and ensure proper cleanup.
+
+- Added `RepaintBoundary` wrapper to AppBar widget to prevent unnecessary repaints during scroll interactions.

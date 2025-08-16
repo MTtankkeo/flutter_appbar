@@ -141,14 +141,16 @@ class _AppBarState extends State<AppBar>
   Widget build(BuildContext context) {
     final bool isSizedAppBar = widget is SizedAppBar;
 
-    return ClipRRect(
-      child: _AppBar(
-        minExtent: isSizedAppBar ? (widget as SizedAppBar).minExtent : null,
-        maxExtent: isSizedAppBar ? (widget as SizedAppBar).maxExtent : null,
-        position: _position,
-        alignment: widget.alignment,
-        bouncingAlignment: widget.bouncingAlignment,
-        child: widget.builder(context, _position),
+    return RepaintBoundary(
+      child: ClipRRect(
+        child: _AppBar(
+          minExtent: isSizedAppBar ? (widget as SizedAppBar).minExtent : null,
+          maxExtent: isSizedAppBar ? (widget as SizedAppBar).maxExtent : null,
+          position: _position,
+          alignment: widget.alignment,
+          bouncingAlignment: widget.bouncingAlignment,
+          child: widget.builder(context, _position),
+        ),
       ),
     );
   }
@@ -297,6 +299,12 @@ class RenderAppBar extends RenderBox
     }
 
     return result;
+  }
+
+  @override
+  void detach() {
+    _position?.removeListener(markNeedsLayout);
+    super.detach();
   }
 
   @override
