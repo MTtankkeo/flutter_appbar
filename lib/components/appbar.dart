@@ -302,12 +302,6 @@ class RenderAppBar extends RenderBox
   }
 
   @override
-  void detach() {
-    _position?.removeListener(markNeedsLayout);
-    super.detach();
-  }
-
-  @override
   void performLayout() {
     // When the size needs to be calculated dynamically.
     if (!isSizedLayout) {
