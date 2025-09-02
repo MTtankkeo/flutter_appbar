@@ -1,0 +1,181 @@
+import 'package:flutter/material.dart' hide AppBar;
+import 'package:flutter_appbar/flutter_appbar.dart';
+import 'package:flutter_test/flutter_test.dart';
+
+void main() {
+  const Size viewportSize = Size(100, 200);
+
+  /// Creates a template widget with a list of AppBars and a scrollable ListView.
+  Widget createTemplate(
+    List<AppBar> appbars,
+    AppBarController appBarController,
+    NestedScrollController scrollController,
+  ) {
+    return Directionality(
+      textDirection: TextDirection.ltr,
+      child: AppBarConnection(
+        controller: appBarController,
+        appBars: appbars,
+        child: ListView(
+          controller: scrollController,
+          children: [SizedBox(height: viewportSize.height * 3)],
+        ),
+      ),
+    );
+  }
+
+  testWidgets(
+    "AbsoluteAppBarBehavior ensures the AppBar remains fixed during scrolling",
+    (tester) async {
+      tester.view.physicalSize = viewportSize;
+      tester.view.devicePixelRatio = 1.0;
+
+      final AppBarController appBarController = AppBarController();
+      final NestedScrollController scrollController = NestedScrollController();
+
+      await tester.pumpWidget(
+        createTemplate(
+          [
+            AppBar(
+              behavior: const AbsoluteAppBarBehavior(),
+              body: Container(height: 100, color: Colors.red),
+            ),
+          ],
+          appBarController,
+          scrollController,
+        ),
+      );
+
+      {
+        final Offset topLeft = tester.getTopLeft(find.byType(AppBar));
+        final Offset bottomLeft = tester.getBottomLeft(find.byType(AppBar));
+
+        expect(topLeft.dy, 0.0);
+        expect(bottomLeft.dy, 100.0);
+        expect(scrollController.offset, 0.0);
+      }
+
+      await tester.drag(find.byType(ListView), const Offset(0, -100));
+      await tester.pump();
+
+      {
+        final Offset topLeft = tester.getTopLeft(find.byType(AppBar));
+        final Offset bottomLeft = tester.getBottomLeft(find.byType(AppBar));
+
+        expect(topLeft.dy, 0.0);
+        expect(bottomLeft.dy, 100.0);
+        expect(scrollController.offset, 100.0);
+      }
+    },
+  );
+
+  testWidgets(
+    "MaterialAppBarBehavior ensures the floating:true",
+    (tester) async {
+      tester.view.physicalSize = viewportSize;
+      tester.view.devicePixelRatio = 1.0;
+
+      final AppBarController appBarController = AppBarController();
+      final NestedScrollController scrollController = NestedScrollController();
+
+      await tester.pumpWidget(createTemplate(
+        [
+          AppBar(
+            behavior: const MaterialAppBarBehavior(floating: true),
+            body: Container(height: 100, color: Colors.red),
+          ),
+        ],
+        appBarController,
+        scrollController,
+      ));
+
+      {
+        final Offset topLeft = tester.getTopLeft(find.byType(AppBar));
+        final Offset bottomLeft = tester.getBottomLeft(find.byType(AppBar));
+
+        expect(topLeft.dy, 0.0);
+        expect(bottomLeft.dy, 100.0);
+        expect(scrollController.offset, 0.0);
+      }
+
+      await tester.drag(find.byType(ListView), const Offset(0, -200));
+      await tester.pump();
+
+      {
+        final Offset topLeft = tester.getTopLeft(find.byType(AppBar));
+        final Offset bottomLeft = tester.getBottomLeft(find.byType(AppBar));
+
+        expect(topLeft.dy, 0.0);
+        expect(bottomLeft.dy, 0.0);
+        expect(scrollController.offset, 100.0);
+      }
+
+      await tester.drag(find.byType(ListView), const Offset(0, 100));
+      await tester.pump();
+
+      {
+        final Offset topLeft = tester.getTopLeft(find.byType(AppBar));
+        final Offset bottomLeft = tester.getBottomLeft(find.byType(AppBar));
+
+        expect(topLeft.dy, 0.0);
+        expect(bottomLeft.dy, 100.0);
+        expect(scrollController.offset, 100.0);
+      }
+    },
+  );
+
+  testWidgets(
+    "MaterialAppBarBehavior ensures the floating:false",
+    (tester) async {
+      tester.view.physicalSize = viewportSize;
+      tester.view.devicePixelRatio = 1.0;
+
+      final AppBarController appBarController = AppBarController();
+      final NestedScrollController scrollController = NestedScrollController();
+
+      await tester.pumpWidget(createTemplate(
+        [
+          AppBar(
+            behavior: const MaterialAppBarBehavior(floating: false),
+            body: Container(height: 100, color: Colors.red),
+          ),
+        ],
+        appBarController,
+        scrollController,
+      ));
+
+      {
+        final Offset topLeft = tester.getTopLeft(find.byType(AppBar));
+        final Offset bottomLeft = tester.getBottomLeft(find.byType(AppBar));
+
+        expect(topLeft.dy, 0.0);
+        expect(bottomLeft.dy, 100.0);
+        expect(scrollController.offset, 0.0);
+      }
+
+      await tester.drag(find.byType(ListView), const Offset(0, -200));
+      await tester.pump();
+
+      {
+        final Offset topLeft = tester.getTopLeft(find.byType(AppBar));
+        final Offset bottomLeft = tester.getBottomLeft(find.byType(AppBar));
+
+        expect(topLeft.dy, 0.0);
+        expect(bottomLeft.dy, 0.0);
+        expect(scrollController.offset, 100.0);
+      }
+
+      await tester.drag(find.byType(ListView), const Offset(0, 100));
+      await tester.pump();
+
+      {
+        final Offset topLeft = tester.getTopLeft(find.byType(AppBar));
+        final Offset bottomLeft = tester.getBottomLeft(find.byType(AppBar));
+
+        expect(topLeft.dy, 0.0);
+        expect(bottomLeft.dy, 0.0);
+        expect(scrollController.offset, 0.0);
+      }
+    },
+  );
+}
