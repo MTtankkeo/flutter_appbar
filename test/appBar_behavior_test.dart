@@ -178,4 +178,73 @@ void main() {
       }
     },
   );
+
+  testWidgets(
+    "MaterialAppBarBehavior ensures the dragOnlyExpanding:true",
+    (tester) async {
+      tester.view.physicalSize = viewportSize;
+      tester.view.devicePixelRatio = 1.0;
+
+      final AppBarController appBarController = AppBarController();
+      final NestedScrollController scrollController = NestedScrollController();
+
+      await tester.pumpWidget(createTemplate(
+        [
+          AppBar(
+            behavior: const MaterialAppBarBehavior(dragOnlyExpanding: true),
+            body: Container(height: 100, color: Colors.red),
+          ),
+        ],
+        appBarController,
+        scrollController,
+      ));
+
+      {
+        final Offset topLeft = tester.getTopLeft(find.byType(AppBar));
+        final Offset bottomLeft = tester.getBottomLeft(find.byType(AppBar));
+
+        expect(topLeft.dy, 0.0);
+        expect(bottomLeft.dy, 100.0);
+        expect(scrollController.offset, 0.0);
+      }
+
+      await tester.drag(find.byType(ListView), const Offset(0, -200));
+      await tester.pump();
+
+      {
+        final Offset topLeft = tester.getTopLeft(find.byType(AppBar));
+        final Offset bottomLeft = tester.getBottomLeft(find.byType(AppBar));
+
+        expect(topLeft.dy, 0.0);
+        expect(bottomLeft.dy, 0.0);
+        expect(scrollController.offset, 100.0);
+      }
+
+      await tester.fling(find.byType(ListView), const Offset(0, 50), 1000);
+      await tester.pumpAndSettle();
+
+      // The appbar should not expand when scrolling is not caused by dragging.
+      // (i.e., when in the BallisticScrollActivity state).
+      {
+        final Offset topLeft = tester.getTopLeft(find.byType(AppBar));
+        final Offset bottomLeft = tester.getBottomLeft(find.byType(AppBar));
+
+        expect(topLeft.dy, 0.0);
+        expect(bottomLeft.dy, 0.0);
+        expect(scrollController.offset, 0.0);
+      }
+
+      await tester.drag(find.byType(ListView), const Offset(0, 100));
+      await tester.pump();
+
+      {
+        final Offset topLeft = tester.getTopLeft(find.byType(AppBar));
+        final Offset bottomLeft = tester.getBottomLeft(find.byType(AppBar));
+
+        expect(topLeft.dy, 0.0);
+        expect(bottomLeft.dy, 100.0);
+        expect(scrollController.offset, 0.0);
+      }
+    },
+  );
 }
