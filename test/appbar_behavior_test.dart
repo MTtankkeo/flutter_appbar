@@ -2,32 +2,13 @@ import 'package:flutter/material.dart' hide AppBar;
 import 'package:flutter_appbar/flutter_appbar.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import 'main.dart';
+
 void main() {
-  const Size viewportSize = Size(100, 200);
-
-  /// Creates a template widget with a list of AppBars and a scrollable ListView.
-  Widget createTemplate(
-    List<AppBar> appbars,
-    AppBarController appBarController,
-    NestedScrollController scrollController,
-  ) {
-    return Directionality(
-      textDirection: TextDirection.ltr,
-      child: AppBarConnection(
-        controller: appBarController,
-        appBars: appbars,
-        child: ListView(
-          controller: scrollController,
-          children: [SizedBox(height: viewportSize.height * 3)],
-        ),
-      ),
-    );
-  }
-
   testWidgets(
     "AbsoluteAppBarBehavior ensures the AppBar remains fixed during scrolling",
     (tester) async {
-      tester.view.physicalSize = viewportSize;
+      tester.view.physicalSize = kPhysicalSize;
       tester.view.devicePixelRatio = 1.0;
 
       final AppBarController appBarController = AppBarController();
@@ -67,12 +48,13 @@ void main() {
         expect(scrollController.offset, 100.0);
       }
     },
+    variant: TargetPlatformVariant.mobile(),
   );
 
   testWidgets(
     "MaterialAppBarBehavior ensures the floating:true",
     (tester) async {
-      tester.view.physicalSize = viewportSize;
+      tester.view.physicalSize = kPhysicalSize;
       tester.view.devicePixelRatio = 1.0;
 
       final AppBarController appBarController = AppBarController();
@@ -122,12 +104,13 @@ void main() {
         expect(scrollController.offset, 100.0);
       }
     },
+    variant: TargetPlatformVariant.mobile(),
   );
 
   testWidgets(
     "MaterialAppBarBehavior ensures the floating:false",
     (tester) async {
-      tester.view.physicalSize = viewportSize;
+      tester.view.physicalSize = kPhysicalSize;
       tester.view.devicePixelRatio = 1.0;
 
       final AppBarController appBarController = AppBarController();
@@ -177,12 +160,13 @@ void main() {
         expect(scrollController.offset, 0.0);
       }
     },
+    variant: TargetPlatformVariant.mobile(),
   );
 
   testWidgets(
     "MaterialAppBarBehavior ensures the dragOnlyExpanding:true",
     (tester) async {
-      tester.view.physicalSize = viewportSize;
+      tester.view.physicalSize = kPhysicalSize;
       tester.view.devicePixelRatio = 1.0;
 
       final AppBarController appBarController = AppBarController();
@@ -246,5 +230,6 @@ void main() {
         expect(scrollController.offset, 0.0);
       }
     },
+    variant: TargetPlatformVariant.mobile(),
   );
 }
