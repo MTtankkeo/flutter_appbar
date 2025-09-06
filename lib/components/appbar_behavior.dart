@@ -126,7 +126,10 @@ class MaterialAppBarBehavior extends DrivenAppBarBehavior {
 
   @override
   double setPixels(
-      double available, AppBarPosition appBar, ScrollPosition scroll) {
+    double available,
+    AppBarPosition appBar,
+    ScrollPosition scroll,
+  ) {
     assert(floating ? !dragOnlyExpanding : true,
         "[floating] and [dragOnlyExpanding] cannot be used together.");
 
@@ -159,7 +162,7 @@ class MaterialAppBarBehavior extends DrivenAppBarBehavior {
     final double minScrollExtent = scroll.minScrollExtent;
     final double maxScrollExtent = scroll.maxScrollExtent;
 
-    // When the app bar scrolls the layout intrinsic size changes so this
+    // When the appbar scrolls the layout intrinsic size changes so this
     // information is preemptively communicated to the [ScrollPosition].
     if (consumed.abs() > precisionErrorTolerance) {
       scroll.applyContentDimensions(

@@ -22,8 +22,9 @@ class TestBouncingScrollPhysics extends ScrollPhysics {
 Widget createTemplate(
   List<AppBar> appbars,
   AppBarController appBarController,
-  NestedScrollController scrollController,
-) {
+  NestedScrollController scrollController, {
+  double? scrollExtent,
+}) {
   final bool isIOS = defaultTargetPlatform == TargetPlatform.iOS;
   final bool isMacOS = defaultTargetPlatform == TargetPlatform.macOS;
   final bool isCupertino = isIOS || isMacOS;
@@ -43,7 +44,9 @@ Widget createTemplate(
             appBars: appbars,
             child: ListView(
               controller: scrollController,
-              children: [SizedBox(height: kPhysicalSize.height * 3)],
+              children: [
+                Container(height: scrollExtent ?? kPhysicalSize.height * 3)
+              ],
             ),
           ),
         ),

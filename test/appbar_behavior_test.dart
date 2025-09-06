@@ -232,4 +232,49 @@ void main() {
     },
     variant: TargetPlatformVariant.mobile(),
   );
+
+  testWidgets(
+    "MaterialAppBarBehavior ensures the alwaysScrolling:true",
+    (tester) async {
+      tester.view.physicalSize = kPhysicalSize;
+      tester.view.devicePixelRatio = 1.0;
+
+      final AppBarController appBarController = AppBarController();
+      final NestedScrollController scrollController = NestedScrollController();
+
+      await tester.pumpWidget(createTemplate(
+        [
+          AppBar(
+            behavior: const MaterialAppBarBehavior(alwaysScrolling: true),
+            body: Container(height: 100, color: Colors.red),
+          ),
+        ],
+        appBarController,
+        scrollController,
+        scrollExtent: 0.0,
+      ));
+
+      {
+        final Offset topLeft = tester.getTopLeft(find.byType(AppBar));
+        final Offset bottomLeft = tester.getBottomLeft(find.byType(AppBar));
+
+        expect(topLeft.dy, 0.0);
+        expect(bottomLeft.dy, 100.0);
+        expect(scrollController.offset, 0.0);
+      }
+
+      appBarController.consumeScroll(-100, scrollController.position, AppbarPropagation.next);
+      await tester.pump();
+
+      {
+        final Offset topLeft = tester.getTopLeft(find.byType(AppBar));
+        final Offset bottomLeft = tester.getBottomLeft(find.byType(AppBar));
+
+        expect(topLeft.dy, 0.0);
+        expect(bottomLeft.dy, 0.0);
+        expect(scrollController.offset, 0.0);
+      }
+    },
+    variant: TargetPlatformVariant.mobile(),
+  );
 }
