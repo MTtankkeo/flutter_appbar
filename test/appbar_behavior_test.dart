@@ -263,7 +263,8 @@ void main() {
         expect(scrollController.offset, 0.0);
       }
 
-      appBarController.consumeScroll(-100, scrollController.position, AppbarPropagation.next);
+      appBarController.consumeScroll(
+          -100, scrollController.position, AppbarPropagation.next);
       await tester.pump();
 
       {
