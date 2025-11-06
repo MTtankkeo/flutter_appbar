@@ -69,7 +69,7 @@ class AppBarConnectionState extends State<AppBarConnection> {
   void attach(AppBarPosition position) => _controller.attach(position);
   void detach(AppBarPosition position) => _controller.detach(position);
 
-  double _handleNestedScroll(double available, ScrollPosition position) {
+  double _handleNestedScroll(double available, NestedScrollPosition position) {
     return _controller.consumeScroll(
       available,
       position,
@@ -77,7 +77,7 @@ class AppBarConnectionState extends State<AppBarConnection> {
     );
   }
 
-  double _handleBouncing(double available, ScrollPosition position) {
+  double _handleBouncing(double available, NestedScrollPosition position) {
     return _controller.consumeBouncing(available, position, widget.propagation);
   }
 

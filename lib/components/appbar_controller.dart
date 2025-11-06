@@ -1,6 +1,5 @@
 import 'package:flutter/foundation.dart';
-import 'package:flutter/widgets.dart';
-import 'package:flutter_appbar/components/appbar_position.dart';
+import 'package:flutter_appbar/flutter_appbar.dart';
 
 enum AppbarPropagation {
   stop,
@@ -35,8 +34,10 @@ class AppBarController extends Listenable {
   /// Delegates the task of detaching and disposing of the appbar position
   /// to ensure consistency with [attach] function.
   void detach(AppBarPosition position) {
-    assert(_positions.contains(position),
-        "Already not attached in this controller.");
+    assert(
+      _positions.contains(position),
+      "Already not attached in this controller.",
+    );
     _positions.remove(position..removeListener(notifyListeners));
   }
 
@@ -74,7 +75,7 @@ class AppBarController extends Listenable {
 
   double consumeScroll(
     double available,
-    ScrollPosition scroll,
+    NestedScrollPosition scroll,
     AppbarPropagation propagation,
   ) {
     return consumeWith(
@@ -86,7 +87,7 @@ class AppBarController extends Listenable {
 
   double consumeBouncing(
     double available,
-    ScrollPosition scroll,
+    NestedScrollPosition scroll,
     AppbarPropagation propagation,
   ) {
     return consumeWith(
@@ -102,7 +103,7 @@ class AppBarController extends Listenable {
     }
   }
 
-  void alignAll(ScrollPosition position) {
+  void alignAll(NestedScrollPosition position) {
     for (final it in _positions) {
       it.notifyScrollEnd(position);
     }

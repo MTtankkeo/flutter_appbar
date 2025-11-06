@@ -1,6 +1,8 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_appbar/components/nested_scroll_position.dart';
 
+/// A [BallisticScrollActivity] that applies scroll updates
+/// based on the delta for a [NestedScrollPosition].
 class BallisticNestedScrollActivity extends BallisticScrollActivity {
   BallisticNestedScrollActivity(
     super.delegate,
@@ -11,16 +13,16 @@ class BallisticNestedScrollActivity extends BallisticScrollActivity {
 
   NestedScrollPosition get position => delegate as NestedScrollPosition;
 
-  double? newPixels;
-  double? oldPixels;
+  double? _newPixels;
+  double? _oldPixels;
 
   @override
   bool applyMoveTo(double value) {
-    oldPixels ??= position.totalPixels;
-    newPixels = value;
-    final delta = newPixels! - oldPixels!;
+    _oldPixels ??= position.totalPixels;
+    _newPixels = value;
+    final delta = _newPixels! - _oldPixels!;
 
-    Future.microtask(() => oldPixels = newPixels);
+    Future.microtask(() => _oldPixels = _newPixels);
 
     // The value of pixels for the new scroll offset.
     final pixels = position.pixels + delta;
@@ -28,6 +30,7 @@ class BallisticNestedScrollActivity extends BallisticScrollActivity {
     return super.applyMoveTo(pixels);
   }
 
+  /// No overscroll adjustment applied.
   double applyOverscrollTo(double value) {
     return value;
   }

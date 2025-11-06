@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_appbar/components/appbar_behavior.dart';
+import 'package:flutter_appbar/flutter_appbar.dart';
 
 class AppBarPosition extends Listenable {
   AppBarPosition({
@@ -85,7 +85,7 @@ class AppBarPosition extends Listenable {
 
   /// Animates alignment of the appbar by a given scroll position
   /// and the alignment behavior of the current behavior.
-  bool notifyScrollEnd(ScrollPosition scroll) {
+  bool notifyScrollEnd(NestedScrollPosition scroll) {
     final alignment = behavior.align(this, scroll);
     if (alignment != null) {
       performAlignment(alignment);

@@ -1,17 +1,18 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_appbar/flutter_appbar.dart';
 
 /// Signature for the callback that is called when nested scroll event consuming.
 typedef NestedScrollListener = double Function(
   double available,
-  ScrollPosition position,
+  NestedScrollPosition position,
 );
 
 /// Signature for the predicate that is used when all events from child
 /// widgets need to be consumed and taken over in specific situations.
 typedef NestedScrollPredicate = bool Function(
   double available,
-  ScrollPosition position,
+  NestedScrollPosition position,
 );
 
 /// Signature for the callback that returns a [NestedScrollListener] which
@@ -88,7 +89,7 @@ class NestedScrollConnectionState extends State<NestedScrollConnection> {
 
   double consumeWith(
     double available,
-    ScrollPosition position,
+    NestedScrollPosition position,
     NestedScrollConsumer selfConsumer,
     NestedScrollConsumer ancestorConsumer,
   ) {
@@ -158,7 +159,7 @@ class NestedScrollConnectionState extends State<NestedScrollConnection> {
     return consumed;
   }
 
-  double preScroll(double available, ScrollPosition position) {
+  double preScroll(double available, NestedScrollPosition position) {
     return consumeWith(
       available,
       position,
@@ -167,7 +168,7 @@ class NestedScrollConnectionState extends State<NestedScrollConnection> {
     );
   }
 
-  double postScroll(double available, ScrollPosition position) {
+  double postScroll(double available, NestedScrollPosition position) {
     return consumeWith(
       available,
       position,
@@ -176,7 +177,7 @@ class NestedScrollConnectionState extends State<NestedScrollConnection> {
     );
   }
 
-  double fling(double available, ScrollPosition position) {
+  double fling(double available, NestedScrollPosition position) {
     return consumeWith(
       available,
       position,
@@ -185,7 +186,7 @@ class NestedScrollConnectionState extends State<NestedScrollConnection> {
     );
   }
 
-  double bouncing(double available, ScrollPosition position) {
+  double bouncing(double available, NestedScrollPosition position) {
     return consumeWith(
       available,
       position,

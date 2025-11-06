@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_appbar/flutter_appbar.dart';
 
+/// Notification indicating that a [NestedScrollPosition] has finished scrolling.
 class NestedScrollEndNotification extends ScrollNotification {
   NestedScrollEndNotification({
     required super.metrics,
@@ -12,7 +13,7 @@ class NestedScrollEndNotification extends ScrollNotification {
     required this.target,
   });
 
-  final ScrollPosition target;
+  final NestedScrollPosition target;
 }
 
 /// Facilitate the implementation of appbar behavior through interaction

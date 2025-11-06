@@ -15,8 +15,8 @@ enum AppBarAlignmentCommand {
   shrink,
 }
 
-/// The abstract class that defines the behavior of the appbar that is
-/// including how it consumes scroll offsets and aligns appbar.
+/// The abstract class that defines the behavior of the appbar that
+/// is including how it consumes scroll offsets and aligns appbar.
 abstract class AppBarBehavior {
   const AppBarBehavior({
     required this.alignDuration,
@@ -30,23 +30,26 @@ abstract class AppBarBehavior {
   final Curve alignCurve;
 
   /// Updates the given appbar based on available scroll offset,
-  /// the current appbar position, and the scroll position.
+  /// the current appbar position, and the nested scroll position.
   ///
   /// And, returns the value remaining after consumption.
   double setPixels(
     double available,
     AppBarPosition appBar,
-    ScrollPosition scroll,
+    NestedScrollPosition scroll,
   );
 
   double setBouncing(
     double available,
     AppBarPosition appBar,
-    ScrollPosition scroll,
+    NestedScrollPosition scroll,
   );
 
   /// Determines the alignment of the appbar based on appbar position and scroll.
-  AppBarAlignmentCommand? align(AppBarPosition appBar, ScrollPosition scroll);
+  AppBarAlignmentCommand? align(
+    AppBarPosition appBar,
+    NestedScrollPosition scroll,
+  );
 }
 
 abstract class DrivenAppBarBehavior extends AppBarBehavior {
@@ -63,10 +66,8 @@ abstract class DrivenAppBarBehavior extends AppBarBehavior {
   double setBouncing(
     double available,
     AppBarPosition appBar,
-    ScrollPosition scroll,
+    NestedScrollPosition scroll,
   ) {
-    scroll = scroll as NestedScrollPosition;
-
     if (bouncing && scroll.totalPixels + available <= 0) {
       appBar.lentPixels += available;
       return available;
@@ -82,7 +83,7 @@ class AbsoluteAppBarBehavior extends DrivenAppBarBehavior {
   @override
   AppBarAlignmentCommand? align(
     AppBarPosition appBar,
-    ScrollPosition scroll,
+    NestedScrollPosition scroll,
   ) {
     return null;
   }
@@ -91,7 +92,7 @@ class AbsoluteAppBarBehavior extends DrivenAppBarBehavior {
   double setPixels(
     double available,
     AppBarPosition appBar,
-    ScrollPosition scroll,
+    NestedScrollPosition scroll,
   ) {
     return 0.0;
   }
@@ -128,14 +129,12 @@ class MaterialAppBarBehavior extends DrivenAppBarBehavior {
   double setPixels(
     double available,
     AppBarPosition appBar,
-    ScrollPosition scroll,
+    NestedScrollPosition scroll,
   ) {
     assert(floating ? !dragOnlyExpanding : true,
         "[floating] and [dragOnlyExpanding] cannot be used together.");
 
     // APPBAR SCROLLING CONSTRAINTS
-
-    scroll = scroll as NestedScrollPosition;
 
     // No consume when bouncing overscroll for appbar pixels safety.
     if (scroll.totalPixels < scroll.minScrollExtent ||
@@ -175,7 +174,8 @@ class MaterialAppBarBehavior extends DrivenAppBarBehavior {
   }
 
   @override
-  AppBarAlignmentCommand? align(AppBarPosition appBar, ScrollPosition scroll) {
+  AppBarAlignmentCommand? align(
+      AppBarPosition appBar, NestedScrollPosition scroll) {
     if (alignAnimation) {
       return appBar.expandedPercent < 0.5
           ? AppBarAlignmentCommand.shrink
