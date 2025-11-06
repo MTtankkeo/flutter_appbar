@@ -264,7 +264,11 @@ void main() {
       }
 
       appBarController.consumeScroll(
-          -100, scrollController.position, AppbarPropagation.next);
+        -100,
+        scrollController.position,
+        AppbarPropagation.next,
+      );
+
       await tester.pump();
 
       {

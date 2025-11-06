@@ -31,14 +31,14 @@ abstract class AppBarBehavior {
 
   /// Updates the given appbar based on available scroll offset,
   /// the current appbar position, and the nested scroll position.
-  ///
-  /// And, returns the value remaining after consumption.
   double setPixels(
     double available,
     AppBarPosition appBar,
     NestedScrollPosition scroll,
   );
 
+  /// Updates the appbar during bouncing (overscroll) situations
+  /// Returns any remaining scroll offset that was not consumed.
   double setBouncing(
     double available,
     AppBarPosition appBar,

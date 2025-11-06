@@ -140,13 +140,31 @@ The package includes different appbar behaviors that define how the appbar inter
 This is an abstract class that dictates the overall behavior of the appbar. It provides two key methods:
 
 ```dart
-/// Updates the appbar based on the available scroll offset and returns the remaining value after consumption.
-setPixels(double available, AppBarPosition appBar, ScrollPosition scroll)
+/// Updates the given appbar based on available scroll offset,
+/// the current appbar position, and the nested scroll position.
+double setPixels(
+  double available,
+  AppBarPosition appBar,
+  NestedScrollPosition scroll,
+);
+```
+
+```dart
+/// Updates the appbar during bouncing (overscroll) situations
+/// Returns any remaining scroll offset that was not consumed.
+double setBouncing(
+  double available,
+  AppBarPosition appBar,
+  NestedScrollPosition scroll,
+);
 ```
 
 ```dart
 /// Determines the alignment of the appbar based on appbar position and scroll.
-align(AppBarPosition appBar, ScrollPosition scroll)
+AppBarAlignmentCommand? align(
+  AppBarPosition appBar,
+  NestedScrollPosition scroll,
+);
 ```
 
 ### AbsoluteAppBarBehavior
