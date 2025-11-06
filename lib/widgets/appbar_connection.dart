@@ -6,6 +6,7 @@ import 'package:flutter_appbar/components/nested_scroll_position.dart';
 import 'package:flutter_appbar/components/appbar.dart';
 import 'package:flutter_appbar/widgets/appbar_column.dart';
 import 'package:flutter_appbar/widgets/nested_scroll_connection.dart';
+import 'package:flutter_appbar/widgets/nested_scroll_controller_scope.dart';
 import 'package:flutter_appbar/widgets/scrollable_gesture_delegator.dart';
 
 /// ## Introduction
@@ -65,9 +66,6 @@ class AppBarConnectionState extends State<AppBarConnection> {
   /// to manage the positions of the appbar in this widget.
   late AppBarController _controller = widget.controller ?? AppBarController();
 
-  /// The value defines instance of NestedScrollController.
-  late final NestedScrollController _scrollController;
-
   void attach(AppBarPosition position) => _controller.attach(position);
   void detach(AppBarPosition position) => _controller.detach(position);
 
@@ -81,16 +79,6 @@ class AppBarConnectionState extends State<AppBarConnection> {
 
   double _handleBouncing(double available, ScrollPosition position) {
     return _controller.consumeBouncing(available, position, widget.propagation);
-  }
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-
-    // Initializes the scroll controller for the nested scroll position.
-    _scrollController = widget.scrollController ??
-        AppBarConnection.of(context)?._scrollController ??
-        NestedScrollController();
   }
 
   @override
@@ -126,32 +114,35 @@ class AppBarConnectionState extends State<AppBarConnection> {
         onPreScroll: _handleNestedScroll,
         onPostScroll: _handleNestedScroll,
         propagation: widget.nestedPropagation,
-        child: LayoutBuilder(
-          builder: (context, constraints) {
-            assert(constraints.maxWidth != double.infinity);
-            assert(constraints.maxHeight != double.infinity);
-            return Column(
-              children: [
-                // Wrap the widget that acts as a scroll gesture delegator to enable
-                // scrolling by dragging a appbar.
-                ScrollableGestureDelegator(
-                  controller: _scrollController,
-                  child: AppBarColumn(
-                    controller: _controller,
-                    constraints: constraints,
-                    children: widget.appBars,
-                  ),
-                ),
 
-                // With scrollable.
-                Expanded(
-                  child: PrimaryScrollController(
-                    scrollDirection: Axis.vertical,
-                    controller: _scrollController,
-                    child: widget.child,
-                  ),
-                ),
-              ],
+        // Uses the provided NestedScrollController if available.
+        // Otherwise, creates a new instance for the widget tree.
+        child: NestedScrollControllerScope(
+          controller: widget.scrollController,
+          factory: (context) => NestedScrollController(),
+          builder: (context, scrollController) {
+            return LayoutBuilder(
+              builder: (context, constraints) {
+                assert(constraints.maxWidth != double.infinity);
+                assert(constraints.maxHeight != double.infinity);
+                return Column(
+                  children: [
+                    // Wrap the widget that acts as a scroll gesture delegator
+                    // to enable scrolling by dragging a appbar.
+                    ScrollableGestureDelegator(
+                      controller: scrollController,
+                      child: AppBarColumn(
+                        controller: _controller,
+                        constraints: constraints,
+                        children: widget.appBars,
+                      ),
+                    ),
+
+                    // With scrollable.
+                    Expanded(child: widget.child),
+                  ],
+                );
+              },
             );
           },
         ),

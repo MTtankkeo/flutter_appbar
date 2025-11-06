@@ -12,4 +12,5 @@ export "widgets/appbar_connection.dart";
 export "widgets/appbar_column.dart";
 export "widgets/appbar_fade_effect.dart";
 export "widgets/nested_scroll_connection.dart";
+export 'widgets/nested_scroll_controller_scope.dart';
 export "widgets/scrollable_gesture_delegator.dart";
