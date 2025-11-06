@@ -150,3 +150,12 @@ This ensures that widgets with `NestedScrollConnectionPropagation.deferToAncesto
 
 ## 1.6.5
 - Fixed an issue about the assertion.
+
+## 1.7.0
+- Added `NestedScrollControllerScope` to ensure a single `NestedScrollController` is used within the widget tree.
+
+- Guaranteed `NestedScrollPosition` usage, removing the need for casting when handling nested scrolling.
+
+- Performed additional documentation improvements.
+
+- Updated the package example code.
