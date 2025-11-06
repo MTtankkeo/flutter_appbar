@@ -3,6 +3,24 @@ description: "This package implements the flexible appbar behavior, And we pursu
 version: 1.7.0
 publisher: ttankkeo112@gmail.com
 repository: https://github.com/MTtankkeo/flutter_appbar
+keywords:
+  - flutter
+  - flutter ui
+  - appbar
+  - scroll
+  - nested scroll
+  - sliver free
+  - flexible appbar
+  - floating appbar
+  - expandable appbar
+  - premium
+  - responsive
+  - high performance
+  - smooth scrolling
+  - optimized
+  - easy to use
+  - simple
+  - effortless
 
 environment:
   sdk: '>=3.0.0 <4.0.0'
@@ -16,9 +34,6 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^3.0.0
-
-# For information on the generic Dart part of this file, see the
-# following page: https://dart.dev/tools/pub/pubspec
 
 # The following section is specific to Flutter packages.
 flutter:
