@@ -159,3 +159,6 @@ This ensures that widgets with `NestedScrollConnectionPropagation.deferToAncesto
 - Performed additional documentation improvements.
 
 - Updated the package example code.
+
+## 1.8.0
+- Updated the appbar alignment enumeration by removing the `AppBarAlignment` enum and replacing it with Flutter's built-in `Alignment` to provide more flexible and intuitive positioning.

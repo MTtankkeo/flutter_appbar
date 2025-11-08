@@ -33,7 +33,7 @@ class Example extends StatelessWidget {
       appBars: [
         AppBar(
           behavior: const MaterialAppBarBehavior(dragOnlyExpanding: true),
-          alignment: AppBarAlignment.center,
+          alignment: Alignment.center,
           body: headerAppBarWidget(),
         ),
         AppBar(

@@ -107,7 +107,7 @@ Try applying the `AppBarAlignment` that is a providing standard enumeration in t
 ```dart
 AppBar(
   behavior: MaterialAppBarBehavior(),
-  alignment: AppBarAlignment.center, // like this
+  alignment: Alignment.center, // like this
   body: ...
 )
 ```
@@ -121,15 +121,6 @@ AppBar(
   body: ...
 )
 ```
-
-## The Properties of AppBarAlignment
-This enum provides multiple alignment options for positioning the appbar relative to the scroll behavior and layout size.
-
-| Properie | Description
-| ------ | ------ |
-| Scroll | Sets to display the same as the scroll item. (default)
-| Center | Sets to based on the size of the appbar, the center is located at the center of the size of the appbar.
-| Absolute | Sets to even if the appbar is reduced and expanded, the absolute position of the appbar does not change.
 
 ## AppBar Behavior
 The package includes different appbar behaviors that define how the appbar interacts with user scroll actions.

@@ -10,21 +10,6 @@ typedef AppBarBuilder = Widget Function(
   AppBarPosition position,
 );
 
-/// This enum provides multiple alignment options for positioning
-/// the appbar relative to the scroll behavior and layout size.
-enum AppBarAlignment {
-  /// Sets to display the same as the scroll item. (default)
-  absolute,
-
-  /// Sets to based on the size of the appbar, the center
-  /// is located at the center of the size of the appbar.
-  center,
-
-  /// Sets to even if the appbar is reduced and expanded,
-  /// the absolute position of the appbar does not change.
-  scroll,
-}
-
 /// The widget configures dynamic appbar behavior that interacts
 /// with [Scrollable] widget.
 ///
@@ -34,8 +19,8 @@ class AppBar extends StatefulWidget {
     super.key,
     required this.behavior,
     required Widget body,
-    this.alignment = AppBarAlignment.scroll,
-    this.bouncingAlignment = AppBarAlignment.scroll,
+    this.alignment = Alignment.bottomCenter,
+    this.bouncingAlignment = Alignment.bottomCenter,
     this.initialOffset = 0,
   }) : builder = ((_, position) => body);
 
@@ -43,8 +28,8 @@ class AppBar extends StatefulWidget {
     super.key,
     required this.behavior,
     required AppBarBuilder builder,
-    this.alignment = AppBarAlignment.scroll,
-    this.bouncingAlignment = AppBarAlignment.scroll,
+    this.alignment = Alignment.bottomCenter,
+    this.bouncingAlignment = Alignment.bottomCenter,
     this.initialOffset = 0,
   }) : builder = ((_, position) {
           /// When position is updated, the widget state is also updated.
@@ -61,12 +46,12 @@ class AppBar extends StatefulWidget {
   /// including how it consumes scroll offsets and aligns appbar.
   final AppBarBehavior behavior;
 
-  /// The enumeration that defines the type of the appbar alignment.
-  final AppBarAlignment alignment;
+  /// Alignment of the appbar relative to its container.
+  final Alignment alignment;
 
-  /// The enumeration that defines the type of the appbar alignment
-  /// when bouncing overscroll.
-  final AppBarAlignment bouncingAlignment;
+  /// Alignment of the appbar applied during overscroll
+  /// when bouncing.
+  final Alignment bouncingAlignment;
 
   /// The value that defines initial normalized appbar offset.
   /// Therefore, this value must be defined from 0 to 1.
@@ -169,8 +154,8 @@ class _AppBar extends SingleChildRenderObjectWidget {
   final double? minExtent;
   final double? maxExtent;
   final AppBarPosition position;
-  final AppBarAlignment alignment;
-  final AppBarAlignment bouncingAlignment;
+  final Alignment alignment;
+  final Alignment bouncingAlignment;
 
   @override
   RenderObject createRenderObject(BuildContext context) {
@@ -200,8 +185,8 @@ class RenderAppBar extends RenderBox
     required double? minExtent,
     required double? maxExtent,
     required AppBarPosition position,
-    required AppBarAlignment alignment,
-    required AppBarAlignment bouncingAlignment,
+    required Alignment alignment,
+    required Alignment bouncingAlignment,
   }) {
     this.minExtent = minExtent;
     this.maxExtent = maxExtent;
@@ -226,18 +211,18 @@ class RenderAppBar extends RenderBox
     }
   }
 
-  AppBarAlignment get alignment => _alignment!;
-  AppBarAlignment? _alignment;
-  set alignment(AppBarAlignment value) {
+  Alignment get alignment => _alignment!;
+  Alignment? _alignment;
+  set alignment(Alignment value) {
     if (_alignment != value) {
       _alignment = value;
       markNeedsLayout();
     }
   }
 
-  AppBarAlignment get bouncingAlignment => _bouncingAlignment!;
-  AppBarAlignment? _bouncingAlignment;
-  set bouncingAlignment(AppBarAlignment value) {
+  Alignment get bouncingAlignment => _bouncingAlignment!;
+  Alignment? _bouncingAlignment;
+  set bouncingAlignment(Alignment value) {
     if (_bouncingAlignment != value) {
       _bouncingAlignment = value;
       markNeedsLayout();
@@ -277,28 +262,22 @@ class RenderAppBar extends RenderBox
     return super.constraints;
   }
 
+  /// Translates the given offset based on scroll and bounce positions.
+  /// Uses Alignment values to determine the proportion of movement applied.
   Offset translate(Offset offset) {
-    Offset result;
+    if (isSizedLayout) return Offset.zero;
 
-    switch (alignment) {
-      case AppBarAlignment.absolute:
-        result = offset;
-      case AppBarAlignment.center:
-        result = Offset(offset.dx, offset.dy - position.pixels / 2);
-      case AppBarAlignment.scroll:
-        result = Offset(offset.dx, offset.dy - position.pixels);
-    }
+    // Convert Alignment.y (-1.0 to 1.0) to a 0.0 to 1.0 factor.
+    final double scrollFactor = (alignment.y + 1) / 2;
+    final double bounceFactor = (bouncingAlignment.y + 1) / 2;
 
-    switch (bouncingAlignment) {
-      case AppBarAlignment.absolute:
-        result = result.translate(0, 0);
-      case AppBarAlignment.center:
-        result = result.translate(0, lentPixels / 2);
-      case AppBarAlignment.scroll:
-        result = result.translate(0, lentPixels);
-    }
+    // Apply scroll offset based on alignment factor.
+    double y = offset.dy - position.pixels * scrollFactor;
 
-    return result;
+    // Apply bounce offset based on bouncing alignment factor.
+    y += position.lentPixels * -bounceFactor;
+
+    return Offset(offset.dx, y);
   }
 
   @override
