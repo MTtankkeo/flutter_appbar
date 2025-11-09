@@ -1,7 +1,11 @@
 # Introduction
-This package implements the flexible appbar behavior, and we pursue higher performance and responsiveness than the appbar generally provided by Flutter. In addition, this package avoids unnecessary gesture contention, ensuring responsiveness in most typical situations.
+This package implements a flexible AppBar behavior that pursues higher performance and responsiveness than the default Flutter AppBar. It also avoids unnecessary gesture contention, ensuring smooth interactions in most typical situations.
+
+> ✨ Build next-generation, **premium-grade scroll experiences** with full AppBar control.
 
 ## Related Packages
+Built on the same foundation, these packages extend flutter_appbar capabilities:
+
 | Name | Introduction |
 | ---- | ------------ |
 | [flutter_refresh_indicator](https://pub.dev/packages/flutter_refresh_indicator) | A flexible, native-like refresh indicator built on flutter_appbar. |
@@ -47,7 +51,7 @@ AppBarConnection(
 ```
 
 ### How to apply the sized appbar?
-You can explicitly define both the minimum and maximum extents for the appbar, allowing you to set fixed sizes rather than having it adjust dynamically, See Also, The SizedAppBar does not provide an alignment option.
+You can explicitly define both the minimum and maximum extents for the appbar, allowing you to set fixed sizes rather than having it adjust dynamically, See Also, The sized appbar does not support alignment options.
 
 ```dart
 AppBar(
@@ -137,7 +141,7 @@ AppBarConnection(
 )
 ```
 
-#### Globaly
+#### Globally
 
 ```dart
 AppBarConnection.defaultFixedScrollableHeight = true;
