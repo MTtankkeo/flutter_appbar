@@ -223,7 +223,7 @@ class NestedScrollPosition extends ScrollPositionWithSingleContext {
 
   @override
   double setPixels(double newPixels) {
-    if (pixels == newPixels) return 0.0;
+    if ((pixels - newPixels).abs() < precisionErrorTolerance) return 0.0;
 
     // Request the final consumption to ensure [lentPixels] recovers to zero.
     if (lentPixels + newPixels == minScrollExtent) {

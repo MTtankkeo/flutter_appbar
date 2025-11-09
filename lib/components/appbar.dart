@@ -22,6 +22,8 @@ class AppBar extends StatefulWidget {
     this.alignment = Alignment.bottomCenter,
     this.bouncingAlignment = Alignment.bottomCenter,
     this.initialOffset = 0,
+    this.minExtent = 0,
+    this.maxExtent,
   }) : builder = ((_, position) => body);
 
   AppBar.builder({
@@ -31,6 +33,8 @@ class AppBar extends StatefulWidget {
     this.alignment = Alignment.bottomCenter,
     this.bouncingAlignment = Alignment.bottomCenter,
     this.initialOffset = 0,
+    this.minExtent = 0,
+    this.maxExtent,
   }) : builder = ((_, position) {
           /// When position is updated, the widget state is also updated.
           return ListenableBuilder(
@@ -57,31 +61,14 @@ class AppBar extends StatefulWidget {
   /// Therefore, this value must be defined from 0 to 1.
   final double initialOffset;
 
+  /// The minimum height the AppBar can shrink to.
+  final double minExtent;
+
+  /// The maximum height the AppBar can expand to.
+  final double? maxExtent;
+
   @override
   State<AppBar> createState() => _AppBarState();
-}
-
-class SizedAppBar extends AppBar {
-  SizedAppBar({
-    super.key,
-    super.initialOffset,
-    required this.minExtent,
-    required this.maxExtent,
-    required super.behavior,
-    required super.body,
-  });
-
-  SizedAppBar.builder({
-    super.key,
-    super.initialOffset,
-    required this.minExtent,
-    required this.maxExtent,
-    required super.behavior,
-    required super.builder,
-  }) : super.builder();
-
-  final double minExtent;
-  final double maxExtent;
 }
 
 class _AppBarState extends State<AppBar>
@@ -99,8 +86,10 @@ class _AppBarState extends State<AppBar>
     super.initState();
 
     _connection = AppBarConnection.of(context);
-    assert(_connection != null,
-        "AppBarConnection widget does not exist at the ancestor.");
+    assert(
+      _connection != null,
+      "AppBarConnection widget does not exist at the ancestor.",
+    );
 
     // Attach the initial position to the appbar controller.
     _connection?.attach(_position);
@@ -124,13 +113,11 @@ class _AppBarState extends State<AppBar>
 
   @override
   Widget build(BuildContext context) {
-    final bool isSizedAppBar = widget is SizedAppBar;
-
     return RepaintBoundary(
       child: ClipRRect(
         child: _AppBar(
-          minExtent: isSizedAppBar ? (widget as SizedAppBar).minExtent : null,
-          maxExtent: isSizedAppBar ? (widget as SizedAppBar).maxExtent : null,
+          minExtent: widget.minExtent,
+          maxExtent: widget.maxExtent,
           position: _position,
           alignment: widget.alignment,
           bouncingAlignment: widget.bouncingAlignment,
@@ -144,14 +131,14 @@ class _AppBarState extends State<AppBar>
 class _AppBar extends SingleChildRenderObjectWidget {
   const _AppBar({
     required super.child,
-    this.minExtent,
+    this.minExtent = 0,
     this.maxExtent,
     required this.position,
     required this.alignment,
     required this.bouncingAlignment,
   });
 
-  final double? minExtent;
+  final double minExtent;
   final double? maxExtent;
   final AppBarPosition position;
   final Alignment alignment;
@@ -188,7 +175,7 @@ class RenderAppBar extends RenderBox
     required Alignment alignment,
     required Alignment bouncingAlignment,
   }) {
-    this.minExtent = minExtent;
+    this.minExtent = minExtent ?? 0;
     this.maxExtent = maxExtent;
     this.position = position;
     this.alignment = alignment;
@@ -229,9 +216,9 @@ class RenderAppBar extends RenderBox
     }
   }
 
-  double? get minExtent => _minExtent;
-  double? _minExtent;
-  set minExtent(double? value) {
+  double get minExtent => _minExtent;
+  double _minExtent = 0;
+  set minExtent(double value) {
     if (_minExtent != value) {
       _minExtent = value;
       markNeedsLayout();
@@ -248,7 +235,7 @@ class RenderAppBar extends RenderBox
   }
 
   /// Whether the appbar should operate based on the given max extent(e.g. max height).
-  bool get isSizedLayout => minExtent != null && maxExtent != null;
+  bool get isSizedLayout => maxExtent != null;
 
   @override
   BoxConstraints get constraints {
@@ -282,24 +269,21 @@ class RenderAppBar extends RenderBox
 
   @override
   void performLayout() {
-    // When the size needs to be calculated dynamically.
-    if (!isSizedLayout) {
-      child.layout(constraints, parentUsesSize: true);
-      position.maxExtent = child.size.height;
+    child.layout(constraints, parentUsesSize: true);
 
-      final double appBarPixels = child.size.height - position.pixels;
-      final double appBarHeight = appBarPixels + lentPixels;
+    // Determine effective min and max extents.
+    final eMinExtent = minExtent;
+    final eMaxExtent = maxExtent ?? child.size.height;
 
-      size = Size(child.size.width, appBarHeight);
-    } else {
-      child.layout(constraints, parentUsesSize: true);
-      position.maxExtent = maxExtent! - minExtent!;
+    // Set the scrollable range for the AppBar position.
+    position.maxExtent = eMaxExtent - eMinExtent;
 
-      final double appBarPixels = maxExtent! - position.pixels;
-      final double appBarHeight = appBarPixels + lentPixels;
+    // Calculate the current AppBar height based
+    // on scroll position and any lent pixels.
+    final double appBarPixels = eMaxExtent - position.pixels;
+    final double appBarHeight = appBarPixels + lentPixels;
 
-      size = Size(child.size.width, appBarHeight);
-    }
+    size = Size(child.size.width, appBarHeight);
   }
 
   /// No need to implement hit-test in this [RenderBox].

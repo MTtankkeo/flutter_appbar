@@ -47,12 +47,12 @@ AppBarConnection(
 ```
 
 ### How to apply the sized appbar?
-To apply the `SizedAppBar`, you can explicitly define both the minimum and maximum extents for the appbar, allowing you to set fixed sizes rather than having it adjust dynamically, See Also, The SizedAppBar does not provide an alignment option.
+You can explicitly define both the minimum and maximum extents for the appbar, allowing you to set fixed sizes rather than having it adjust dynamically, See Also, The SizedAppBar does not provide an alignment option.
 
 ```dart
-SizedAppBar(
-  minExtent: 0,
-  maxExtent: 200,
+AppBar(
+  minExtent: 0,   // Optional
+  maxExtent: 200, // Optional
   behavior: MaterialAppBarBehavior(),
   body: ...
 )
@@ -102,7 +102,7 @@ AppBarConnection(
 ```
 
 ### How to customize appbar alignment?
-Try applying the `AppBarAlignment` that is a providing standard enumeration in this package.
+Try applying the `Alignment` that is a providing standard enumeration in this package.
 
 ```dart
 AppBar(
@@ -120,6 +120,27 @@ AppBar(
   initialOffset: 1, // 0 ~ 1
   body: ...
 )
+```
+
+### How to set fixed scrollable height?
+When `fixedScrollableHeight` is enabled, the scrollable widget's height is calculated as if the AppBar is fully collapsed, regardless of its current expansion state.
+
+This prevents the scrollable view from resizing dynamically as the AppBar expands or collapses, which can help avoid layout shifts, visual glitches, and performance overhead caused by frequent height changes.
+
+#### Locally
+
+```dart
+AppBarConnection(
+  fixedScrollableHeight: true,
+  appBars: [...],
+  child: ...
+)
+```
+
+#### Globaly
+
+```dart
+AppBarConnection.defaultFixedScrollableHeight = true;
 ```
 
 ## AppBar Behavior

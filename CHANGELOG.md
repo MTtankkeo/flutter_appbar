@@ -4,7 +4,7 @@
 ## 1.0.0-dev2
 - Proceed with documentation of README.md and its overall source-code by adding comments.
 
-- Renamed from `AppBarAlign` to `AppBarAlignmentCommand` and from `AppBarAlignBehavior` to `AppBarAlignmentBehavior`.
+- Renamed from AppBarAlign to AppBarAlignmentCommand and from AppBarAlignBehavior to AppBarAlignmentBehavior.
 
 - Fixed an issue by implementing code that delegates all appbar states and operations from the existing appbar controller to the new app bar controller.
 
@@ -28,23 +28,23 @@
 - Added basic logic for bouncing overscroll consumption (still in development).
 
 ## 1.1.0
-- Added `DrivenAppBarBehavior`, which handles the bouncing synchronization of the app bar. (`AbsoluteAppBarBehavior` and `MaterialAppBarBehavior` now inherit from the `DrivenAppBarBehavior` class.)
+- Added DrivenAppBarBehavior, which handles the bouncing synchronization of the app bar. (AbsoluteAppBarBehavior and MaterialAppBarBehavior now inherit from the DrivenAppBarBehavior class.)
 
-- Added `bouncing` property in `AbsoluteAppBarBehavior`.
+- Added bouncing property in AbsoluteAppBarBehavior.
 
-- Added `bouncing` property in `MaterialAppBarBehavior`.
+- Added bouncing property in MaterialAppBarBehavior.
 
-- Added related logic in `AppBarConnection` to enable synchronization with bouncing.
+- Added related logic in AppBarConnection to enable synchronization with bouncing.
 
 - Added the bouncingAlignment property to the AppBar, allowing the layout alignment of the app bar to be defined when synchronized with bouncing.
 
 ## 1.1.1
-- Fixed an issue where the dragOnlyExpanding option in `MaterialAppBarBehavior` was not working correctly.
+- Fixed an issue where the dragOnlyExpanding option in MaterialAppBarBehavior was not working correctly.
 
 - Fixed an issue where the app bar was not scrolling correctly in Bouncing even when scrolling was not possible.
 
 ## 1.1.2
-- Added `synchronizeWith` function to synchronize appbar updates between specified indices, ensuring that when the appbar at the first index is updated, the appbar at the second index is also updated accordingly.
+- Added synchronizeWith function to synchronize appbar updates between specified indices, ensuring that when the appbar at the first index is updated, the appbar at the second index is also updated accordingly.
 
 - Fixed an issue where the appbar did not properly consume the overscroll when the overscroll direction immediately switched to forward or backward, or vice versa, causing abnormal behavior.
 
@@ -52,7 +52,7 @@
 - Fixed an issue related to bouncing overscroll about appbar pixels safety.
 
 ## 1.1.4
-- Fixed an issue [#2](https://github.com/MTtankkeo/flutter_appbar/issues/2) where the alignment animation did not run when wrapped with `TabBarView`.
+- Fixed an issue [#2](https://github.com/MTtankkeo/flutter_appbar/issues/2) where the alignment animation did not run when wrapped with TabBarView.
 
 ## 1.1.5 ~ 1.1.6
 - Fixed an issue [#3](https://github.com/MTtankkeo/flutter_appbar/issues/3).
@@ -63,102 +63,109 @@
 - Added additional comments for documentation.
 
 ## 1.2.0
-- Updated by removing the existing legacy appbar alignment-related code and adding functions such as `notifyScrollEnd`, `performAlignment`, `expand`, and `shrink` to allow more flexible external control over alignment.
+- Updated by removing the existing legacy appbar alignment-related code and adding functions such as notifyScrollEnd, performAlignment, expand, and shrink to allow more flexible external control over alignment.
 
-- Updated `AbsoluteAppBarBehavior`, which previously did not support alignment, to allow external control over appbar alignment animations.
+- Updated AbsoluteAppBarBehavior, which previously did not support alignment, to allow external control over appbar alignment animations.
 
 ## 1.2.1
 - Fixed an issue where the appbar would expand again when its height increased in the fully shrinked state by normalizing its offset to a range of 0 to 1 instead of using the pixels unit.
 
-- Added the `initialOffset` property to `AppBar` and `SizedAppBar`, which defines the initial expansion or collapse state of the app bar and must be a value between 0 and 1.
+- Added the initialOffset property to AppBar and SizedAppBar, which defines the initial expansion or collapse state of the app bar and must be a value between 0 and 1.
 
 ## 1.2.2
-- Fixed an issue where Flutter default stretch overscroll effect behaved unnaturally when scrolling was not possible with `ClampingScrollPhysics`.
+- Fixed an issue where Flutter default stretch overscroll effect behaved unnaturally when scrolling was not possible with ClampingScrollPhysics.
 
 ## 1.2.3
-- Fixed an issue where the appbar could reference outdated `maxScrollExtent` values because the `Scrollable` widget layout intrinsic size changes were updated only after all size calculations were completed.
+- Fixed an issue where the appbar could reference outdated maxScrollExtent values because the Scrollable widget layout intrinsic size changes were updated only after all size calculations were completed.
 
 ## 1.3.0
-- Added `EffectUtil` class for the appbar effect calculation.
+- Added EffectUtil class for the appbar effect calculation.
 
-- Added `AppBarFadeEffect.onShrink` widget that apply fade-out effect by a given appbar position.
+- Added AppBarFadeEffect.onShrink widget that apply fade-out effect by a given appbar position.
 
-- Added `AppBarFadeEffect.onExpand` widget that apply fade-out effect by a given appbar position.
+- Added AppBarFadeEffect.onExpand widget that apply fade-out effect by a given appbar position.
 
 ## 1.3.1
-- Fixed an issue where multiple instances of `ScrollController` were created when `NestedScrollConnection` was nested two or more times in the widget tree.
+- Fixed an issue where multiple instances of ScrollController were created when NestedScrollConnection was nested two or more times in the widget tree.
 
-- Fixed an issue where the `alwaysScrolling` option related logic in `MaterialAppBarBehavior` did not correctly determine the scrollability of the appbar.
+- Fixed an issue where the alwaysScrolling option related logic in MaterialAppBarBehavior did not correctly determine the scrollability of the appbar.
 
 ## 1.3.2
-- Fixed an issue where an exception occurred in `ScrollController` when the widget tree structure changed(e.g. detach and then attach).
+- Fixed an issue where an exception occurred in ScrollController when the widget tree structure changed(e.g. detach and then attach).
 
 ## 1.4.0
-- Added `NestedScrollConnectionPropagation` enumeration for NestedScrollConnection widget.
+- Added NestedScrollConnectionPropagation enumeration for NestedScrollConnection widget.
 
-- Added `propagation` property that is NestedScrollConnectionPropagation type in NestedScrollConnection widget.
+- Added propagation property that is NestedScrollConnectionPropagation type in NestedScrollConnection widget.
 
-- Added `nestedPropagation` property that is NestedScrollConnectionPropagation type in AppBarConnection widget.
+- Added nestedPropagation property that is NestedScrollConnectionPropagation type in AppBarConnection widget.
 
-- Remove `NestedScrollFlingListener` typedef.
+- Remove NestedScrollFlingListener typedef.
 
 - Changed the fling listener to a consuming.
 
 ## 1.4.1
-- Fixed an issue about not initialized `NestedScrollController` inistacne in `AppBarConnection` widget.
+- Fixed an issue about not initialized NestedScrollController inistacne in AppBarConnection widget.
 
 ## 1.4.2
 - Fixed an issue where an overflow-related exception would occur when the appbar exceeded the parent height, allowing it to extend beyond the parent without causing errors.
 
-- Fixed an issue about not working initialScrollOffset in `NestedScrollController`.
+- Fixed an issue about not working initialScrollOffset in NestedScrollController.
 
 ## 1.4.3
 - Fixed an issue where the appbar would not render in situations where both the viewport changed and its position was updated.
 
 ## 1.4.4
-- Fixed an issue in `ScrollableGestureDelegator` where it did not flexibly reference the last ScrollPosition when multiple were present.
+- Fixed an issue in ScrollableGestureDelegator where it did not flexibly reference the last ScrollPosition when multiple were present.
 
 ## 1.4.5
-- Fixed an issue for [#6](https://github.com/MTtankkeo/flutter_appbar/issues/6) about `CupertinoSliverRefreshControl` sliver widget.
+- Fixed an issue for [#6](https://github.com/MTtankkeo/flutter_appbar/issues/6) about CupertinoSliverRefreshControl sliver widget.
 
 ## 1.4.6
 - Refactored code to follow Dart formatting conventions.
 
 ## 1.5.0
-- Added `NestedScrollConnectionPropagation.directional` option and set it as the default behavior.  
-It now works flexibly and correctly in most scenarios without requiring developers to manually define `NestedScrollConnectionPropagation` for each case.
+- Added NestedScrollConnectionPropagation.directional option and set it as the default behavior.  
+It now works flexibly and correctly in most scenarios without requiring developers to manually define NestedScrollConnectionPropagation for each case.
 
 ## 1.6.0
-- Added `NestedScrollPredicate` typedef for predicates that determine when all events from child widgets should be consumed and taken over in specific situations.
+- Added NestedScrollPredicate typedef for predicates that determine when all events from child widgets should be consumed and taken over in specific situations.
 
-- Added `predicate` option to `NestedScrollConnection` to support custom predicate logic for nested scroll event handling.
+- Added predicate option to NestedScrollConnection to support custom predicate logic for nested scroll event handling.
 
 ## 1.6.1
 - Improved nested scroll handling by adding explicit priority sorting in directional propagation mode.
-This ensures that widgets with `NestedScrollConnectionPropagation.deferToAncestor` propagation are always processed last, respecting the intended scroll event priority order.
+This ensures that widgets with NestedScrollConnectionPropagation.deferToAncestor propagation are always processed last, respecting the intended scroll event priority order.
 
 ## 1.6.2
-- Fixed an issue about `AppBar.builder`.
+- Fixed an issue about AppBar.builder.
 
 ## 1.6.3
-- Fixed an issue where `RenderAppBar` could produce invalid BoxConstraints with a negative `maxHeight` in specific environments, causing layout exceptions during `performLayout`.
+- Fixed an issue where RenderAppBar could produce invalid BoxConstraints with a negative maxHeight in specific environments, causing layout exceptions during performLayout.
 
 ## 1.6.4
-- (X) Removed `AppBarPosition` listener during `detach` to prevent lingering callbacks and ensure proper cleanup.
+- (X) Removed AppBarPosition listener during detach to prevent lingering callbacks and ensure proper cleanup.
 
-- Added `RepaintBoundary` wrapper to AppBar widget to prevent unnecessary repaints during scroll interactions.
+- Added RepaintBoundary wrapper to AppBar widget to prevent unnecessary repaints during scroll interactions.
 
 ## 1.6.5
 - Fixed an issue about the assertion.
 
 ## 1.7.0
-- Added `NestedScrollControllerScope` to ensure a single `NestedScrollController` is used within the widget tree.
+- Added NestedScrollControllerScope to ensure a single NestedScrollController is used within the widget tree.
 
-- Guaranteed `NestedScrollPosition` usage, removing the need for casting when handling nested scrolling.
+- Guaranteed NestedScrollPosition usage, removing the need for casting when handling nested scrolling.
 
 - Performed additional documentation improvements.
 
 - Updated the package example code.
 
 ## 1.8.0
-- Updated the appbar alignment enumeration by removing the `AppBarAlignment` enum and replacing it with Flutter's built-in `Alignment` to provide more flexible and intuitive positioning.
+- Updated the appbar alignment enumeration by removing the AppBarAlignment enum and replacing it with Flutter's built-in Alignment to provide more flexible and intuitive positioning.
+
+## 1.9.0
+- Removed the previous SizedAppBar and unified it into AppBar, with minExtent now configurable to allow setting the minimum height in dynamic height scenarios.
+
+- Added the fixedScrollableHeight option in the AppBarConnection widget to prevent potential layout overhead and frame drops caused by dynamic scrollable widget heights.
+
+- Updated minor adjustments to the NestedScrollPosition class.
