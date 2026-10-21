@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_appbar/flutter_appbar.dart';
+import 'package:flutter_nested_scroll/flutter_nested_scroll.dart';
 
 /// The physical size used for testing layouts and scroll behavior.
 const Size kPhysicalSize = Size(100, 200);
@@ -9,8 +10,7 @@ const Size kPhysicalSize = Size(100, 200);
 /// Custom scroll physics for tests that always allow drag gestures
 /// to start immediately, while inheriting bouncing behavior.
 class TestBouncingScrollPhysics extends ScrollPhysics {
-  const TestBouncingScrollPhysics()
-      : super(parent: const BouncingScrollPhysics());
+  const TestBouncingScrollPhysics() : super(parent: const BouncingScrollPhysics());
 
   /// Removes the default drag threshold so that drags are
   /// recognized without requiring a minimum motion distance.
@@ -25,19 +25,17 @@ Widget createTemplate(
   NestedScrollController scrollController, {
   double? scrollExtent,
 }) {
-  final bool isIOS = defaultTargetPlatform == TargetPlatform.iOS;
-  final bool isMacOS = defaultTargetPlatform == TargetPlatform.macOS;
-  final bool isCupertino = isIOS || isMacOS;
+  final isIOS = defaultTargetPlatform == .iOS;
+  final isMacOS = defaultTargetPlatform == .macOS;
+  final isCupertino = isIOS || isMacOS;
 
   return Builder(
     builder: (context) {
       return Directionality(
-        textDirection: TextDirection.ltr,
+        textDirection: .ltr,
         child: ScrollConfiguration(
           behavior: ScrollConfiguration.of(context).copyWith(
-            physics: isCupertino
-                ? const TestBouncingScrollPhysics()
-                : const ClampingScrollPhysics(),
+            physics: isCupertino ? const TestBouncingScrollPhysics() : const ClampingScrollPhysics(),
           ),
           child: AppBarConnection(
             controller: appBarController,
@@ -45,7 +43,7 @@ Widget createTemplate(
             child: ListView(
               controller: scrollController,
               children: [
-                Container(height: scrollExtent ?? kPhysicalSize.height * 3)
+                Container(height: scrollExtent ?? kPhysicalSize.height * 3),
               ],
             ),
           ),

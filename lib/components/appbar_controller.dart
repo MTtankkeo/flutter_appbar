@@ -1,10 +1,8 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_appbar/flutter_appbar.dart';
+import 'package:flutter_nested_scroll/flutter_nested_scroll.dart';
 
-enum AppbarPropagation {
-  stop,
-  next,
-}
+enum AppbarPropagation { stop, next }
 
 /// This class provides essential functionality and roles for managing and tracking the appbar.
 ///

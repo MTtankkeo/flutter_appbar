@@ -9,7 +9,7 @@ on:
       - main
 
 jobs:
-  build:
+  package-score:
     runs-on: ubuntu-latest
 
     steps:
@@ -18,16 +18,16 @@ jobs:
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
-          channel: main # latest version
+          channel: stable
 
       - name: Install dependencies
         run: flutter pub get
 
-      - name: Check Dart Format
-        run: dart format --set-exit-if-changed .
+      - name: Install Pana
+        run: dart pub global activate pana
 
-      - name: Run Flutter Analyzer
-        run: flutter analyze --fatal-warnings
+      - name: Check package score
+        run: dart pub global run pana --exit-code-threshold 0 .
 
       - name: Run Unit & Widget Tests
         run: flutter test .

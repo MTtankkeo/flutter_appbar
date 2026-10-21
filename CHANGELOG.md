@@ -169,3 +169,10 @@ This ensures that widgets with NestedScrollConnectionPropagation.deferToAncestor
 - Added the fixedScrollableHeight option in the AppBarConnection widget to prevent potential layout overhead and frame drops caused by dynamic scrollable widget heights.
 
 - Updated minor adjustments to the NestedScrollPosition class.
+
+## 1.10.0
+- Moved the nested scrolling components to the `flutter_nested_scroll` package. Import it directly for `NestedScrollConnection`, `NestedScrollController`, and related types; `flutter_appbar` no longer exports them.
+
+- Added `flutter_nested_scroll` as a dependency.
+
+- Raised the minimum supported versions to Dart 3.12 and Flutter 3.44.

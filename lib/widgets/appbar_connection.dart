@@ -4,13 +4,10 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_appbar/components/appbar_controller.dart';
 import 'package:flutter_appbar/components/appbar_position.dart';
-import 'package:flutter_appbar/components/nested_scroll_controller.dart';
-import 'package:flutter_appbar/components/nested_scroll_position.dart';
 import 'package:flutter_appbar/components/appbar.dart';
 import 'package:flutter_appbar/widgets/appbar_column.dart';
-import 'package:flutter_appbar/widgets/nested_scroll_connection.dart';
-import 'package:flutter_appbar/widgets/nested_scroll_controller_scope.dart';
 import 'package:flutter_appbar/widgets/scrollable_gesture_delegator.dart';
+import 'package:flutter_nested_scroll/flutter_nested_scroll.dart';
 
 /// ## Introduction
 /// Synchronize appbars with [Scrollable] to configure dynamic appbar behavior
@@ -32,8 +29,8 @@ class AppBarConnection extends StatefulWidget {
     super.key,
     required this.appBars,
     required this.child,
-    this.propagation = AppbarPropagation.next,
-    this.nestedPropagation = NestedScrollConnectionPropagation.directional,
+    this.propagation = .next,
+    this.nestedPropagation = .directional,
     this.controller,
     this.scrollController,
     this.fixedScrollableHeight,
@@ -47,7 +44,7 @@ class AppBarConnection extends StatefulWidget {
 
   /// Defines the propagation behavior for nested scroll connections.
   /// Determines how scroll events from child scrollables affect this [AppBar].
-  final NestedScrollConnectionPropagation nestedPropagation;
+  final NestedScrollPropagation nestedPropagation;
 
   /// The controller that defines states([AppBarPosition]) and other features of the appbar.
   final AppBarController? controller;
@@ -89,11 +86,7 @@ class AppBarConnectionState extends State<AppBarConnection> {
   void detach(AppBarPosition position) => _controller.detach(position);
 
   double _handleNestedScroll(double available, NestedScrollPosition position) {
-    return _controller.consumeScroll(
-      available,
-      position,
-      widget.propagation,
-    );
+    return _controller.consumeScroll(available, position, widget.propagation);
   }
 
   double _handleBouncing(double available, NestedScrollPosition position) {
@@ -110,8 +103,7 @@ class AppBarConnectionState extends State<AppBarConnection> {
   void didUpdateWidget(AppBarConnection oldWidget) {
     super.didUpdateWidget(oldWidget);
 
-    if (oldWidget.controller != null &&
-        oldWidget.controller != widget.controller) {
+    if (oldWidget.controller != null && oldWidget.controller != widget.controller) {
       _controller = widget.controller!..delegateFrom(_controller);
     }
   }
@@ -145,8 +137,7 @@ class AppBarConnectionState extends State<AppBarConnection> {
                 assert(constraints.maxWidth != double.infinity);
                 assert(constraints.maxHeight != double.infinity);
                 return _RenderAppBarConnection(
-                  fixedScrollableHeight: widget.fixedScrollableHeight ??
-                      AppBarConnection.defaultFixedScrollableHeight,
+                  fixedScrollableHeight: widget.fixedScrollableHeight ?? AppBarConnection.defaultFixedScrollableHeight,
                   children: [
                     // Wrap the widget that acts as a scroll gesture delegator
                     // to enable scrolling by dragging a appbar.
@@ -184,7 +175,8 @@ class _RenderAppBarConnection extends MultiChildRenderObjectWidget {
   @override
   RenderObject createRenderObject(BuildContext context) {
     return _AppBarConnectionRenderBox(
-        fixedScrollableHeight: fixedScrollableHeight);
+      fixedScrollableHeight: fixedScrollableHeight,
+    );
   }
 
   @override
@@ -199,14 +191,8 @@ class _RenderAppBarConnection extends MultiChildRenderObjectWidget {
 /// A RenderBox that lays out an AppBar (or multiple AppBars) above
 /// a scrollable body, managing their vertical positioning and height.
 class _AppBarConnectionRenderBox extends RenderBox
-    with
-        ContainerRenderObjectMixin<RenderBox, _ParentData>,
-        RenderBoxContainerDefaultsMixin<RenderBox, _ParentData> {
-  _AppBarConnectionRenderBox({
-    required bool fixedScrollableHeight,
-  }) {
-    this._fixedScrollableHeight = fixedScrollableHeight;
-  }
+    with ContainerRenderObjectMixin<RenderBox, _ParentData>, RenderBoxContainerDefaultsMixin<RenderBox, _ParentData> {
+  _AppBarConnectionRenderBox({required this._fixedScrollableHeight});
 
   late bool _fixedScrollableHeight;
   bool get fixedScrollableHeight => _fixedScrollableHeight;
@@ -231,8 +217,8 @@ class _AppBarConnectionRenderBox extends RenderBox
 
   @override
   void performLayout() {
-    final RenderBox appBars = firstChild!;
-    final RenderBox body = childAfter(appBars)!;
+    final appBars = firstChild!;
+    final body = childAfter(appBars)!;
     final bodyParentData = body.parentData as _ParentData;
 
     // Layout the app bars with unconstrained height, allowing
@@ -242,7 +228,7 @@ class _AppBarConnectionRenderBox extends RenderBox
         minWidth: constraints.minWidth,
         maxWidth: constraints.maxWidth,
         minHeight: 0,
-        maxHeight: double.infinity,
+        maxHeight: .infinity,
       ),
       parentUsesSize: true,
     );
@@ -269,7 +255,10 @@ class _AppBarConnectionRenderBox extends RenderBox
     // Position the body immediately below the app bars.
     bodyParentData.offset = Offset(0, appBars.size.height);
 
-    size = Size(constraints.maxWidth, constraints.maxHeight);
+    size = Size(
+      constraints.maxWidth,
+      constraints.maxHeight,
+    );
   }
 
   @override

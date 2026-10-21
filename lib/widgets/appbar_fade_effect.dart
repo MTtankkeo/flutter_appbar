@@ -11,9 +11,9 @@ class AppBarFadeEffect extends StatelessWidget {
     double end = 1,
     required AppBarPosition position,
     required this.child,
-  })  : value = position.expandedPercent,
-        start = 1 - start,
-        end = 1 - end;
+  }) : value = position.expandedPercent,
+       start = 1 - start,
+       end = 1 - end;
 
   /// The fade-out effect is applied when on expand the appbar.
   AppBarFadeEffect.onExpand({

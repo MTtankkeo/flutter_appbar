@@ -79,8 +79,7 @@ class RenderAppBarColumn extends SingleChildRenderObjectWidget {
 
 /// A custom render-box that ensures the app bar column does not overflow
 /// by enforcing size constraints from the parent widget(i.g. ancestor).
-class AppBarColumnRenderBox extends RenderBox
-    with RenderObjectWithChildMixin<RenderBox> {
+class AppBarColumnRenderBox extends RenderBox with RenderObjectWithChildMixin<RenderBox> {
   AppBarColumnRenderBox({required BoxConstraints parentConstraints}) {
     _parentConstraints = parentConstraints;
   }

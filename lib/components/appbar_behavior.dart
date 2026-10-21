@@ -4,7 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_appbar/components/appbar_position.dart';
-import 'package:flutter_appbar/components/nested_scroll_position.dart';
+import 'package:flutter_nested_scroll/flutter_nested_scroll.dart';
 
 /// Representing different alignment options for the appbar.
 enum AppBarAlignmentCommand {
@@ -55,7 +55,7 @@ abstract class AppBarBehavior {
 abstract class DrivenAppBarBehavior extends AppBarBehavior {
   const DrivenAppBarBehavior({
     required this.bouncing,
-    super.alignDuration = const Duration(milliseconds: 300),
+    super.alignDuration = const .new(milliseconds: 300),
     super.alignCurve = Curves.ease,
   });
 
@@ -131,14 +131,15 @@ class MaterialAppBarBehavior extends DrivenAppBarBehavior {
     AppBarPosition appBar,
     NestedScrollPosition scroll,
   ) {
-    assert(floating ? !dragOnlyExpanding : true,
-        "[floating] and [dragOnlyExpanding] cannot be used together.");
+    assert(
+      floating ? !dragOnlyExpanding : true,
+      "[floating] and [dragOnlyExpanding] cannot be used together.",
+    );
 
     // APPBAR SCROLLING CONSTRAINTS
 
     // No consume when bouncing overscroll for appbar pixels safety.
-    if (scroll.totalPixels < scroll.minScrollExtent ||
-        scroll.totalPixels > scroll.maxScrollExtent) {
+    if (scroll.totalPixels < scroll.minScrollExtent || scroll.totalPixels > scroll.maxScrollExtent) {
       return 0;
     }
 
@@ -146,9 +147,7 @@ class MaterialAppBarBehavior extends DrivenAppBarBehavior {
       // No consume when scroll offset is zero ~ infinity.
       if (scroll.pixels > precisionErrorTolerance) return 0;
 
-      if (dragOnlyExpanding &&
-          scroll.isBallisticScrolling &&
-          appBar.shrinkedPercent == 1) {
+      if (dragOnlyExpanding && scroll.isBallisticScrolling && appBar.shrinkedPercent == 1) {
         return 0;
       }
     }
@@ -175,11 +174,11 @@ class MaterialAppBarBehavior extends DrivenAppBarBehavior {
 
   @override
   AppBarAlignmentCommand? align(
-      AppBarPosition appBar, NestedScrollPosition scroll) {
+    AppBarPosition appBar,
+    NestedScrollPosition scroll,
+  ) {
     if (alignAnimation) {
-      return appBar.expandedPercent < 0.5
-          ? AppBarAlignmentCommand.shrink
-          : AppBarAlignmentCommand.expand;
+      return appBar.expandedPercent < 0.5 ? .shrink : .expand;
     }
 
     return null;

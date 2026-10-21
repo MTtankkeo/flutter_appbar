@@ -5,10 +5,7 @@ import 'package:flutter_appbar/flutter_appbar.dart';
 /// Signature for a function that creates a widget for a appbar.
 ///
 /// Used by [AppBar.builder].
-typedef AppBarBuilder = Widget Function(
-  BuildContext context,
-  AppBarPosition position,
-);
+typedef AppBarBuilder = Widget Function(BuildContext context, AppBarPosition position);
 
 /// The widget configures dynamic appbar behavior that interacts
 /// with [Scrollable] widget.
@@ -19,8 +16,8 @@ class AppBar extends StatefulWidget {
     super.key,
     required this.behavior,
     required Widget body,
-    this.alignment = Alignment.bottomCenter,
-    this.bouncingAlignment = Alignment.bottomCenter,
+    this.alignment = .bottomCenter,
+    this.bouncingAlignment = .bottomCenter,
     this.initialOffset = 0,
     this.minExtent = 0,
     this.maxExtent,
@@ -30,18 +27,18 @@ class AppBar extends StatefulWidget {
     super.key,
     required this.behavior,
     required AppBarBuilder builder,
-    this.alignment = Alignment.bottomCenter,
-    this.bouncingAlignment = Alignment.bottomCenter,
+    this.alignment = .bottomCenter,
+    this.bouncingAlignment = .bottomCenter,
     this.initialOffset = 0,
     this.minExtent = 0,
     this.maxExtent,
   }) : builder = ((_, position) {
-          /// When position is updated, the widget state is also updated.
-          return ListenableBuilder(
-            listenable: position,
-            builder: (context, _) => builder(context, position),
-          );
-        });
+         /// When position is updated, the widget state is also updated.
+         return ListenableBuilder(
+           listenable: position,
+           builder: (context, _) => builder(context, position),
+         );
+       });
 
   /// The function that creates a widget for the appbar.
   final AppBarBuilder builder;
@@ -71,8 +68,7 @@ class AppBar extends StatefulWidget {
   State<AppBar> createState() => _AppBarState();
 }
 
-class _AppBarState extends State<AppBar>
-    with TickerProviderStateMixin, WidgetsBindingObserver {
+class _AppBarState extends State<AppBar> with TickerProviderStateMixin, WidgetsBindingObserver {
   late final AppBarPosition _position = AppBarPosition(
     vsync: this,
     behavior: widget.behavior,
@@ -86,10 +82,7 @@ class _AppBarState extends State<AppBar>
     super.initState();
 
     _connection = AppBarConnection.of(context);
-    assert(
-      _connection != null,
-      "AppBarConnection widget does not exist at the ancestor.",
-    );
+    assert(_connection != null, "AppBarConnection widget does not exist at the ancestor.");
 
     // Attach the initial position to the appbar controller.
     _connection?.attach(_position);
@@ -166,8 +159,7 @@ class _AppBar extends SingleChildRenderObjectWidget {
   }
 }
 
-class RenderAppBar extends RenderBox
-    with RenderObjectWithChildMixin<RenderBox> {
+class RenderAppBar extends RenderBox with RenderObjectWithChildMixin<RenderBox> {
   RenderAppBar({
     required double? minExtent,
     required double? maxExtent,
@@ -240,10 +232,11 @@ class RenderAppBar extends RenderBox
   @override
   BoxConstraints get constraints {
     if (isSizedLayout) {
-      final double height = (maxExtent! - position.pixels) + lentPixels;
-      return super
-          .constraints
-          .copyWith(maxHeight: height.clamp(0.0, double.infinity));
+      final height = (maxExtent! - position.pixels) + lentPixels;
+
+      return super.constraints.copyWith(
+        maxHeight: height.clamp(0.0, .infinity),
+      );
     }
 
     return super.constraints;
@@ -280,8 +273,8 @@ class RenderAppBar extends RenderBox
 
     // Calculate the current AppBar height based
     // on scroll position and any lent pixels.
-    final double appBarPixels = eMaxExtent - position.pixels;
-    final double appBarHeight = appBarPixels + lentPixels;
+    final appBarPixels = eMaxExtent - position.pixels;
+    final appBarHeight = appBarPixels + lentPixels;
 
     size = Size(child.size.width, appBarHeight);
   }
@@ -294,8 +287,7 @@ class RenderAppBar extends RenderBox
 
   @override
   bool hitTest(BoxHitTestResult result, {required Offset position}) {
-    final Offset translatedOffset =
-        isSizedLayout ? Offset.zero : translate(Offset.zero);
+    final Offset translatedOffset = isSizedLayout ? .zero : translate(.zero);
 
     // Adjusts the position to compensate for the offset modification.
     return result.addWithPaintOffset(

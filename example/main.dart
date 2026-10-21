@@ -1,4 +1,4 @@
-// Hide Flutter's default AppBar.
+// Must be hide the Flutter default material or cupertino app bar.
 import 'package:flutter/material.dart' hide AppBar;
 import 'package:flutter_appbar/flutter_appbar.dart';
 
@@ -33,12 +33,12 @@ class Example extends StatelessWidget {
       appBars: [
         AppBar(
           behavior: const MaterialAppBarBehavior(dragOnlyExpanding: true),
-          alignment: Alignment.center,
-          body: headerAppBarWidget(),
+          alignment: .center,
+          body: const HeaderAppBar(),
         ),
         AppBar(
           behavior: const MaterialAppBarBehavior(floating: true),
-          body: floatingAppbarWidget(),
+          body: const FloatingAppBar(),
         ),
       ],
       child: ListView.builder(
@@ -49,23 +49,24 @@ class Example extends StatelessWidget {
       ),
     );
   }
+}
 
-  /// Returns the header appBar content.
-  static Widget headerAppBarWidget() {
+class HeaderAppBar extends StatelessWidget {
+  const HeaderAppBar({super.key});
+
+  @override
+  Widget build(BuildContext context) {
     return Container(
-      width: double.infinity,
+      width: .infinity,
       height: 300,
       color: Colors.red,
-      alignment: Alignment.center,
+      alignment: .center,
       child: const Column(
-        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisAlignment: .center,
         children: [
           Text(
             "Header",
-            style: TextStyle(
-              fontSize: 32,
-              fontWeight: FontWeight.bold,
-            ),
+            style: TextStyle(fontSize: 32, fontWeight: .bold),
           ),
           Text(
             "dragOnlyExpanding: true",
@@ -75,24 +76,28 @@ class Example extends StatelessWidget {
       ),
     );
   }
+}
 
-  /// Returns the floating appBar content.
-  static Widget floatingAppbarWidget() {
+class FloatingAppBar extends StatelessWidget {
+  const FloatingAppBar({super.key});
+
+  @override
+  Widget build(BuildContext context) {
     return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(15),
+      width: .infinity,
+      padding: const .all(15),
       color: Colors.blue,
-      alignment: Alignment.center,
+      alignment: .center,
       child: const Column(
         children: [
           Text(
             "AppBar",
-            style: TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-            ),
+            style: TextStyle(fontSize: 20, fontWeight: .bold),
           ),
-          Text("floating: true", style: TextStyle(fontSize: 16)),
+          Text(
+            "floating: true",
+            style: TextStyle(fontSize: 16),
+          ),
         ],
       ),
     );
