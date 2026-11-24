@@ -1,5 +1,4 @@
-// Must be hide the Flutter default material or cupertino app bar.
-import 'package:flutter/material.dart' hide AppBar;
+import 'package:flutter/widgets.dart';
 import 'package:flutter_appbar/flutter_appbar.dart';
 
 void main() {
@@ -11,10 +10,18 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return WidgetsApp(
       debugShowCheckedModeBanner: false,
-      home: Scaffold(
-        body: SafeArea(
+      color: const Color(0xFFFFFFFF),
+      home: DefaultTextStyle(
+        style: const TextStyle(
+          fontSize: 14,
+          fontWeight: .w400,
+          letterSpacing: 0.25,
+          height: 1.43,
+          decoration: .none,
+        ),
+        child: SafeArea(
           child: Example(),
         ),
       ),
@@ -59,7 +66,7 @@ class HeaderAppBar extends StatelessWidget {
     return Container(
       width: .infinity,
       height: 300,
-      color: Colors.red,
+      color: const Color(0xFFFF0000),
       alignment: .center,
       child: const Column(
         mainAxisAlignment: .center,
@@ -86,7 +93,7 @@ class FloatingAppBar extends StatelessWidget {
     return Container(
       width: .infinity,
       padding: const .all(15),
-      color: Colors.blue,
+      color: const Color(0xFF0064FF),
       alignment: .center,
       child: const Column(
         children: [

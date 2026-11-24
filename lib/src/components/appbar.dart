@@ -12,7 +12,7 @@ typedef AppBarBuilder = Widget Function(BuildContext context, AppBarPosition pos
 ///
 /// Used with [AppBarConnection].
 class AppBar extends StatefulWidget {
-  AppBar({
+  new({
     super.key,
     required this.behavior,
     required Widget body,
@@ -23,7 +23,7 @@ class AppBar extends StatefulWidget {
     this.maxExtent,
   }) : builder = ((_, position) => body);
 
-  AppBar.builder({
+  new builder({
     super.key,
     required this.behavior,
     required AppBarBuilder builder,

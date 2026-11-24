@@ -6,7 +6,7 @@ import 'package:flutter/widgets.dart';
 /// [ScrollController] as if dragging a scrollable region.
 @protected
 class ScrollableGestureDelegator extends StatefulWidget {
-  const ScrollableGestureDelegator({
+  const new({
     super.key,
     required this.controller,
     required this.child,
@@ -33,7 +33,7 @@ class _ScrollableGestureDelegatorState extends State<ScrollableGestureDelegator>
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      behavior: HitTestBehavior.opaque,
+      behavior: .opaque,
       onVerticalDragDown: _handleDragDown,
       onVerticalDragStart: _handleDragStart,
       onVerticalDragUpdate: _handleDragUpdate,

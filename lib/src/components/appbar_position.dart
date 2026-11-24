@@ -3,8 +3,9 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_appbar/flutter_appbar.dart';
 import 'package:flutter_nested_scroll/flutter_nested_scroll.dart';
 
+/// Manages the scroll position and animation state of an appbar.
 class AppBarPosition extends Listenable {
-  AppBarPosition({
+  new({
     required this.vsync,
     required this.behavior,
     double initialOffset = 0,

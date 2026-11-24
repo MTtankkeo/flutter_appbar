@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_appbar/flutter_appbar.dart';
@@ -35,7 +34,9 @@ Widget createTemplate(
         textDirection: .ltr,
         child: ScrollConfiguration(
           behavior: ScrollConfiguration.of(context).copyWith(
-            physics: isCupertino ? const TestBouncingScrollPhysics() : const ClampingScrollPhysics(),
+            physics: isCupertino
+                ? const TestBouncingScrollPhysics() //
+                : const ClampingScrollPhysics(),
           ),
           child: AppBarConnection(
             controller: appBarController,

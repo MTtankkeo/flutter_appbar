@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart' hide AppBar;
+import 'package:flutter/widgets.dart';
 import 'package:flutter_appbar/flutter_appbar.dart';
 import 'package:flutter_nested_scroll/flutter_nested_scroll.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -20,7 +20,7 @@ void main() {
           [
             AppBar(
               behavior: const AbsoluteAppBarBehavior(),
-              body: Container(height: 100, color: Colors.red),
+              body: const SizedBox(height: 100),
             ),
           ],
           appBarController,
@@ -66,7 +66,7 @@ void main() {
         [
           AppBar(
             behavior: const MaterialAppBarBehavior(floating: true),
-            body: Container(height: 100, color: Colors.red),
+            body: const SizedBox(height: 100),
           ),
         ],
         appBarController,
@@ -122,7 +122,7 @@ void main() {
         [
           AppBar(
             behavior: const MaterialAppBarBehavior(floating: false),
-            body: Container(height: 100, color: Colors.red),
+            body: const SizedBox(height: 100),
           ),
         ],
         appBarController,
@@ -178,7 +178,7 @@ void main() {
         [
           AppBar(
             behavior: const MaterialAppBarBehavior(dragOnlyExpanding: true),
-            body: Container(height: 100, color: Colors.red),
+            body: Container(height: 100),
           ),
         ],
         appBarController,
@@ -248,10 +248,7 @@ void main() {
         [
           AppBar(
             behavior: const MaterialAppBarBehavior(alwaysScrolling: true),
-            body: Container(
-              height: 100,
-              color: Colors.red,
-            ),
+            body: const SizedBox(height: 100),
           ),
         ],
         appBarController,

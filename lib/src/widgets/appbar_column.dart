@@ -1,11 +1,11 @@
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_appbar/components/appbar_controller.dart';
+import 'package:flutter_appbar/src/components/appbar_controller.dart';
 
 /// A widget that represents a column of app bars with a custom render object.
 /// It listens to the [AppBarController] for layout updates.
 class AppBarColumn extends StatefulWidget {
-  const AppBarColumn({
+  const new({
     super.key,
     required this.controller,
     required this.constraints,
@@ -54,7 +54,7 @@ class _AppBarColumnState extends State<AppBarColumn> {
 /// A widget that delegates layout to a custom render box for precise control
 /// over the size and constraints of the app bar column.
 class RenderAppBarColumn extends SingleChildRenderObjectWidget {
-  const RenderAppBarColumn({
+  const new({
     super.key,
     required super.child,
     required this.constraints,
@@ -80,9 +80,7 @@ class RenderAppBarColumn extends SingleChildRenderObjectWidget {
 /// A custom render-box that ensures the app bar column does not overflow
 /// by enforcing size constraints from the parent widget(i.g. ancestor).
 class AppBarColumnRenderBox extends RenderBox with RenderObjectWithChildMixin<RenderBox> {
-  AppBarColumnRenderBox({required BoxConstraints parentConstraints}) {
-    _parentConstraints = parentConstraints;
-  }
+  new({required this._parentConstraints});
 
   @override
   RenderBox get child => super.child!;

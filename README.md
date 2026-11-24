@@ -1,18 +1,26 @@
 # Introduction
+
 This package implements a flexible AppBar behavior that pursues higher performance and responsiveness than the default Flutter AppBar. It also avoids unnecessary gesture contention, ensuring smooth interactions in most typical situations.
 
 > ✨ Build next-generation, **premium-grade scroll experiences** with full AppBar control.
 
 ## Preview
+
 The GIF below demonstrates the package in action. Please note that due to compression, the animation may appear distorted or choppy.
 
-![preview](https://github.com/user-attachments/assets/9b077c66-83c3-4374-b217-f37dbe644d01)
-![preview](https://github.com/user-attachments/assets/e8b18258-f764-49e6-8068-4c34b9b6d62b)
+<table>
+  <tr>
+    <td><img width="320" src="https://raw.githubusercontent.com/MTtankkeo/flutter_appbar/main/assets/preview-1.gif"></td>
+    <td><img width="320" src="https://raw.githubusercontent.com/MTtankkeo/flutter_appbar/main/assets/preview-2.gif"></td>
+  </tr>
+</table>
 
 ## Usage
+
 This section covers the basic usage of this package and how to integrate it into your application.
 
 ### How to apply the appbar?
+
 To integrate an appbar into your application, use the `AppBarConnection` and AppBar widgets as shown in the example below.
 
 > [!NOTE]
@@ -22,13 +30,13 @@ To integrate an appbar into your application, use the `AppBarConnection` and App
 AppBarConnection(
   appBars: [
     AppBar(
-      behavior: MaterialAppBarBehavior(),
-      body: Container(
-        width: double.infinity,
+      behavior: const MaterialAppBarBehavior(),
+      body: const Container(
+        width: .infinity,
         height: 300,
         color: Colors.red,
-        alignment: Alignment.center,
-        child: Text("Header", style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold)),
+        alignment: .center,
+        child: ...,
       ),
     ),
   ],
@@ -42,23 +50,25 @@ AppBarConnection(
 ```
 
 ### How to apply the sized appbar?
+
 You can explicitly define both the minimum and maximum extents for the appbar, allowing you to set fixed sizes rather than having it adjust dynamically, See Also, The sized appbar does not support alignment options.
 
 ```dart
 AppBar(
   minExtent: 0,   // Optional
   maxExtent: 200, // Optional
-  behavior: MaterialAppBarBehavior(),
+  behavior: const MaterialAppBarBehavior(),
   body: ...
 )
 ```
 
 ### How to apply effects according to appbar position?
+
 To adjust UI effects dynamically according to the appbar’s position, use the AppBar.builder method. This provides the position object, which contains the current state of the appbar, including its expansion and shrinkage percentages.
 
 ```dart
 AppBar.builder(
-  behavior: MaterialAppBarBehavior(),
+  behavior: const MaterialAppBarBehavior(),
   builder: (context, position) {
     position.expandedPercent; // 1.0
     position.shrinkedPercent; // 0.0
@@ -68,13 +78,13 @@ AppBar.builder(
 ```
 
 ### How to refer the other appbar position.
+
 To obtain the `AppBarPosition` for a specific index, the `positionOf()` function of an explicitly defined `AppBarController` can be used.
 
 ```dart
 @override
 void initState() {
   super.initState();
-
   WidgetsBinding.instance.addPostFrameCallback((_) => controller.synchronizeWith(0, 1));
 }
 
@@ -97,17 +107,19 @@ AppBarConnection(
 ```
 
 ### How to customize appbar alignment?
+
 Try applying the `Alignment` that is a providing standard enumeration in this package.
 
 ```dart
 AppBar(
-  behavior: MaterialAppBarBehavior(),
-  alignment: Alignment.center, // like this
+  behavior: const MaterialAppBarBehavior(),
+  alignment: .center, // like this
   body: ...
 )
 ```
 
 ### How to apply initial offset of the appbar?
+
 `initialOffset` defines the initial expansion or collapse state of the appbar and must be a value between 0 and 1.
 
 ```dart
@@ -118,6 +130,7 @@ AppBar(
 ```
 
 ### How to set fixed scrollable height?
+
 When `fixedScrollableHeight` is enabled, the scrollable widget's height is calculated as if the AppBar is fully collapsed, regardless of its current expansion state.
 
 This prevents the scrollable view from resizing dynamically as the AppBar expands or collapses, which can help avoid layout shifts, visual glitches, and performance overhead caused by frequent height changes.
@@ -139,11 +152,13 @@ AppBarConnection.defaultFixedScrollableHeight = true;
 ```
 
 ## AppBar Behavior
+
 The package includes different appbar behaviors that define how the appbar interacts with user scroll actions.
 
 > This provides developers with full control over how the appbar should behave under different scrolling conditions.
 
 ### AppBarBehavior abstract class
+
 This is an abstract class that dictates the overall behavior of the appbar. It provides two key methods:
 
 ```dart
@@ -175,6 +190,7 @@ AppBarAlignmentCommand? align(
 ```
 
 ### AbsoluteAppBarBehavior
+
 This behavior keeps the appbar in a fixed position, ignoring scroll interactions.
 
 | Property | Description |
@@ -182,6 +198,7 @@ This behavior keeps the appbar in a fixed position, ignoring scroll interactions
 | `bouncing` | Whether the appbar will be synchronized when bouncing overscroll occurs. |
 
 ### MaterialAppBarBehavior
+
 This behavior mimics the Material 3 design behavior for appbars, supporting floating, dragging, and alignment animations.
 
 | Property | Description |

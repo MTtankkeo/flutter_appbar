@@ -1,9 +1,8 @@
 import 'dart:math';
 
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_appbar/components/appbar_position.dart';
+import 'package:flutter_appbar/src/components/appbar_position.dart';
 import 'package:flutter_nested_scroll/flutter_nested_scroll.dart';
 
 /// Representing different alignment options for the appbar.
@@ -18,7 +17,7 @@ enum AppBarAlignmentCommand {
 /// The abstract class that defines the behavior of the appbar that
 /// is including how it consumes scroll offsets and aligns appbar.
 abstract class AppBarBehavior {
-  const AppBarBehavior({
+  const new({
     required this.alignDuration,
     required this.alignCurve,
   });
@@ -53,7 +52,7 @@ abstract class AppBarBehavior {
 }
 
 abstract class DrivenAppBarBehavior extends AppBarBehavior {
-  const DrivenAppBarBehavior({
+  const new({
     required this.bouncing,
     super.alignDuration = const .new(milliseconds: 300),
     super.alignCurve = Curves.ease,
@@ -77,8 +76,9 @@ abstract class DrivenAppBarBehavior extends AppBarBehavior {
   }
 }
 
+/// Keeps the appbar fixed regardless of scrolling.
 class AbsoluteAppBarBehavior extends DrivenAppBarBehavior {
-  const AbsoluteAppBarBehavior({super.bouncing = false});
+  const new({super.bouncing = false});
 
   @override
   AppBarAlignmentCommand? align(
@@ -98,8 +98,9 @@ class AbsoluteAppBarBehavior extends DrivenAppBarBehavior {
   }
 }
 
+/// Defines Material style scrolling and alignment behavior for an app bar.
 class MaterialAppBarBehavior extends DrivenAppBarBehavior {
-  const MaterialAppBarBehavior({
+  const new({
     super.bouncing = false,
     super.alignDuration,
     super.alignCurve,

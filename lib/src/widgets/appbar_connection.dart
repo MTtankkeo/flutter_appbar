@@ -2,11 +2,11 @@ import 'dart:math';
 
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_appbar/components/appbar_controller.dart';
-import 'package:flutter_appbar/components/appbar_position.dart';
-import 'package:flutter_appbar/components/appbar.dart';
-import 'package:flutter_appbar/widgets/appbar_column.dart';
-import 'package:flutter_appbar/widgets/scrollable_gesture_delegator.dart';
+import 'package:flutter_appbar/src/components/appbar_controller.dart';
+import 'package:flutter_appbar/src/components/appbar_position.dart';
+import 'package:flutter_appbar/src/components/appbar.dart';
+import 'package:flutter_appbar/src/widgets/appbar_column.dart';
+import 'package:flutter_appbar/src/widgets/scrollable_gesture_delegator.dart';
 import 'package:flutter_nested_scroll/flutter_nested_scroll.dart';
 
 /// ## Introduction
@@ -36,7 +36,10 @@ class AppBarConnection extends StatefulWidget {
     this.fixedScrollableHeight,
   });
 
+  /// The app bars displayed above the content.
   final List<AppBar> appBars;
+
+  /// The content displayed below the app bars.
   final Widget child;
 
   /// Defines how scroll offsets are propagated across nested AppBars.
@@ -134,8 +137,9 @@ class AppBarConnectionState extends State<AppBarConnection> {
           builder: (context, scrollController) {
             return LayoutBuilder(
               builder: (context, constraints) {
-                assert(constraints.maxWidth != double.infinity);
-                assert(constraints.maxHeight != double.infinity);
+                assert(constraints.maxWidth != .infinity);
+                assert(constraints.maxHeight != .infinity);
+
                 return _RenderAppBarConnection(
                   fixedScrollableHeight: widget.fixedScrollableHeight ?? AppBarConnection.defaultFixedScrollableHeight,
                   children: [
